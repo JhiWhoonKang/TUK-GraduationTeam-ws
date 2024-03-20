@@ -12,9 +12,11 @@ void loop()
   int recvSize;
 
   recvSize = RawHID.recv(receiveBuffer, 0);
-  if (recvSize > 0) {
+  if (recvSize > 0) 
+  {
     Serial.println("Received Data:");
-    for (int i = 0; i < recvSize; i++) {
+    for (int i = 0; i < recvSize; i++) 
+    {
       Serial.print(receiveBuffer[i], HEX);
       Serial.print(" ");
     }
