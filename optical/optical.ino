@@ -1,4 +1,6 @@
 // ******************************************************************************
+// RCWS Optical device MCU code
+// You can use with CAN or USB Serial
 // CRC = (ID + byte1 + … + byte(n) ) & 0xFF
 // CAN ID 3 = Weapon
 // CAN ID 4 = Optical TILT
