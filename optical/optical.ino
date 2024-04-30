@@ -366,8 +366,8 @@ void TOF_Read() {
     check += (int)buffer[i];
   }
   if(TOFSerial.read() == (check & 0xff)) {
-    dist = ((int)buffer[0] + (((int)buffer[1]) >> 8));
-    strength = ((int)buffer[2] + (((int)buffer[3]) >> 8));
+    dist = ((int)buffer[0] + (((int)buffer[1]) << 8));
+    strength = ((int)buffer[2] + (((int)buffer[3]) << 8));
     Zoom.write(zoom_pos);
     Focus.write(focus_pos);
     TOFDEBUG DEBUGSerial.printf("Dist : %d, Strength : %d\n", dist, strength);
