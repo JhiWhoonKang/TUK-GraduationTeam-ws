@@ -91,9 +91,18 @@ void loop()
         
         sendCANMessage(txmsg);
       }
-
-      // unsigned long delayTime = (256 - PACKET[5]) * 50 * 6 + 10;
-      // delayMicroseconds(delayTime);
     }
+  }
+
+  if (Can0.read(rxmsg)) 
+  {
+    byte message[9];
+    message[0] = (byte)(rxmsg.id & 0xFF); // 하위 8비트만 사용
+  
+    for (int i = 0; i < rxmsg.len; i++)
+    {
+      message[i + 1] = rxmsg.buf[i];
+    }
+    Serial.write(message, rxmsg.len + 1);
   }
 }

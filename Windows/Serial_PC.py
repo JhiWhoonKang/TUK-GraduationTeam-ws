@@ -16,16 +16,6 @@ def init_gamepad():
     print(f"{joystick.get_name()} 게임 패드가 연결되었습니다.")
     return joystick
 
-UP = 0
-DOWN = 0
-RIGHT = 0
-LEFT = 0
-DIR = 0
-ACC = 180
-X_FLAG = 0
-Y_FLAG = 0
-CNT = 0
-
 class joy_data:
     axisX:int = 0
     axisY:int = 0
@@ -34,80 +24,107 @@ class joy_data:
 joy = joy_data()
 
 try:
-    teensy = serial.Serial('COM14', 115200)
+    teensy = serial.Serial('COM25', 115200)
 except IOError as e:
     print(e)
     print("Teensy 어디")
     exit()
 
 
+RIGHT = 0
+LEFT = 0
+UP = 0
+DOWN = 0
+STOP = 0
+ACC_Z = 220
 PREV_RIGHT = 0
 PREV_LEFT = 0
+PREV_STOP = 0
+LEFT_TURN = 2
+RIGHT_TURN = 2
 def get_gamepad_input(joystick):
-    # 이벤트 처리
-    global UP, DOWN, RIGHT, LEFT, DIR, ACC, X_FLAG, Y_FLAG, CNT, joy, PREV_RIGHT, PREV_LEFT
+    global UP, DOWN, RIGHT, LEFT, STOP, joy, PREV_RIGHT, PREV_LEFT, PREV_STOP, LEFT_TURN, RIGHT_TURN
 
     for event in pygame.event.get():
         if event.type == pygame.JOYAXISMOTION:
-            if event.axis == 0 :                
-                if event.value > -0.2 and event.value < 0.2:
-                    # joystick - center
+            if event.axis == 0:
+                if -0.2 < event.value < 0.2:
+                    # 조이스틱 - 중앙
                     joy.axisX = int(0)
-                    RIGHT = 0
-                    LEFT = 0
-                    CRCBYTE = (0x5 + 0xF6 + ACC) & 0xFF
-                    if X_FLAG == 1:
-                        print("{} 정지 {}", CNT, LEFT)
-                        packet = [5, 0xF6, 0, 0, ACC, CRCBYTE]
-                        teensy.write(bytearray(packet))
-                        CNT +=1 
-                    X_FLAG = 0
-
+                    STOP = joy.axisX
+                    speed_mode_stop(3, ACC_Z)                    
+                    
                 else:
-                    # joystick - 기울어짐
-                    X_FLAG = 1
-                    if event.value > 0 :
-                        #scaled_value = int(event.value * 100)
-                        #joy.axisX = 10 * round(scaled_value / 10)
+                    # 조이스틱 - 기울어짐
+                    if event.value > 0: # CW
+                        RIGHT_TURN = 1 # 회전하고 있던 상태
                         joy.axisX = int(event.value * 100)
-                        if (RIGHT != joy.axisX and joy.axisX != 0):                            
-                            RIGHT = joy.axisX
-                            if RIGHT != PREV_RIGHT:
-                                PREV_RIGHT = RIGHT
-                                
-                                DIR = 0
-                                upper_speed = (RIGHT >> 4) & 0x0F
-                                lower_speed = RIGHT & 0x0F
-                                BYTE2 = (DIR << 7) | upper_speed
-                                CRCBYTE = (0x5 + 0xF6 + BYTE2 + lower_speed + ACC) & 0xFF
-                                print("{} 우키 {}",CNT, RIGHT)
-                                
-                                packet = [5, 0xF6, BYTE2, lower_speed, ACC, CRCBYTE]
-                                teensy.write(bytearray(packet))
-                                CNT += 1
+                        RIGHT = joy.axisX
 
-                    elif event.value < 0 :
-                        #scaled_value = abs(int(event.value * 100))
-                        #joy.axisX = 10 * round(scaled_value / 10)
+                        if LEFT_TURN == 1:
+                            if speed_mode_stop(3, ACC_Z):
+                                speed_mode(3, 0, RIGHT, ACC_Z)
+                                RIGHT_TURN = 1
+                        else:
+                            speed_mode(3, 0, RIGHT, ACC_Z)
+                                
+                    elif event.value < 0: # CCW
+                        LEFT_TURN = 1
                         joy.axisX = abs(int(event.value * 100))
-                        if (LEFT != joy.axisX and joy.axisX != 0):
-                            LEFT = abs(joy.axisX)
-                            if LEFT != PREV_LEFT:
-                                PREV_LEFT = LEFT
+                        LEFT = abs(joy.axisX)
 
-                                DIR = 1
-                                upper_speed = (LEFT >> 4) & 0x0F
-                                lower_speed = LEFT & 0x0F
-                                BYTE2 = (DIR << 7) | upper_speed
-                                CRCBYTE = (0x5 + 0xF6 + BYTE2 + lower_speed + ACC) & 0xFF
-                                print("{} 왼키 {}", CNT, LEFT)
-                                packet = [5, 0xF6, BYTE2, lower_speed, ACC, CRCBYTE]
-                                teensy.write(bytearray(packet))
-                                CNT += 1
+                        if RIGHT_TURN == 1:
+                            if speed_mode_stop(3, ACC_Z):
+                                speed_mode(3, 1, LEFT, ACC_Z)
+                                LEFT_TURN = 1
+                        else:
+                            speed_mode(3, 1, LEFT, ACC_Z)
+
+def speed_mode_stop(canid, acc):
+    global LEFT_TURN, RIGHT_TURN
+    crcbyte = (canid + 0xF6 + acc) & 0xFF
+    packet = [canid, 0xF6, 0, 0, acc, crcbyte]
+    teensy.write(bytearray(packet))
+    while True:
+        print("loop..")
+        if teensy.in_waiting > 0:
+            data = teensy.read(teensy.in_waiting)
+            print(data)
+            if data == b'\x03\xf6\x02\xfb':
+                print("stoip")
+                return True
+            elif data == b'\x03\xf6\x00\xf9':
+                print("help")
+                LEFT_TURN = 0
+                RIGHT_TURN = 0
+                break
+            elif data == b'\x03\xf6\x01\xfa':
+                break
+            else:
+                teensy.write(bytearray(packet))
+                break
+        else:
+            print("helpppppppppppppppppppppp")
+            break
+
+def speed_mode(canid, dir, speed, acc):
+    upper_speed = (speed >> 4) & 0x0F
+    lower_speed = speed & 0x0F
+    byte2 = (dir << 7) | upper_speed
+    crcbyte = (canid + 0xF6 + byte2 + lower_speed + acc) & 0xFF
+    packet = [canid, 0xF6, byte2, lower_speed, acc, crcbyte]
+    teensy.write(bytearray(packet))
+
 
 gamepad = init_gamepad()
-
-while True:
+try:     
     if gamepad:
-        get_gamepad_input(gamepad)   
-device.close()
+        while True:
+            get_gamepad_input(gamepad)
+            
+            # if teensy.in_waiting > 0:
+            #     data = teensy.read(teensy.in_waiting)
+            #     print(data)                                
+            
+except KeyboardInterrupt:
+    print("종료")
