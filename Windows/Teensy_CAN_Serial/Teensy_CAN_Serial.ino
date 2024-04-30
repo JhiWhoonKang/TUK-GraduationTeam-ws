@@ -76,26 +76,29 @@ void loop()
       {
         txmsg.buf[i] = PACKET[i+2];
       }
+      Can0.write(txmsg);
     }
-  }
 
-  if(PACKET[0] == 4)
-  {
-    txmsg.id = PACKET[0];
-    txmsg.len = PACKET[1];
-    for (int i = 0; i < txmsg.len; ++i) 
+    if(PACKET[0] == 4)
     {
-      txmsg.buf[i] = PACKET[i+2];
+      txmsg.id = PACKET[0];
+      txmsg.len = PACKET[1];
+      for (int i = 0; i < txmsg.len; ++i) 
+      {
+        txmsg.buf[i] = PACKET[i+2];
+      }
+      Can0.write(txmsg);
     }
-  }
 
-  if(PACKET[0] == 5)
-  {
-    txmsg.id = PACKET[0];
-    txmsg.len = PACKET[1];
-    for (int i = 0; i < txmsg.len; ++i) 
+    if(PACKET[0] == 5)
     {
-      txmsg.buf[i] = PACKET[i+2];
+      txmsg.id = PACKET[0];
+      txmsg.len = PACKET[1];
+      for (int i = 0; i < txmsg.len; ++i) 
+      {
+        txmsg.buf[i] = PACKET[i+2];
+      }
+      Can0.write(txmsg);
     }
   }
 

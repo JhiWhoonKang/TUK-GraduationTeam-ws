@@ -31,9 +31,13 @@ except IOError as e:
     exit()
 
 ACC_Z = 220
+PREV_LEFT = 0
+PREV_RIGHT = 0
+PREV_UP = 0
+PREV_DOWN = 0
 def get_gamepad_input(joystick):
     global joy
-
+    global PREV_DOWN, PREV_LEFT, PREV_RIGHT, PREV_UP
     for event in pygame.event.get():
         if event.type == pygame.JOYAXISMOTION:
             if event.axis == 0:
@@ -62,7 +66,8 @@ def get_gamepad_input(joystick):
                 if event.value > -0.2 and event.value < 0.2:
                     # joystick - center
                     joy.axisY = int(0)
-                    speed_mode_stop(3, ACC_Z)
+                    speed_mode_stop(4, ACC_Z)
+                    speed_mode_stop(5, ACC_Z)
                 else:
                     # joystick - 기울어짐
                     if event.value > 0:
@@ -71,26 +76,44 @@ def get_gamepad_input(joystick):
                         if DOWN != PREV_DOWN:
                             PREV_DOWN = DOWN
                             CURRENT_DIRECTION = 0
-                            speed_mode(3, CURRENT_DIRECTION, DOWN, ACC_Z)
-                    
-                    elif event.value > 0:
+                            speed_mode(4, CURRENT_DIRECTION, DOWN, ACC_Z)
+                            CURRENT_DIRECTION = 1
+                            speed_mode(5, CURRENT_DIRECTION, DOWN, ACC_Z)                    
+                    elif event.value < 0:
                         joy.axisY = abs(int(event.value * 100))
                         UP = int(joy.axisY / 2)
                         if UP != PREV_UP:
                             PREV_UP = UP
                             CURRENT_DIRECTION = 1
-                            speed_mode(3, CURRENT_DIRECTION, UP, ACC_Z)
+                            speed_mode(4, CURRENT_DIRECTION, UP, ACC_Z)
+                            CURRENT_DIRECTION = 0
+                            speed_mode(5, CURRENT_DIRECTION, UP, ACC_Z)
 
         if event.type == pygame.JOYBUTTONUP:
             if event.button == 0:
-                read_pulse(3)                            
-
+                go_home(4)
+            if event.button == 1:
+                set_current_axis_to_zero(3)     
+            if event.button == 2:
+                power_on_off()
+            if event.button == 3:
+                read_encoder(3)
+                read_encoder(4)
+                read_encoder(5)
+                
+                    
+def power_on_off():
+    go_home(3)
+    go_home(4)
+    go_home(5)
+    
 def speed_mode(canid, dir, speed, acc):
     upper_speed = (speed >> 4) & 0x0F
     lower_speed = speed & 0x0F
     byte2 = (dir << 7) | upper_speed
     crcbyte = (canid + 0xF6 + byte2 + lower_speed + acc) & 0xFF
     packet = [canid, 5, 0xF6, byte2, lower_speed, acc, crcbyte]
+    print(packet)
     teensy.write(bytearray(packet))
 
 def speed_mode_stop(canid, acc):
@@ -100,25 +123,25 @@ def speed_mode_stop(canid, acc):
     teensy.write(bytearray(packet))
     
 def read_encoder(canid):
-    byte1 = 31
+    byte1 = 0x31
     crcbyte = (canid + byte1) & 0xFF
     packet = [canid, 2, byte1, crcbyte]
     teensy.write(bytearray(packet))    
 
 def read_pulse(canid):
-    byte1 = 33
+    byte1 = 0x33
     crcbyte = (canid + byte1) & 0xFF
     packet = [canid, 2, byte1, crcbyte]
     teensy.write(bytearray(packet))
     
 def go_home(canid):
-    byte1 = 91
+    byte1 = 0x91
     crcbyte = (canid + byte1) & 0xFF
     packet = [canid, 2, byte1, crcbyte]
     teensy.write(bytearray(packet))
 
 def set_current_axis_to_zero(canid):
-    byte1 = 92
+    byte1 = 0x92
     crcbyte = (canid + byte1) & 0xFF
     packet = [canid, 2, byte1, crcbyte]
     teensy.write(bytearray(packet))
@@ -128,6 +151,9 @@ try:
     if gamepad:
         while True:
             get_gamepad_input(gamepad)
-            # print("DIR: {}, RIGHT: {}, LEFT: {}, ACC: {}, CURRENT SPEED: {}".format(CURRENT_DIRECTION, RIGHT, LEFT, ACC_Z, CURRENT_SPEED))
+            print("RIGHT: {}, LEFT: {}, ACC: {}".format(PREV_RIGHT, PREV_LEFT, ACC_Z))
+            read_encoder(3)
+            read_encoder(4)
+            read_encoder(5)
 except KeyboardInterrupt:
     print("종료")
