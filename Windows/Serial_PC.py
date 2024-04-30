@@ -30,32 +30,16 @@ except IOError as e:
     print("Teensy 어디")
     exit()
 
-RIGHT = 0
-LEFT = 0
-STOP = 0
 ACC_Z = 220
-
-PREV_RIGHT = 0
-PREV_LEFT = 0
-PREV_STOP = 0
-
-LEFT_TURN = 2
-RIGHT_TURN = 2
-
-PREV_DIRECTION = 0 # 이전 방향 상태 추가
-CURRENT_SPEED = 0 # 현재 속도 변수 추가
-CURRENT_DIRECTION = 0 # 현재 방향 상태 추가
 def get_gamepad_input(joystick):
-    global UP, DOWN, RIGHT, LEFT, PREV_RIGHT, PREV_LEFT, STOP, CURRENT_SPEED, PREV_DIRECTION, CURRENT_DIRECTION, LEFT_TURN, RIGHT_TURN, joy
+    global joy
 
     for event in pygame.event.get():
         if event.type == pygame.JOYAXISMOTION:
             if event.axis == 0:
                 if -0.2 < event.value < 0.2:
-                    CURRENT_DIRECTION = 0
-                    STOP = 0
-                    CURRENT_SPEED = 0
-                    # speed_mode(3, 0, CURRENT_SPEED, ACC_Z)
+                    joy.axisX = int(0)
+                    speed_mode_stop(3, ACC_Z)
                 else:
                     if event.value > 0:  # CW
                         joy.axisX = int(event.value * 100)
@@ -64,7 +48,7 @@ def get_gamepad_input(joystick):
                             PREV_RIGHT = RIGHT
                             CURRENT_DIRECTION = 0  # 오른쪽 방향
                             CURRENT_SPEED = RIGHT
-                            # speed_mode(3, CURRENT_DIRECTION, RIGHT, ACC_Z)
+                            speed_mode(3, CURRENT_DIRECTION, RIGHT, ACC_Z)
                         
                     elif event.value < 0:  # CCW
                         joy.axisX = abs(int(event.value * 100))
@@ -73,24 +57,46 @@ def get_gamepad_input(joystick):
                             PREV_LEFT = LEFT
                             CURRENT_DIRECTION = 1  # 왼쪽 방향
                             CURRENT_SPEED = LEFT
-                            # speed_mode(3, CURRENT_DIRECTION, LEFT, ACC_Z)
+                            speed_mode(3, CURRENT_DIRECTION, LEFT, ACC_Z)
+            if event.axis == 1:
+                if event.value > -0.2 and event.value < 0.2:
+                    # joystick - center
+                    joy.axisY = int(0)
+                    speed_mode_stop(3, ACC_Z)
+                else:
+                    # joystick - 기울어짐
+                    if event.value > 0:
+                        joy.axisY = int(event.value * 100)
+                        DOWN = int(joy.axisY / 2)
+                        if DOWN != PREV_DOWN:
+                            PREV_DOWN = DOWN
+                            CURRENT_DIRECTION = 0
+                            speed_mode(3, CURRENT_DIRECTION, DOWN, ACC_Z)
+                    
+                    elif event.value > 0:
+                        joy.axisY = abs(int(event.value * 100))
+                        UP = int(joy.axisY / 2)
+                        if UP != PREV_UP:
+                            PREV_UP = UP
+                            CURRENT_DIRECTION = 1
+                            speed_mode(3, CURRENT_DIRECTION, UP, ACC_Z)
+
         if event.type == pygame.JOYBUTTONUP:
             if event.button == 0:
-                
-            
+                read_pulse(3)                            
 
 def speed_mode(canid, dir, speed, acc):
     upper_speed = (speed >> 4) & 0x0F
     lower_speed = speed & 0x0F
     byte2 = (dir << 7) | upper_speed
     crcbyte = (canid + 0xF6 + byte2 + lower_speed + acc) & 0xFF
-    packet = [canid, 0xF6, byte2, lower_speed, acc, crcbyte]
+    packet = [canid, 5, 0xF6, byte2, lower_speed, acc, crcbyte]
     teensy.write(bytearray(packet))
 
 def speed_mode_stop(canid, acc):
     global LEFT_TURN, RIGHT_TURN
     crcbyte = (canid + 0xF6 + acc) & 0xFF
-    packet = [canid, 0xF6, 0, 0, acc, crcbyte]
+    packet = [canid, 5, 0xF6, 0, 0, acc, crcbyte]
     teensy.write(bytearray(packet))
     
 def read_encoder(canid):
@@ -122,8 +128,6 @@ try:
     if gamepad:
         while True:
             get_gamepad_input(gamepad)
-            speed_mode(3, CURRENT_DIRECTION, CURRENT_SPEED, ACC_Z)
-            print("DIR: {}, RIGHT: {}, LEFT: {}, ACC: {}, CURRENT SPEED: {}".format(CURRENT_DIRECTION, RIGHT, LEFT, ACC_Z, CURRENT_SPEED))
-            time.sleep(0.1)
+            # print("DIR: {}, RIGHT: {}, LEFT: {}, ACC: {}, CURRENT SPEED: {}".format(CURRENT_DIRECTION, RIGHT, LEFT, ACC_Z, CURRENT_SPEED))
 except KeyboardInterrupt:
     print("종료")

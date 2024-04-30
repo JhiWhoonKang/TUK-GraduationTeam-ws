@@ -68,29 +68,34 @@ void loop()
   
   if(PACKET_INDEX > 0)
   {
-    // Speed Mode
-    if (PACKET[0] == 3 || PACKET[0] == 4 || PACKET[0] == 5) 
+    if(PACKET[0] == 3) 
     {
       txmsg.id = PACKET[0];
-      txmsg.len = 5;
+      txmsg.len = PACKET[1];
       for (int i = 0; i < txmsg.len; ++i) 
       {
-        txmsg.buf[i] = PACKET[i+1];
+        txmsg.buf[i] = PACKET[i+2];
       }
+    }
+  }
 
-      if (!sendCANMessage(txmsg)) 
-      {
-        txmsg.id = 5;
-        txmsg.len = 6;
-        txmsg.buf[0] = 0xF6;
-        txmsg.buf[1] = 0x00;
-        txmsg.buf[2] = 0x00;
-        txmsg.buf[3] = 0x00;
-        txmsg.buf[4] = 0x64; // 100
-        txmsg.buf[5] = (txmsg.id + txmsg.buf[0] + txmsg.buf[4]) & 0xFF;
-        
-        sendCANMessage(txmsg);
-      }
+  if(PACKET[0] == 4)
+  {
+    txmsg.id = PACKET[0];
+    txmsg.len = PACKET[1];
+    for (int i = 0; i < txmsg.len; ++i) 
+    {
+      txmsg.buf[i] = PACKET[i+2];
+    }
+  }
+
+  if(PACKET[0] == 5)
+  {
+    txmsg.id = PACKET[0];
+    txmsg.len = PACKET[1];
+    for (int i = 0; i < txmsg.len; ++i) 
+    {
+      txmsg.buf[i] = PACKET[i+2];
     }
   }
 
