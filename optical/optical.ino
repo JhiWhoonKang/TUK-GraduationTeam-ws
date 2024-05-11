@@ -287,13 +287,13 @@ void Data_Send(int value) {
 bool Usb_Read() {
   if (!PYTHONSerial.available()) return true;
   int ID = PYTHONSerial.read();
-  int lan = PYTHONSerial.read();
+  int len = PYTHONSerial.read();
   if (ID < 0) return true;
   if ((uint8_t)ID != THIS_ID) return true;
-  if (lan > 8) return false;
+  if (len > 8) return false;
 
   rxmsg.id = (uint8_t)THIS_ID;
-  rxmsg.len = (uint8_t)lan;
+  rxmsg.len = (uint8_t)len;
   PYTHONSerial.readBytes(rxmsg.buf, (int)rxmsg.len);
 
   int return_val;
