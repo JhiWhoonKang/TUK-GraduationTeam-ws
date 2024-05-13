@@ -68,32 +68,49 @@ void loop()
   
   if(PACKET_INDEX > 0)
   {
-    // Speed Mode
-    if (PACKET[0] == 3 || PACKET[0] == 4 || PACKET[0] == 5) 
+    if(PACKET[0] == 3) 
     {
       txmsg.id = PACKET[0];
-      txmsg.len = 5;
+      txmsg.len = PACKET[1];
       for (int i = 0; i < txmsg.len; ++i) 
       {
-        txmsg.buf[i] = PACKET[i+1];
+        txmsg.buf[i] = PACKET[i+2];
       }
-
-      if (!sendCANMessage(txmsg)) 
-      {
-        txmsg.id = 5;
-        txmsg.len = 6;
-        txmsg.buf[0] = 0xF6;
-        txmsg.buf[1] = 0x00;
-        txmsg.buf[2] = 0x00;
-        txmsg.buf[3] = 0x00;
-        txmsg.buf[4] = 0x64; // 100
-        txmsg.buf[5] = (txmsg.id + txmsg.buf[0] + txmsg.buf[4]) & 0xFF;
-        
-        sendCANMessage(txmsg);
-      }
-
-      // unsigned long delayTime = (256 - PACKET[5]) * 50 * 6 + 10;
-      // delayMicroseconds(delayTime);
+      Can0.write(txmsg);
     }
+
+    if(PACKET[0] == 4)
+    {
+      txmsg.id = PACKET[0];
+      txmsg.len = PACKET[1];
+      for (int i = 0; i < txmsg.len; ++i) 
+      {
+        txmsg.buf[i] = PACKET[i+2];
+      }
+      Can0.write(txmsg);
+    }
+
+    if(PACKET[0] == 5)
+    {
+      txmsg.id = PACKET[0];
+      txmsg.len = PACKET[1];
+      for (int i = 0; i < txmsg.len; ++i) 
+      {
+        txmsg.buf[i] = PACKET[i+2];
+      }
+      Can0.write(txmsg);
+    }
+  }
+
+  if (Can0.read(rxmsg)) 
+  {
+    byte message[9];
+    message[0] = (byte)(rxmsg.id & 0xFF); // 하위 8비트만 사용
+  
+    for (int i = 0; i < rxmsg.len; i++)
+    {
+      message[i + 1] = rxmsg.buf[i];
+    }
+    Serial.write(message, rxmsg.len + 1);
   }
 }
