@@ -28,7 +28,7 @@ void setup()
   delay(1000);
 
   Can0.begin();
-  Can0.setBaudRate(1000000);
+  Can0.setBaudRate(500000);
   Can0.attachObj(&listener);
   listener.attachGeneralHandler();
 
