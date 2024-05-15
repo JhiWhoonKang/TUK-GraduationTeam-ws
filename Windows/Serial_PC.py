@@ -39,7 +39,7 @@ def get_gamepad_input(joystick):
     global joy
     global PREV_DOWN, PREV_LEFT, PREV_RIGHT, PREV_UP
     for event in pygame.event.get():
-        if event.type == pygame.JOYAXISMOTION:
+         
             if event.axis == 0:
                 if -0.2 < event.value < 0.2:
                     joy.axisX = int(0)
