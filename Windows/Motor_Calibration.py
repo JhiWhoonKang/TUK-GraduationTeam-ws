@@ -91,16 +91,19 @@ def get_gamepad_input(joystick):
         if event.type == pygame.JOYBUTTONUP:
             if event.button == 0:
                 go_home(3)
-                go_home(4)
-                go_home(5)
-            if event.button == 1:
-                set_current_axis_to_zero(3)     
+                #go_home(4)
+                #go_home(5)
             if event.button == 2:
-                power_on_off()
+                set_current_axis_to_zero(3)
             if event.button == 3:
                 read_encoder(3)
-                read_encoder(4)
-                read_encoder(5)
+                #read_encoder(4)
+                #read_encoder(5)
+            if event.button == 4:
+                position_mode(3, 0, 10, 3, 1)    
+            if event.button == 11:
+                power_on_off()
+            
                                 
 def power_on_off():
     go_home(3)
@@ -120,6 +123,18 @@ def speed_mode_stop(canid, acc):
     global LEFT_TURN, RIGHT_TURN
     crcbyte = (canid + 0xF6 + acc) & 0xFF
     packet = [canid, 5, 0xF6, 0, 0, acc, crcbyte]
+    teensy.write(bytearray(packet))
+    
+def position_mode(canid, dir, speed, acc, pulse):
+    upper_speed = (speed >> 8) & 0xFF
+    lower_speed = speed & 0xFF
+    byte2 = (dir << 7) | upper_speed
+    pulsebyte1 = (pulse >> 16) & 0xFF
+    pulsebyte2 = (pulse >> 8) & 0xFF
+    pulsebyte3 = pulse & 0xFF
+    crcbyte = (canid + 0xFD + byte2 + lower_speed + acc + pulsebyte1 + pulsebyte2 + pulsebyte3) & 0xFF
+    packet = [canid, 8, 0xFD, byte2, lower_speed, acc, pulsebyte1, pulsebyte2, pulsebyte3, crcbyte]
+    print(packet)
     teensy.write(bytearray(packet))
 
 def read_encoder(canid):
