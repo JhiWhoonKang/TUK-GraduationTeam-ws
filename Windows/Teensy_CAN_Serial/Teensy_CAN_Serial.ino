@@ -10,6 +10,7 @@
 // ******************************************************************************
 
 #include <FlexCAN_T4.h>
+//#define DEBUGSerial SerialUSB1
 
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> Can0;
 CANListener listener;
@@ -25,6 +26,8 @@ void setup()
 {
   Serial.begin(115200);
   Serial.setTimeout(1);
+  //DEBUGSerial.begin(115200);
+  //DEBUGSerial.setTimeout(1);
   delay(1000);
 
   Can0.begin();
@@ -104,13 +107,14 @@ void loop()
 
   if (Can0.read(rxmsg)) 
   {
-    byte message[9];
+    byte message[10];
     message[0] = (byte)(rxmsg.id & 0xFF); // 하위 8비트만 사용
   
     for (int i = 0; i < rxmsg.len; i++)
     {
       message[i + 1] = rxmsg.buf[i];
     }
+    //DEBUGSerial.printf("Send : %d %d %d %d %d %d %d %d %d %d\n", rxmsg.id, rxmsg.len, rxmsg.buf[0], rxmsg.buf[1], rxmsg.buf[2], rxmsg.buf[3], rxmsg.buf[4], rxmsg.buf[5], rxmsg.buf[6], rxmsg.buf[7]);
     Serial.write(message, rxmsg.len + 1);
   }
 }
