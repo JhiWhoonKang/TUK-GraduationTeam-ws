@@ -1,4 +1,3 @@
-import pygame
 import serial
 import time
 from dataclasses import dataclass

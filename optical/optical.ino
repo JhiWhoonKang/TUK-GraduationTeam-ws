@@ -83,13 +83,9 @@ void setup()
   Can0.attachObj(&listener);
   listener.attachGeneralHandler();
 
-  txmsg.id = 4;
+  txmsg.id = 6;
   txmsg.len = 5;
-  txmsg.buf[0] = 00;
-  txmsg.buf[1] = 00;
-  txmsg.buf[2] = 00;
-  txmsg.buf[3] = 00;
-  txmsg.buf[4] = 00;
+  memset(txmsg.buf, 0, sizeof(txmsg.buf));
 
   memset(buffer, 0, sizeof(buffer));
 

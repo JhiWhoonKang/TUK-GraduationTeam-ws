@@ -17,13 +17,8 @@
 
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> Can0;
 CANListener listener;
-
 static CAN_message_t rxmsg, txmsg;
 
-const int PACKET_SIZE = 10;
-uint8_t PACKET[PACKET_SIZE];
-int PACKET_INDEX = 0;
-bool canflag = true;
 
 bool sendCANMessage(CAN_message_t &message, unsigned long timeoutMillis = 100);
 bool Usb_Read_Can_Send();
