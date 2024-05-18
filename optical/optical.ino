@@ -79,11 +79,11 @@ void setup()
   delay(1000);
 
   Can0.begin();
-  Can0.setBaudRate(1000000);
+  Can0.setBaudRate(500000);
   Can0.attachObj(&listener);
   listener.attachGeneralHandler();
 
-  txmsg.id = 6;
+  txmsg.id = THIS_ID;
   txmsg.len = 5;
   memset(txmsg.buf, 0, sizeof(txmsg.buf));
 
@@ -284,7 +284,7 @@ bool Usb_Read() {
   if (!PYTHONSerial.available()) return true;
   int ID = PYTHONSerial.read();
   int len = PYTHONSerial.read();
-  if (ID < 0) return true;
+  if (ID < 0) return false;
   if ((uint8_t)ID != THIS_ID) return true;
   if (len > 8) return false;
 
