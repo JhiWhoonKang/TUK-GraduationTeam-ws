@@ -7,9 +7,11 @@
 #include "Arduino.h"
 #include "imxrt.h"
 #include "String.h"
+#include "StringQueue.h"
+#include "CanQueue.h"
 
 #define AHRSSerial Serial2
-#define DEBUG if(debug!=NULL)
+#define AHRSDEBUG if(debug!=NULL)
 
 struct float1 {
     bool use = false;
@@ -35,38 +37,48 @@ class AHRS {
 private:
     HardwareSerialIMXRT *ahrs;
     usb_serial_class *debug;
+    DataQueue *CanSendQueue;
+    bool reset;
+
     bool sync;
 
     long long delta_T;
     int data_rate;
+    bool auto_request;
 
-    float1 voltage;      // V
-    float1 temperatere;  // C
-    float3 accel;          // g
-    float3 gyro;           // 
-    float3 mag;            // uT
-    float3 accel_g;        // m/s^2
-    float3 euler;          // deg
-    float4 quataniun;      
-    float3 velocity;       // m/s
-    float6 vibration;  // Hz
+    CommandQueue RequestQueue;
+
+    float1 voltage;         // V    // 0xD6
+    float1 temperatere;     // C    // 't'
+    float3 accel;          // g     // 'a'
+    float3 gyro;           //       // 'g'
+    float3 mag;            // uT    // 'm'
+    float3 euler;          // deg   // 'e'
+    float4 quataniun;               // 'q'
+    float3 velocity;       // m/s   // 'v'
+    float6 vibration;  // Hz        // 'p'
 
     void SaveData(float *storage, int size,  String data);
 public:
-    
-
     AHRS(HardwareSerialIMXRT *_ahrs);
 
     void Print(float data, bool end = true);
     void Print(float *data, int size, bool end = true);
 
     void SetDebugSerial(usb_serial_class *_debug);
+    void UnsetDebugSerial();
+    void SetDataQueue(DataQueue *_CanSendQueue);
     void Request(String data);
 
+    void RequestAdd(String data = "");
     
     bool Syncdata(uint8_t port, uint16_t cycle, uint16_t data);
+    
+    String Check(String data);
     void AutoRequestAdd(String data);
     void AutoRequestDelete(String data);
+    void AutoRequestOn();
+    void AutoRequestOff();
     void AutoRate(int num);
     void AutoRequest();
     void AutoRead();
