@@ -62,8 +62,8 @@ private:
 public:
     AHRS(HardwareSerialIMXRT *_ahrs);
 
-    void Print(float data, bool end = true);
-    void Print(float *data, int size, bool end = true);
+    void Print(String name, float data, bool end = true);
+    void Print(String name, float *data, int size, bool end = true);
 
     void SetDebugSerial(usb_serial_class *_debug);
     void UnsetDebugSerial();

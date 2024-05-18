@@ -55,6 +55,7 @@ void setup() {
   digitalWrite(LASER_PIN, LOW);
 
   DEBUGSerial.begin(115200);
+  PYTHONSerial.begin(500000);
   Can0.begin();
   Can0.setBaudRate(500000);
   Can0.attachObj(&listener);
@@ -327,6 +328,6 @@ void Usb_Send() {
   buffer[1] = txmsg.len;
   memcpy(&buffer[2], txmsg.buf, txmsg.len);
 
-  PYTHONSerial.write(buffer, txmsg.len);
+  PYTHONSerial.write(buffer, txmsg.len+2);
   return;
 }

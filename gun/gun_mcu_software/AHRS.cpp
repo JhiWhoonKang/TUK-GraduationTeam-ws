@@ -96,19 +96,23 @@ void AHRS::SaveData(float *storage, int size, String data) {
     }
 }
 
-void AHRS::Print(float data, bool end) {
+void AHRS::Print(String name, float data, bool end) {
     AHRSDEBUG {
+        if (name != "") 
+          debug->print("AHRS::" + name + " : ");
+        
         debug->print(data);
         debug->print(" ");
         if (end) debug->println(" ");
     }
 }
 
-void AHRS::Print(float *data, int size, bool end) {
+void AHRS::Print(String name, float *data, int size, bool end) {
     AHRSDEBUG {
+        debug->print("AHRS::" + name + " : ");
         debug->print("(");
         for (int i = 0; i < size; i++)
-            Print(*(data+i), false);
+            Print("", *(data+i), false);
         debug->print(")");
         if (end) debug->println(" ");
     }
@@ -211,6 +215,7 @@ void AHRS::AutoRead() {
     DataItem item;
     memset(&item, 0, sizeof(item));
     item.len = 6;
+    item.data[0] = 0x40;
     switch (a[0]) {
         case 'p':
             if (a[1] != 'v') break;
@@ -220,7 +225,7 @@ void AHRS::AutoRead() {
                 memcpy(&item.data[2], &voltage.data, 4);
                 CanSendQueue->push(item);
             }
-            Print(voltage.data);
+            Print("voltage",voltage.data);
         break;
         case 't':
             SaveData(&temperatere.data,1, a);
@@ -229,7 +234,7 @@ void AHRS::AutoRead() {
                 memcpy(&item.data[2], &temperatere.data, 4);
                 CanSendQueue->push(item);
             }
-            Print(temperatere.data);
+            Print("temperature",temperatere.data);
         break;
         case 'a':
             SaveData(accel.data, 3,a);
@@ -241,7 +246,7 @@ void AHRS::AutoRead() {
                     CanSendQueue->push(item);
                 }
             }
-            Print(accel.data, 3);
+            Print("accel",accel.data, 3);
         break;
         case 'g':
             SaveData(gyro.data, 3, a);
@@ -253,7 +258,7 @@ void AHRS::AutoRead() {
                     CanSendQueue->push(item);
                 }
             }
-            Print(gyro.data, 3);
+            Print("gyro",gyro.data, 3);
         break;
         case 'm':
             SaveData(mag.data, 3,a);
@@ -265,7 +270,7 @@ void AHRS::AutoRead() {
                     CanSendQueue->push(item);
                 }
             }
-            Print(mag.data, 3);
+            Print("mag",mag.data, 3);
         break;
         case 'e':
             SaveData(euler.data, 3,a);
@@ -277,7 +282,7 @@ void AHRS::AutoRead() {
                     CanSendQueue->push(item);
                 }
             }
-            Print(euler.data, 3);
+            Print("euler",euler.data, 3);
         break;
         case 'q':
             SaveData(quataniun.data, 4,a);
@@ -289,7 +294,7 @@ void AHRS::AutoRead() {
                     CanSendQueue->push(item);
                 }
             }
-            Print(quataniun.data, 4);
+            Print("quataniun",quataniun.data, 4);
         break;
     }
     return;
