@@ -4,15 +4,6 @@ import time
 import struct
 import signal
 
-Sentry = True
-
-def SignalHandler_SIGINT(SignalNumber,Frame):
-    print('Ctrl+C Pheripheral Reset')
-    print(f'Signal Number -> {SignalNumber} Frame -> {Frame}')
-    global Sentry
-    Sentry = False
-
-signal.signal(signal.SIGINT,SignalHandler_SIGINT)
 
 
 class Optical:
@@ -71,16 +62,10 @@ class Optical:
                 
                 
     def CheckPacket(self, data):
-        if data[0] != self.__optical_ID:
-            return
-        length = data[1]
-        #print(data[2])
-        if ((data[2][0] & self.__DEVICEMASK) >> 6) == 0x00:     # tof
-           # print("tof")
+        if ((data[0] & self.__DEVICEMASK) >> 6) == 0x00:     # tof
             self.__TOFData(data[2])
-        elif ((data[2][0] & self.__DEVICEMASK) >> 6) == 0x01:     # camera
+        elif ((data[0] & self.__DEVICEMASK) >> 6) == 0x01:     # camera
             self.__CameraData(data[2])
-          #  print("camera")
     
     def ACK(self):
         self.ack = False
@@ -88,16 +73,16 @@ class Optical:
         return bytearray(packet)
             
             
-    def AutoOnTOF(self):
+    def SetAutoTOF(self, data:str):
         if self.__CHECKACK == True:
             return self.ACK()
-        packet = [self.__optical_ID, 1, 0x81]
-        return bytearray(packet)
-            
-    def AutoOffTOF(self):
-        if self.__CHECKACK == True:
-            return self.ACK()
-        packet = [self.__optical_ID, 1, 0x82]
+        packet = list()
+        if data == "on":
+            packet = [self.__optical_ID, 1, 0x81]
+        elif data == "off":
+            packet = [self.__optical_ID, 1, 0x82]
+        else:
+            packet = [0,0,0]
         return bytearray(packet)
     
     def SetAutoTimeTOF(self, time):
@@ -125,6 +110,12 @@ class Optical:
         packet = [self.__optical_ID, 1, 0x02]
         return bytearray(packet)
     
+    def ReadAutoTimeTOF(self):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        packet = [self.__optical_ID, 1, 0x03]
+        return bytearray(packet)
+    
     def ReadFZoomTable(self, index, value):
         if self.__CHECKACK == True:
             return self.ACK()
@@ -141,32 +132,44 @@ class Optical:
         
         
         
-SendData = list()
 
-
-def Read(mcu:serial.Serial):
-    if mcu.in_waiting > 3:
-        id = int.from_bytes(mcu.read(1), 'big')
-        len = int.from_bytes(mcu.read(1), 'big')
-        data = mcu.read(len)
-        return [id, len, data]
-    return [0,0,0]
-
-def WaitData(mcu:serial.Serial):
-    while(True):
-        if mcu.in_waiting > 3:
-            break
-        
-def Write(mcu:serial.Serial):
-    while(True):
-        if len(SendData) == 0:
-            break
-        mcu.write(SendData[0])
-        SendData.pop(0)
         
 
         
 if __name__=="__main__":
+    Sentry = True
+
+    def SignalHandler_SIGINT(SignalNumber,Frame):
+        print('Ctrl+C Pheripheral Reset')
+        print(f'Signal Number -> {SignalNumber} Frame -> {Frame}')
+        global Sentry
+        Sentry = False
+
+    signal.signal(signal.SIGINT,SignalHandler_SIGINT)
+
+    SendData = list()
+
+
+    def Read(mcu:serial.Serial):
+        if mcu.in_waiting > 3:
+            id = int.from_bytes(mcu.read(1), 'big')
+            len = int.from_bytes(mcu.read(1), 'big')
+            data = mcu.read(len)
+            return [id, len, data]
+        return [0,0,0]
+
+    def WaitData(mcu:serial.Serial):
+        while(True):
+            if mcu.in_waiting > 3:
+                break
+            
+    def Write(mcu:serial.Serial):
+        while(True):
+            if len(SendData) == 0:
+                break
+            mcu.write(SendData[0])
+            SendData.pop(0)
+
     try:
         teensy = serial.Serial('COM8', 500000)
     except IOError as e:

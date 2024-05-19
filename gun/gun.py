@@ -4,15 +4,7 @@ import time
 import struct
 import signal
 
-Sentry = True
 
-def SignalHandler_SIGINT(SignalNumber,Frame):
-    print('Ctrl+C Pheripheral Reset')
-    print(f'Signal Number -> {SignalNumber} Frame -> {Frame}')
-    global Sentry
-    Sentry = False
-
-signal.signal(signal.SIGINT,SignalHandler_SIGINT)
 
 class Gun:
     def __init__(self):
@@ -21,7 +13,10 @@ class Gun:
         self.__DEVICEMASK = 0x40
         self.__CAMMANMASK = 0x3F
         self.__AHRS = 0x40
-        self.__DEVICE = 0x00
+        self.READ = 0x00
+        self.WRITE = 0x80
+        self.DEVICE = 0x00
+        self.AHRS = 0x40
         
         self.ack = False
         
@@ -112,15 +107,12 @@ class Gun:
             
             
             
-            
     def CheckPacket(self, data):
-        if data[0] != self.__gun_ID:
-            return
-        length = data[1]
-        if ((data[2][0] & self.__DEVICEMASK) >> 6) == 0x00:     # 장치
+        if ((data[0] & self.__DEVICEMASK) >> 6) == 0x00:     # 장치
             self.__DeviceData(data[2])
-        elif ((data[2][0] & self.__DEVICEMASK) >> 6) == 0x01:     # AHRS
+        elif ((data[0] & self.__DEVICEMASK) >> 6) == 0x01:     # AHRS
             self.__AHRSData(data[2])
+            
     
     def __CHECKACK(self):
         if not self.ack:
@@ -140,50 +132,106 @@ class Gun:
         packet = [self.__gun_ID, 1, 0x10]
         return bytearray(packet)
     
-    def ReadOpenDegree(self):
-        if self.__CHECKACK == True:
-            return self.ACK()
-        packet = [self.__gun_ID, 1, 0x14]
-        return bytearray(packet)
-    
     def ReadSingleTime(self):
         if self.__CHECKACK == True:
             return self.ACK()
         packet = [self.__gun_ID, 1, 0x15]
         return bytearray(packet)
     
-    def ReadOnDegree(self):
+    def ReadTriggerDegree(self, data:str):
         if self.__CHECKACK == True:
             return self.ACK()
-        packet = [self.__gun_ID, 1, 0x16]
+        packet = list()
+        if data=="ready":
+            packet = [self.__gun_ID, 1, 0x17]
+        elif data=="fire": # on
+            packet = [self.__gun_ID, 1, 0x16]
+        elif data=="open":
+            packet = [self.__gun_ID, 1, 0x14]
         return bytearray(packet)
     
-    def ReadReadyDegree(self):
-        if self.__CHECKACK == True:
-            return self.ACK()
-        packet = [self.__gun_ID, 1, 0x17]
-        return bytearray(packet)
-    
-    def ReadAHRS(self, name):
+    def ReadAHRS(self, name:str):
         if self.__CHECKACK == True:
             return self.ACK()
         
         byte_data = name.encode('utf-8')
-        if name == "pv":
+        if name == "pv" or name == "rd":
             byte_data = byte_data[0] + byte_data[1]
         else:
             byte_data = int.from_bytes(byte_data, 'big')
         packet = [self.__gun_ID, 2, self.__AHRS, byte_data]
         return bytearray(packet)
-
+    
+    def SetLaser(self, data:bool) :
+        if self.__CHECKACK == True:
+            return self.ACK()
+        packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x01, data]
+        return bytearray(packet)
+    
+    def SetGunPower(self, data:bool):
+        return self.SetLaser(data)
+    
+    def Trigger(self, data:str) : ## open, single, ready, on ##
+        if self.__CHECKACK == True:
+            return self.ACK()
+        packet = list()
+        
+        if data == "open":
+            packet = [self.__gun_ID, 1, self.WRITE+self.DEVICE+0x10]
+        elif data == "single":
+            packet = [self.__gun_ID, 1, self.WRITE+self.DEVICE+0x11]
+        elif data == "ready":
+            packet = [self.__gun_ID, 1, self.WRITE+self.DEVICE+0x12]
+        elif data == "fire": # on
+            packet = [self.__gun_ID, 1, self.WRITE+self.DEVICE+0x13]
+        else:
+            packet = [0,0,0]
+        
+        return bytearray(packet)
+    
+    def SetTriggerDegree(self, data:str, data2:int):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        packet = list()
+        
+        if data2 > 0xFF or data2 < 0:
+            print("[ERROR] GUN::SetTriggerDegree degree value error")
+            packet = [0,0,0]
+        else: 
+            if data == "open":
+                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x14]
+            elif data == "ready":
+                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x17]
+            elif data == "fire": # on
+                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x16]
+            else:
+                print("[ERROR] GUN::SetTriggerDegree name error")
+                packet = [0,0,0]
+        
+        return bytearray(packet)
+    
+    def SetSingleTime(self, data:int):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        packet = list()
+        packed_data = struct.pack('<i', data)
+        if data < 0:
+            print("[ERROR] GUN::SetSingleTime time isn't minus")
+            packet = [0,0,0]
+        else:
+            packet = [self.__gun_ID, 5, self.WRITE+self.DEVICE+0x15]
+            packet.append(packed_data[0])
+            packet.append(packed_data[1])
+            packet.append(packed_data[2])
+            packet.append(packed_data[3])
+            
+        return bytearray(packet)
         
             
     def __int_from_bytes(self,data):
-        # 바이트 데이터를 정수로 변환
         return struct.unpack('<I', data)[0] 
     
     def __float_from_bytes(self,data):
-        # 바이트 데이터를 정수로 변환
         return struct.unpack('<f', data)[0] 
         
     def ACK(self):
@@ -194,35 +242,63 @@ class Gun:
     def Reset(self):
         packet = [self.__gun_ID, 0x01, 0xFF]
         return bytearray(packet)
+    
+    def Initialization(self,mcu):
+        packet = list()
+        while (True):
+            mcu.write(self.ACK())
+            time.sleep(0.5)
+            if mcu.in_waiting > 3:
+                id = int.from_bytes(mcu.read(1), 'big')
+                len = int.from_bytes(mcu.read(1), 'big')
+                data = mcu.read(len)
+                packet = [id, len, data]
+                self.CheckPacket(packet)
+                if self.ack == True:
+                    break
+        
+            
        
        
         
-SendData = list()
 
-
-def Read(mcu:serial.Serial):
-    if mcu.in_waiting > 3:
-        id = int.from_bytes(mcu.read(1), 'big')
-        len = int.from_bytes(mcu.read(1), 'big')
-        data = mcu.read(len)
-        return [id, len, data]
-    return [0,0,0]
-
-def WaitData(mcu:serial.Serial):
-    while(True):
-        if mcu.in_waiting > 3:
-            break
-        
-def Write(mcu:serial.Serial):
-    while(True):
-        if len(SendData) == 0:
-            break
-        mcu.write(SendData[0])
-        SendData.pop(0)
         
 
         
 if __name__=="__main__":
+    
+    Sentry = True
+
+    def SignalHandler_SIGINT(SignalNumber,Frame):
+        print('Ctrl+C Pheripheral Reset')
+        print(f'Signal Number -> {SignalNumber} Frame -> {Frame}')
+        global Sentry
+        Sentry = False
+
+    signal.signal(signal.SIGINT,SignalHandler_SIGINT)
+    
+    SendData = list()
+
+    def Read(mcu:serial.Serial):
+        if mcu.in_waiting > 3:
+            id = int.from_bytes(mcu.read(1), 'big')
+            len = int.from_bytes(mcu.read(1), 'big')
+            data = mcu.read(len)
+            return [id, len, data]
+        return [0,0,0]
+
+    def WaitData(mcu:serial.Serial):
+        while(True):
+            if mcu.in_waiting > 3:
+                break
+            
+    def Write(mcu:serial.Serial):
+        while(True):
+            if len(SendData) == 0:
+                break
+            mcu.write(SendData[0])
+            SendData.pop(0)
+    
     try:
         teensy = serial.Serial('COM6', 500000)
     except IOError as e:
@@ -241,8 +317,6 @@ if __name__=="__main__":
     packet = Read(teensy)               # 데이터를 받아서 처리하기 편한 packet으로 변경 [id(int), len(int), data(bytearray)]   
     ##-----------------------------     # 데이터가 없는 경우 [0,0,0]반환
     gun.CheckPacket(packet)             # 데이터 처리 / 해당 데이터가 아닌 경우 return
-    
-    
     
     SendData.append(gun.ReadAHRS("pv")) # 전송 목록에 데이터 추가 (bytearray)
     SendData.append(gun.ReadAHRS("t")) # 전송 목록에 데이터 추가 (bytearray)
