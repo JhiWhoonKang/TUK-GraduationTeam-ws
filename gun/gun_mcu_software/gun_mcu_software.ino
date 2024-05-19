@@ -142,20 +142,24 @@ bool Data_Read() {
     DEBUGSerial.printf(" %02X", rxmsg.buf[i]);
   DEBUGSerial.printf(" | time:%d \n\r", millis());
   }
-  bool returns;
+  bool returns = true;
   DataItem returndata;
+  returns.buf[0] = rxmsg.buf[0];
+
+  uint8_t Mode = ((rxmsg.buf[0] & MODE_MASK) >> 7);
+  uint8_t Device = ((rxmsg.buf[0] & DEVICE_MASK) >> 6);
+  uint8_t com = (rxmsg.buf[0] & COMMAN_MASK);
 
   /* Write mode */
-  if (((rxmsg.buf[0] & MODE_MASK) >> 7) == 0x01 ) {
-    returns = false;
+  if (Mode == 0x01 ) {
     /* device */
-    if (((rxmsg.buf[0] & DEVICE_MASK) >> 6) == 0x00 ) {
-      switch ((rxmsg.buf[0] & COMMAN_MASK)) {
+    if (Device == 0x00 ) {
+      switch (com) {
         case 0x01:
           if((rxmsg.buf[1] == 0x00) || (rxmsg.buf[1] == 0x01) ) {
             digitalWrite(LASER_PIN, (rxmsg.buf[1] & 0x01));
             CANDEBUG DEBUGSerial.printf("Laser & Gun Power %d\n", digitalRead(LASER_PIN));
-          }
+          } else returns = false;
         break;
         case 0x10:
           trigger_state = 1;
@@ -174,7 +178,7 @@ bool Data_Read() {
           CANDEBUG DEBUGSerial.printf("Trigger On\n");
         break;
         case 0x14:
-          if (rxmsg.buf[1] > 180) break;
+          if (rxmsg.buf[1] > 180) {returns = false; break;}
           TRIGGER_OPEN = (int)rxmsg.buf[1];
           CANDEBUG DEBUGSerial.printf("Trigger Open Angle : %d\n", TRIGGER_OPEN);
         break;
@@ -183,12 +187,12 @@ bool Data_Read() {
           CANDEBUG DEBUGSerial.printf("Trigger Single Time : %d\n", TRIGGER_SINGLE);
         break;
         case 0x16:
-          if (rxmsg.buf[1] > 180) break;
+          if (rxmsg.buf[1] > 180) {returns = false; break;}
           TRIGGER_ON = (int)rxmsg.buf[1];
           CANDEBUG DEBUGSerial.printf("Trigger On Angle : %d\n", TRIGGER_ON);
         break;
         case 0x17:
-          if (rxmsg.buf[1] > 180) break;
+          if (rxmsg.buf[1] > 180) {returns = false; break;}
           TRIGGER_READY = (int)rxmsg.buf[1];
           CANDEBUG DEBUGSerial.printf("Trigger Ready Angle : %d\n", TRIGGER_READY);
         break;
@@ -198,7 +202,7 @@ bool Data_Read() {
     else {
       String data;
       int num = 0;
-      switch ((rxmsg.buf[0] & COMMAN_MASK)) {
+      switch (com) {
         case 0x01:
           ahrs.RequestAdd("rd");
           CANDEBUG DEBUGSerial.printf("AHRS::AHRS Restart\n");
@@ -229,10 +233,8 @@ bool Data_Read() {
   /* Read */
   else {
     /* device */
-    if (((rxmsg.buf[0] & DEVICE_MASK) >> 6) == 0x00 ) {
-      returns = true;
-      returndata.data[0] = rxmsg.buf[0];
-      switch ((rxmsg.buf[0] & COMMAN_MASK)) {
+    if (Device== 0x00 ) {
+      switch (com) {
         case 0x00:
           returndata.data[1] = THIS_ID;
           returndata.len = 2;

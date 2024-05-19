@@ -10,6 +10,7 @@
 // ******************************************************************************
 #include <FlexCAN_T4.h>
 #include <PWMServo.h>
+#include "CanQueue.h"
 
 
 #define CANDEBUG  if(can_debug)
@@ -20,10 +21,10 @@
 #define TOFSerial     Serial2
 #define PYTHONSerial  SerialUSB1
 bool pythonusb = false;
-bool Data_Read(int &return_val);
-void Data_Send(int value);
+bool Data_Read();
+bool Data_Send();
 bool Usb_Read();
-void Uab_Send(int value);
+void Usb_Send();
 
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> Can0;
 CANListener listener;
@@ -40,7 +41,8 @@ CANListener listener;
 bool can_debug = false;
 static CAN_message_t rxmsg, txmsg;
 bool Can_Read();
-void Can_Send(int value);
+void Can_Send();
+DataQueue Queue(50);
 
 
 #define TOF_HEADER  0x59
@@ -89,12 +91,14 @@ void setup()
 
   memset(buffer, 0, sizeof(buffer));
 
-  Focus.attach(1);
-  Zoom.attach(0);
   focus_pos = focus_table[0];
   zoom_pos = zoom_table[0];
   Focus.write(focus_pos);
   Zoom.write(zoom_pos);
+  Focus.attach(1);
+  Zoom.attach(0);
+  
+  
   DEBUGSerial.println("Optical Run");
 }
 
@@ -122,18 +126,16 @@ void loop()
   CAMDEBUG DEBUGSerial.printf("Dist : %d, F : %d, Z : %d\n", dist, Focus.read(), Zoom.read());
 
   PYUSB {
-    if (Usb_Read() == false) {
-      Usb_Send(FAILED);
-    }
+    Usb_Read();
+    Usb_Send();
   }
   else {
-    if (Can_Read() == false) {
-      Can_Send(FAILED);
-    }
+    Can_Read();
+    Can_Send();
   }
 }
 
-bool Data_Read(int &return_val) {
+bool Data_Read() {
   CANDEBUG {
   DEBUGSerial.println("---------------------------rx");
   DEBUGSerial.printf("%02X", rxmsg.id);
@@ -142,142 +144,161 @@ bool Data_Read(int &return_val) {
   DEBUGSerial.printf(" | time:%d \n\r", millis());
   }
 
-  if (rxmsg.len == 3) {
-    /* Read Mode */
-    if (((rxmsg.buf[0] & MODE_MASK) >> 7) == 0x00 ) {
-      /* TOF */
-      if (((rxmsg.buf[0] & DEVICE_MASK) >> 6) == 0x00 ) {
+  DataItem item;
+  item.data[0] = rxmsg.buf[0];
+  item.len = 5;
 
-        if ((rxmsg.buf[0] & COMMAN_MASK) == 0x00 ) {
-          if (rxmsg.buf[1] != 0) return false;
-          return_val = THIS_ID;
-          CANDEBUG DEBUGSerial.printf("THIS IS %d, %02X\n",return_val ,return_val); // ACK
-        }
-        else if ((rxmsg.buf[0] & COMMAN_MASK) == 0x01 ) {             // Read Tof distance
-          return_val = dist;
-          CANDEBUG DEBUGSerial.printf("Read Tof distance %d, %02X\n",return_val ,return_val);
-        }
-        else if ((rxmsg.buf[0] & COMMAN_MASK) == 0x02 ) {        // Read Tof Strength
-          return_val = strength;
-          CANDEBUG DEBUGSerial.printf("Read Tof Strength %d, %02X\n",return_val ,return_val);
-        }
-      }
-      /* Camera */
-      else {
-        if ((rxmsg.buf[0] & COMMAN_MASK) == ZOOM_TABLE ) {      // Read zoom table
-          if (rxmsg.buf[1] > 9) return false;
-          return_val = zoom_table[rxmsg.buf[1]];
-          CANDEBUG DEBUGSerial.printf("Read zoom table [%d] %d, %02X\n",rxmsg.buf[1], return_val ,return_val);
-        }
-        else if ((rxmsg.buf[0] & COMMAN_MASK) == FOCUS_TABLE ) {// Read focus table
-          if (rxmsg.buf[1] > 9) return false;
-          return_val = focus_table[rxmsg.buf[1]];
-          CANDEBUG DEBUGSerial.printf("Read focus table [%d] %d, %02X\n",rxmsg.buf[1], return_val ,return_val);
-        }
-        else if ((rxmsg.buf[0] & COMMAN_MASK) == FOCUS_TABLE ) { // Read zoom
-          return_val = strength;
-          CANDEBUG DEBUGSerial.printf("Read zoom %d, %02X\n",return_val ,return_val);
-        }
-        else if ((rxmsg.buf[0] & COMMAN_MASK) == FOCUS_TABLE ) { // Read focus
-          return_val = strength;
-          CANDEBUG DEBUGSerial.printf("Read focus %d, %02X\n",return_val ,return_val);
-        }
-      }
-    }
-    /* Use Mode */
-    else {
-      /* TOF */
-      if (((rxmsg.buf[0] & DEVICE_MASK) >> 6) == 0x00 ) {
-        if ((rxmsg.buf[0] & COMMAN_MASK) == 0x01 ) {            // auto Tof off
-          TOF_mode = false;
-          return_val = 0;
-          CANDEBUG DEBUGSerial.printf("auto Tof off %d, %02X\n",return_val ,return_val);
-        }
-        if ((rxmsg.buf[0] & COMMAN_MASK) == 0x02 ) {            // auto Tof on
-          TOF_mode = true;
-          return_val = 1;
-          CANDEBUG DEBUGSerial.printf("auto Tof off %d, %02X\n",return_val ,return_val);
-        }
-      }
-      /* Camera */
-      else { 
-        if ((rxmsg.buf[0] & COMMAN_MASK) == 0x01 ) {            // focus fixed
-          if (rxmsg.buf[1] > 9) return false;
-          zoom_pos = zoom_table[rxmsg.buf[1]];
-          focus_pos = focus_table[rxmsg.buf[1]];
-          focus_mode = false;
-          return_val = zoom_pos + focus_pos;
-          CANDEBUG DEBUGSerial.printf("focus fixed %d, %02X\n",return_val ,return_val);
-        }
-        if ((rxmsg.buf[0] & COMMAN_MASK) == 0x02 ) {            // focus auto
-          focus_mode = true;
-          return_val = 0;
-          CANDEBUG DEBUGSerial.printf("focus auto %d, %02X\n",return_val ,return_val);
-        }
-      }
-    }
-  }
-  /* Write Mode */
-  else if (rxmsg.len == 4) {
+  uint8_t Mode = ((rxmsg.buf[0] & MODE_MASK) >> 7);
+  uint8_t Device = ((rxmsg.buf[0] & DEVICE_MASK) >> 6);
+  uint8_t com = (rxmsg.buf[0] & COMMAN_MASK);
+
+  if (rxmsg.buf[0] == 0xFF) Serial2.println("dag");
+
+  /* Read Mode */
+  if (Mode == 0x00 ) {
     /* TOF */
-    if (((rxmsg.buf[0] & DEVICE_MASK) >> 6) == 0x00 ) {
-      if ((rxmsg.buf[0] & COMMAN_MASK) == 0x01 ) {              // Set tof_delay
-        TOF_delay = rxmsg.buf[2] * 10;
-        return_val = TOF_delay;
-        CANDEBUG DEBUGSerial.printf("Set tof_delay %d, %02X\n",return_val ,return_val);
+    if (Device == 0x00 ) {
+      switch (com) {
+      case 0x00 :
+        if (rxmsg.buf[1] != 0) return false;
+        item.data[1] = THIS_ID;
+        item.len = 2;
+        CANDEBUG DEBUGSerial.printf("THIS IS %d, %02X\n",THIS_ID ,THIS_ID); // ACK
+      break;
+      case 0x01:             // Read Tof distance
+        memcpy(&item.data[1], &dist, 4);
+        CANDEBUG DEBUGSerial.printf("Read Tof distance %d, %02X\n",dist ,dist);
+      break;
+      case 0x02:        // Read Tof Strength
+        memcpy(&item.data[1], &strength, 4);
+        CANDEBUG DEBUGSerial.printf("Read Tof Strength %d, %02X\n",strength ,strength);
+      break;
+      case 0x03:        // Read Tof Delay
+      int de = (int)TOF_delay;
+        memcpy(&item.data[1], &de, 4);
+        CANDEBUG DEBUGSerial.printf("Read Tof Tof %d, %02X\n",TOF_delay ,TOF_delay);
       }
     }
     /* Camera */
     else {
-      if ((rxmsg.buf[0] & COMMAN_MASK) == ZOOM_TABLE ) {        // Set zoom table
+      int num;
+      switch (com) {
+      case 0x01:     // Read zoom table
+        if (rxmsg.buf[1] > 9) return false;
+        num = zoom_table[rxmsg.buf[1]];
+        item.data[1] = rxmsg.buf[1];
+        memcpy(&item.data[2], &num, 4);
+        CANDEBUG DEBUGSerial.printf("Read zoom table [%d] %d, %02X\n",rxmsg.buf[1], num ,num);
+      break;
+      case 0x02:      // Read focus table
+        if (rxmsg.buf[1] > 9) return false;
+        num = focus_table[rxmsg.buf[1]];
+        item.data[1] = rxmsg.buf[1];
+        memcpy(&item.data[2], &num, 4);
+        CANDEBUG DEBUGSerial.printf("Read focus table [%d] %d, %02X\n",rxmsg.buf[1], num ,num);
+      break;
+      case 0x03:   // Read zoom
+        num = Zoom.read();
+        memcpy(&item.data[1], &num, 4);
+        CANDEBUG DEBUGSerial.printf("Read zoom %d, %02X\n",Zoom.read() ,Zoom.read());
+      break;
+      case 0x04:    // Read focus
+        num = Focus.read();
+        memcpy(&item.data[1], &num, 4);
+        CANDEBUG DEBUGSerial.printf("Read focus %d, %02X\n",Focus.read() ,Focus.read());
+      break;
+      }
+    }
+    Queue.push(item);
+  }
+  /* Write Mode */
+  else {
+    /* TOF */
+    if (Device == 0x00 ) {
+      switch (com) {
+      case 0x03:             // Set tof_delay
+        TOF_delay = (int)rxmsg.buf[1] * 10 + 10;
+        CANDEBUG DEBUGSerial.printf("Set tof_delay %d, %02X\n",TOF_delay ,TOF_delay);
+      break;
+      case 0x02:            // auto Tof off
+        TOF_mode = false;
+        CANDEBUG DEBUGSerial.printf("auto Tof off %d, %02X\n",TOF_mode ,TOF_mode);
+      break;
+      case 0x01:            // auto Tof on
+        TOF_mode = true;
+        CANDEBUG DEBUGSerial.printf("auto Tof off %d, %02X\n",TOF_mode ,TOF_mode);
+      break;
+      }
+    }
+    /* Camera */
+    else { 
+      int8_t offset_ = 0;
+      switch (com) {
+      case 0x01:       // Set zoom table
         if (rxmsg.buf[1] > 9) return false;
         if (rxmsg.buf[2] < ZOOM_MIN || rxmsg.buf[2] > ZOOM_MAX) return false;
         zoom_table[rxmsg.buf[1]] = rxmsg.buf[2];
-        return_val = zoom_table[rxmsg.buf[1]];
-        CANDEBUG DEBUGSerial.printf("Set zoom table [%d] %d, %02X\n",rxmsg.buf[1], return_val ,return_val);
-      }
-      else if ((rxmsg.buf[0] & COMMAN_MASK) == FOCUS_TABLE ) {  // Set focus table
+        CANDEBUG DEBUGSerial.printf("Set zoom table [%d] %d, %02X\n",rxmsg.buf[1], rxmsg.buf[2] ,rxmsg.buf[2]);
+      break;
+      case 0x02:  // Set focus table
         if (rxmsg.buf[1] > 9) return false;
         if (rxmsg.buf[2] < FOCUS_MIN || rxmsg.buf[2] > FOCUS_MAX) return false;
         zoom_table[rxmsg.buf[1]] = rxmsg.buf[2];
-        return_val = zoom_table[rxmsg.buf[1]];
-        CANDEBUG DEBUGSerial.printf("Set focus table [%d] %d, %02X\n",rxmsg.buf[1], return_val ,return_val);
-      }
-      else if ((rxmsg.buf[0] & COMMAN_MASK) == ZOOM_CURRENT ) { // Set zoom
+        CANDEBUG DEBUGSerial.printf("Set focus table [%d] %d, %02X\n",rxmsg.buf[1], rxmsg.buf[2] ,rxmsg.buf[2]);
+      break;
+      case 0x03: // Set zoom
         if (rxmsg.buf[2] < ZOOM_MIN || rxmsg.buf[2] > ZOOM_MAX) return false;
         focus_mode = false;
         zoom_pos = rxmsg.buf[2];
-        return_val = zoom_pos;
-        CANDEBUG DEBUGSerial.printf("Set zoom %d, %02X\n",return_val ,return_val);
-      }
-      else if ((rxmsg.buf[0] & COMMAN_MASK) == FOCUS_CURRENT ) {  // Set focus
+        CANDEBUG DEBUGSerial.printf("Set zoom %d, %02X\n",zoom_pos ,zoom_pos);
+      break;
+      case 0x04:  // Set focus
         if (rxmsg.buf[2] < FOCUS_MIN || rxmsg.buf[2] > FOCUS_MAX) return false;
         focus_mode = false;
         focus_pos = rxmsg.buf[2];
-        return_val = focus_pos;
-        CANDEBUG DEBUGSerial.printf("Set focus %d, %02X\n",return_val ,return_val);
+        CANDEBUG DEBUGSerial.printf("Set focus %d, %02X\n",focus_pos ,focus_pos);
+      break;
+      case 0x05:
+        memcpy(&offset_, &rxmsg.buf[2], 1);
+        zoom_offset = offset_;
+        CANDEBUG DEBUGSerial.printf("Set zoom offset %d, %02X\n",zoom_offset ,zoom_offset);
+      break;
+      case 0x06:
+        memcpy(&offset_, &rxmsg.buf[2], 1);
+        focus_offset = offset_;
+        CANDEBUG DEBUGSerial.printf("Set focus offset %d, %02X\n",focus_offset ,focus_offset);
+      break;
+      case 0x07:            // focus fixed
+        if (rxmsg.buf[1] > 9) return false;
+        zoom_pos = zoom_table[rxmsg.buf[1]];
+        focus_pos = focus_table[rxmsg.buf[1]];
+        focus_mode = false;
+        CANDEBUG DEBUGSerial.printf("focus fixed %d, %02X\n",focus_mode ,focus_mode);
+      break;
+      case 0x08:            // focus auto
+        focus_mode = true;
+        CANDEBUG DEBUGSerial.printf("focus auto %d, %02X\n",focus_mode ,focus_mode);
+      break;
       }
     }
   }
-  // else if (rxmsg.len == 11) {
-  //   if (rxmsg.buf[0] > 9) return false;
-  //   uint8_t buffer[9] = {0,};
-  //   memcpy(buffer,&rxmsg.buf[1],rxmsg.buf[0]);
-  //   TOF_Send(rxmsg.buf[0], buffer);
-  // }
-  
    CANDEBUG DEBUGSerial.println("---------------------------rx_");
   return true;
 }
 
-void Data_Send(int value) {
+bool Data_Send() {
+  DataItem item;
+  if (!Queue.pop(item)) return false;
+  
   CANDEBUG DEBUGSerial.println("---------------------------tx");
-  txmsg.len = 5;
-  memcpy(txmsg.buf, &value, 4);
-  txmsg.buf[4] = (txmsg.id + txmsg.buf[0] + txmsg.buf[1] + txmsg.buf[2] + txmsg.buf[3]) & 0xFF;
+  txmsg.len = item.len;
+  memset(txmsg.buf,0,8);
+  memcpy(txmsg.buf, &item.data, txmsg.len);
   CANDEBUG DEBUGSerial.printf("CAN DATA FORMAT: ");
-  CANDEBUG DEBUGSerial.printf("%02X %02X %02X %02X %02X %02X\n", txmsg.id, txmsg.buf[0],  txmsg.buf[1], txmsg.buf[2], txmsg.buf[3], txmsg.buf[4]);
+  CANDEBUG DEBUGSerial.printf("%02X :  %02X %02X %02X %02X %02X %02X %02X %02X\n", 
+    txmsg.id, txmsg.buf[0],  txmsg.buf[1], txmsg.buf[2], txmsg.buf[3], txmsg.buf[4], txmsg.buf[5], txmsg.buf[6], txmsg.buf[7]);
   CANDEBUG DEBUGSerial.println("---------------------------tx_");
+  return true;
 }
 
 bool Usb_Read() {
@@ -292,37 +313,36 @@ bool Usb_Read() {
   rxmsg.len = (uint8_t)len;
   PYTHONSerial.readBytes(rxmsg.buf, (int)rxmsg.len);
 
-  int return_val;
-  bool returns = Data_Read(return_val);
+  bool returns = Data_Read();
 
-  if(returns) Usb_Send(return_val);
   return returns;
 }
 
-void Usb_Send(int value) {
-  Data_Send(value);
-  uint8_t buffer[7];
+void Usb_Send() {
+  if(!Data_Send()) return;
+  uint8_t buffer[10] = {0,};
   buffer[0] = THIS_ID;
-  buffer[1] = 5;
-  memcpy(&buffer[2], txmsg.buf, 5);
+  buffer[1] = txmsg.len;
+  memcpy(&buffer[2], txmsg.buf, txmsg.len);
 
-  PYTHONSerial.write(buffer,sizeof(buffer));
+  CANDEBUG DEBUGSerial.printf("%02X %02X :  %02X %02X %02X %02X %02X %02X %02X %02X\n", 
+    buffer[0], buffer[1], buffer[2], buffer[3], buffer[4],buffer[5],buffer[6],buffer[7],buffer[8],buffer[9]);
+
+  PYTHONSerial.write(buffer,txmsg.len+2);
+  return;
 }
 
 bool Can_Read() {
   if (!Can0.read(rxmsg))    return true;
   if (rxmsg.id != THIS_ID)  return true;
 
-  int return_val;
-  bool returns = Data_Read(return_val);
-
-  if(returns) Can_Send(return_val);
+  bool returns = Data_Read();
   return returns;
 }
 
-void Can_Send(int value) {
-  Data_Send(value);
-  Can0.write(txmsg);
+void Can_Send() {
+  if (Data_Send())
+    Can0.write(txmsg);
   return;
 }
 
@@ -375,8 +395,11 @@ void TOF_Read() {
 }
 
 void Dist_Send() {
-  PYUSB Usb_Send(dist);
-  else Can_Send(dist);
+  DataItem item;
+  item.len = 5;
+  item.data[0] = 0x01;
+  memcpy(&item.data[1], &dist,5);
+  Queue.push(item);
   return;
 }
 
