@@ -1,8 +1,18 @@
 import serial
-import time
 from dataclasses import dataclass
 import time
 import struct
+import signal
+
+Sentry = True
+
+def SignalHandler_SIGINT(SignalNumber,Frame):
+    print('Ctrl+C Pheripheral Reset')
+    print(f'Signal Number -> {SignalNumber} Frame -> {Frame}')
+    global Sentry
+    Sentry = False
+
+signal.signal(signal.SIGINT,SignalHandler_SIGINT)
 
 class Gun:
     def __init__(self):
@@ -180,6 +190,10 @@ class Gun:
         self.ack = False
         packet = [self.__gun_ID, 0x01, 0x00]
         return bytearray(packet)
+    
+    def Reset(self):
+        packet = [self.__gun_ID, 0x01, 0xFF]
+        return bytearray(packet)
        
        
         
@@ -239,8 +253,14 @@ if __name__=="__main__":
     SendData.append(gun.ReadAHRS("q")) # 전송 목록에 데이터 추가 (bytearray)
     Write(teensy)                       # 전송 데이터 모두 처리
     
-    while(True):
+    while(Sentry):
         packet = Read(teensy)
         gun.CheckPacket(packet)
+        
     
+    print('Out of the while loop')
+    print('Clean up Here')
+    
+    SendData.append(gun.Reset())
+    Write(teensy)  
     

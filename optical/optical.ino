@@ -11,6 +11,8 @@
 #include <FlexCAN_T4.h>
 #include <PWMServo.h>
 #include "CanQueue.h"
+#include "Watchdog_t4.h"
+
 
 
 #define CANDEBUG  if(can_debug)
@@ -20,6 +22,12 @@
 #define DEBUGSerial   Serial
 #define TOFSerial     Serial2
 #define PYTHONSerial  SerialUSB1
+
+WDT_T4<WDT1> wdt;
+void myCallback() {
+  DEBUGSerial.println("FEED THE DOG SOON, OR RESET!");
+}
+
 bool pythonusb = false;
 bool Data_Read();
 bool Data_Send();
@@ -75,10 +83,16 @@ void Auto_Focus(int Z, int dis);
 
 void setup() 
 {
+  WDT_timings_t config;
+  config.trigger = 2;
+  config.timeout = 3;
+  config.callback = myCallback;
+  wdt.begin(config);
+
   DEBUGSerial.begin(115200);
   TOFSerial.begin(115200);
   PYTHONSerial.begin(250000);
-  delay(1000);
+  delay(100);
 
   Can0.begin();
   Can0.setBaudRate(500000);
@@ -100,10 +114,12 @@ void setup()
   
   
   DEBUGSerial.println("Optical Run");
+  delay(100);
 }
 
 void loop() 
 {
+  wdt.feed();
   TOF_Read();
 
   if (millis() - TOF_timer >= TOF_delay && TOF_mode) {
@@ -123,7 +139,7 @@ void loop()
     PYUSB DEBUGSerial.println("start");
   }
 
-  CAMDEBUG DEBUGSerial.printf("Dist : %d, F : %d, Z : %d\n", dist, Focus.read(), Zoom.read());
+  CAMDEBUG DEBUGSerial.printf("LIDAR::Dist : %d, F : %d, Z : %d\n", dist, Focus.read(), Zoom.read());
 
   PYUSB {
     Usb_Read();
@@ -152,8 +168,10 @@ bool Data_Read() {
   uint8_t Device = ((rxmsg.buf[0] & DEVICE_MASK) >> 6);
   uint8_t com = (rxmsg.buf[0] & COMMAN_MASK);
 
-  if (rxmsg.buf[0] == 0xFF) Serial2.println("dag");
-
+  if (rxmsg.buf[0] == 0xFF) {
+    DEBUGSerial.println("System::System Restart...");
+    while(1) {}
+  }
   /* Read Mode */
   if (Mode == 0x00 ) {
     /* TOF */

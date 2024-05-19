@@ -1,5 +1,4 @@
 import serial
-import time
 from dataclasses import dataclass
 import time
 import struct
@@ -14,8 +13,6 @@ def SignalHandler_SIGINT(SignalNumber,Frame):
     Sentry = False
 
 signal.signal(signal.SIGINT,SignalHandler_SIGINT)
-
-
 
 
 class Optical:

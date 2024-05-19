@@ -1,6 +1,7 @@
 #include <FlexCAN_T4.h>
 #include "PWMServo.h"
 #include "AHRS.h"
+#include "Watchdog_t4.h"
 
 #define CANDEBUG  if(can_debug)
 #define GUNDEBUG  if(gun_debug)
@@ -9,6 +10,12 @@
 #define DEBUGSerial Serial
 #define AHRSSerial Serial2
 #define PYTHONSerial  SerialUSB1
+
+WDT_T4<WDT1> wdt;
+void myCallback() {
+  DEBUGSerial.println("FEED THE DOG SOON, OR RESET!");
+}
+
 bool pythonusb = false;
 bool Data_Read();
 bool Data_Send();
@@ -46,7 +53,12 @@ AHRS ahrs(&AHRSSerial);
 bool ahrs_debug = false;
 
 void setup() {
-  // put your setup code here, to run once:
+  WDT_timings_t config;
+  config.trigger = 2;
+  config.timeout = 3;
+  config.callback = myCallback;
+  wdt.begin(config);
+
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
   trigger.attach(TRIGGER_PIN);
@@ -68,11 +80,14 @@ void setup() {
 
   ahrs.SetDataQueue(&CanSendQueue);
   AHRSSerial.begin(921600);
-  delay(1000);
+
+  DEBUGSerial.println("Gun Run");
+  delay(100);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  wdt.feed();
+  
   if (DEBUGSerial.available()) {
     String com = DEBUGSerial.readString();
     com.trim();
@@ -144,11 +159,16 @@ bool Data_Read() {
   }
   bool returns = true;
   DataItem returndata;
-  returns.buf[0] = rxmsg.buf[0];
+  returndata.data[0] = rxmsg.buf[0];
 
   uint8_t Mode = ((rxmsg.buf[0] & MODE_MASK) >> 7);
   uint8_t Device = ((rxmsg.buf[0] & DEVICE_MASK) >> 6);
   uint8_t com = (rxmsg.buf[0] & COMMAN_MASK);
+
+  if (rxmsg.buf[0] == 0xFF) {
+    DEBUGSerial.println("System::System Restart...");
+    while(1) {}
+  }
 
   /* Write mode */
   if (Mode == 0x01 ) {
