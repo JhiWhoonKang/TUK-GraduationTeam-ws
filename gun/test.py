@@ -12,10 +12,11 @@ def SignalHandler_SIGINT(SignalNumber,Frame):
 
 signal.signal(signal.SIGINT,SignalHandler_SIGINT) #register the signal handler
 
-while Sentry:
-    print('Long continous event Eg,Read from sensor,Press CTRL+C to exit')
-    time.sleep(1)
+# while Sentry:
+#     print('Long continous event Eg,Read from sensor,Press CTRL+C to exit')
+#     time.sleep(1)
 
 print('Out of the while loop')
 
 print('Clean up Here')
+

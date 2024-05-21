@@ -109,9 +109,9 @@ class Gun:
             
     def CheckPacket(self, data):
         if ((data[0] & self.__DEVICEMASK) >> 6) == 0x00:     # 장치
-            self.__DeviceData(data[2])
+            self.__DeviceData(data)
         elif ((data[0] & self.__DEVICEMASK) >> 6) == 0x01:     # AHRS
-            self.__AHRSData(data[2])
+            self.__AHRSData(data)
             
     
     def __CHECKACK(self):
@@ -144,7 +144,7 @@ class Gun:
         packet = list()
         if data=="ready":
             packet = [self.__gun_ID, 1, 0x17]
-        elif data=="fire": # on
+        elif data=="fire" or "on": # on
             packet = [self.__gun_ID, 1, 0x16]
         elif data=="open":
             packet = [self.__gun_ID, 1, 0x14]
@@ -182,7 +182,7 @@ class Gun:
             packet = [self.__gun_ID, 1, self.WRITE+self.DEVICE+0x11]
         elif data == "ready":
             packet = [self.__gun_ID, 1, self.WRITE+self.DEVICE+0x12]
-        elif data == "fire": # on
+        elif data == "fire" or "on":
             packet = [self.__gun_ID, 1, self.WRITE+self.DEVICE+0x13]
         else:
             packet = [0,0,0]
@@ -256,13 +256,9 @@ class Gun:
                 self.CheckPacket(packet)
                 if self.ack == True:
                     break
-        
-            
-       
-       
+        packet = self.SetTriggerDegree("on", 55)
         
 
-        
 
         
 if __name__=="__main__":
