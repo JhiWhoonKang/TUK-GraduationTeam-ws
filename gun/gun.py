@@ -5,7 +5,6 @@ import struct
 import signal
 
 
-
 class Gun:
     def __init__(self):
         self.__gun_ID = 0x07
