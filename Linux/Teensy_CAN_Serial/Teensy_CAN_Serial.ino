@@ -8,9 +8,14 @@
 // CAN ID 4 = Optical TILT
 // CAN ID 5 = Weapon
 // ******************************************************************************
-
+#include "RFSerial.h"
 #include <FlexCAN_T4.h>
-#define DEBUGSerial SerialUSB1
+
+#define PCSerial Serial
+#define DEBUGSerial SerialUSB
+#define RFSerial Serial2
+
+#define DEBUG if(debug)
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> Can0;
 CANListener listener;
 
@@ -21,13 +26,24 @@ uint8_t PACKET[PACKET_SIZE];
 int PACKET_INDEX = 0;
 bool canflag = true;
 
+bool debug = true;
+bool rfdebug = false;
+bool teensydebug = false;
+
+RF rf(&RFSerial, 1000, 500);
+
+void DebugSetting();
+
 void setup()
 {
-  Serial.begin(115200);
-  Serial.setTimeout(1);
+  RFSerial.begin(115200); //laser와 RCWS간 서로 통신
+  RFSerial.setTimeout(2);
+
+  PCSerial.begin(115200);
+  PCSerial.setTimeout(1);
   DEBUGSerial.begin(115200);
   DEBUGSerial.setTimeout(1);
-  delay(1000);
+  delay(100);
 
   Can0.begin();
   Can0.setBaudRate(500000);
@@ -36,60 +52,41 @@ void setup()
 
   txmsg.id = 1;
   txmsg.len = 5;
-  txmsg.buf[0] = 00;
-  txmsg.buf[1] = 00;
-  txmsg.buf[2] = 00;
-  txmsg.buf[3] = 00;
-  txmsg.buf[4] = 00;
-  txmsg.buf[5] = 00;
-  txmsg.buf[6] = 00;
-  txmsg.buf[7] = 00;
-}
-
-bool sendCANMessage(CAN_message_t &message, unsigned long timeoutMillis = 100)
-{
-  unsigned long startTime = millis();
-  while (!Can0.write(message))
-  {
-    if (millis() - startTime > timeoutMillis)
-    {
-      return false;
-    }
-  }
-  return true;
+  memset(txmsg.buf, 0, 8);
 }
 
 void loop()
 {
+  DebugSetting();
+  rf.RFhandler(500);
+
   memset(PACKET, 0, sizeof(PACKET));
   PACKET_INDEX = 0;
-  while (Serial.available() > 0 && PACKET_INDEX < PACKET_SIZE)
+  while (PCSerial.available() > 0 && PACKET_INDEX < PACKET_SIZE)
   {
-    PACKET[PACKET_INDEX++] = Serial.read();
+    PACKET[PACKET_INDEX++] = PCSerial.read();
   }
  
   if(PACKET_INDEX > 0)
   {    
     if(PACKET[0] == 1)
     {
-     
+      
     }
    
     if(PACKET[0] == 2)
     {
-     
+      rf.SendUpdate(&PACKET[2]);
     }
 
     else
     {
       txmsg.id = PACKET[0];
-      //txmsg.len = PACKET[1];
-      for (int i = 0; i < 5/*txmsg.len*/; ++i)
-      {
-        txmsg.buf[i] = PACKET[i+2];
-      }
-      DEBUGSerial.printf("Read : %d %d %d %d %d %d %d %d %d\n",
-   txmsg.id, txmsg.buf[0], txmsg.buf[1], txmsg.buf[2], txmsg.buf[3], txmsg.buf[4], txmsg.buf[5], txmsg.buf[6], txmsg.buf[7]);
+      txmsg.len = PACKET[1];
+      memcpy(txmsg.buf, &PACKET[2], txmsg.len);
+      DEBUG DEBUGSerial.printf("CAN::Read : %d %d %d %d %d %d %d %d %d\n",
+        txmsg.id, txmsg.buf[0], txmsg.buf[1], txmsg.buf[2], txmsg.buf[3], 
+        txmsg.buf[4], txmsg.buf[5], txmsg.buf[6], txmsg.buf[7]);
 
       Can0.write(txmsg);
     }
@@ -103,9 +100,36 @@ void loop()
     {
       message[i + 2] = rxmsg.buf[i];
     }
-    //DEBUGSerial.printf("Send : %d %d %d %d %d %d %d %d %d %d\n",
-   //rxmsg.id, rxmsg.len, rxmsg.buf[0], rxmsg.buf[1], rxmsg.buf[2], rxmsg.buf[3], rxmsg.buf[4], rxmsg.buf[5], rxmsg.buf[6], rxmsg.buf[7]);
+    DEBUG DEBUGSerial.printf("CAN::Send : %d %d %d %d %d %d %d %d %d\n",
+      rxmsg.id, rxmsg.buf[0], rxmsg.buf[1], rxmsg.buf[2], rxmsg.buf[3],
+      rxmsg.buf[4], rxmsg.buf[5], rxmsg.buf[6], rxmsg.buf[7]);
 
-    Serial.write(message, rxmsg.len + 2);
+    PCSerial.write(message, rxmsg.len + 2);
+  }
+
+  uint8_t PACKET[RECVBUFSIZE];
+  if (rf.Readupdate(&PACKET[2])) {
+    PACKET[0] = 0x02;
+    PACKET[1] = 0x08;
+    PCSerial.write(PACKET, 10);
+  }
+}
+
+void DebugSetting() {
+  if (! DEBUGSerial.available()) return;
+  String com = DEBUGSerial.readString();
+  com.trim();
+  DEBUGSerial.println(com);
+  if (com == "can") {
+    debug = !debug;
+    DEBUGSerial.printf("CAN::Debug %d\n",debug);
+  }
+  else if (com == "rf") {
+    rfdebug = !rfdebug;
+    if (rfdebug) rf.SetDebug(&DEBUGSerial);
+    else  rf.ResetDebug();
+  }
+  else if (com == "teensy") {
+    teensydebug = !teensydebug;
   }
 }
