@@ -56,11 +56,12 @@ void RF::Communication(int sendrate) {
     timeouttimer = millis();
 
     RFSerial->readBytes(recvbuf, RECVBUFSIZE);
-    SerialReadByte(recvbuf, RECVBUFSIZE);
+    //SerialReadByte(recvbuf, RECVBUFSIZE);
 
     if (recvbuf[0] == CHECK && recvbuf[RECVBUFSIZE-1] == CHECK)
     {
       memcpy(&recivedata, &recvbuf[1], RECVBUFSIZE-2);
+      readready = true;
     }
     else {
       RFconnected = 2;

@@ -11,8 +11,8 @@
 #include "RFSerial.h"
 #include <FlexCAN_T4.h>
 
-#define PCSerial Serial
-#define DEBUGSerial SerialUSB
+#define PCSerial SerialUSB1
+#define DEBUGSerial Serial
 #define RFSerial Serial2
 
 #define DEBUG if(debug)
@@ -24,9 +24,8 @@ static CAN_message_t rxmsg, txmsg;
 const int PACKET_SIZE = 10;
 uint8_t PACKET[PACKET_SIZE];
 int PACKET_INDEX = 0;
-bool canflag = true;
 
-bool debug = true;
+bool debug = false;
 bool rfdebug = false;
 bool teensydebug = false;
 
@@ -39,7 +38,7 @@ void setup()
   RFSerial.begin(115200); //laser와 RCWS간 서로 통신
   RFSerial.setTimeout(2);
 
-  PCSerial.begin(115200);
+  PCSerial.begin(500000);
   PCSerial.setTimeout(1);
   DEBUGSerial.begin(115200);
   DEBUGSerial.setTimeout(1);
@@ -84,7 +83,7 @@ void loop()
       txmsg.id = PACKET[0];
       txmsg.len = PACKET[1];
       memcpy(txmsg.buf, &PACKET[2], txmsg.len);
-      DEBUG DEBUGSerial.printf("CAN::Read : %d %d %d %d %d %d %d %d %d\n",
+      DEBUG DEBUGSerial.printf("CAN::Read : %x [%x %x %x %x %x %x %x %x]\n",
         txmsg.id, txmsg.buf[0], txmsg.buf[1], txmsg.buf[2], txmsg.buf[3], 
         txmsg.buf[4], txmsg.buf[5], txmsg.buf[6], txmsg.buf[7]);
 
@@ -100,7 +99,7 @@ void loop()
     {
       message[i + 2] = rxmsg.buf[i];
     }
-    DEBUG DEBUGSerial.printf("CAN::Send : %d %d %d %d %d %d %d %d %d\n",
+    DEBUG DEBUGSerial.printf("CAN::Send : %x [%x %x %x %x %x %x %x %x]\n",
       rxmsg.id, rxmsg.buf[0], rxmsg.buf[1], rxmsg.buf[2], rxmsg.buf[3],
       rxmsg.buf[4], rxmsg.buf[5], rxmsg.buf[6], rxmsg.buf[7]);
 
@@ -109,9 +108,13 @@ void loop()
 
   uint8_t PACKET[RECVBUFSIZE];
   if (rf.Readupdate(&PACKET[2])) {
+    
     PACKET[0] = 0x02;
     PACKET[1] = 0x08;
     PCSerial.write(PACKET, 10);
+    DEBUG DEBUGSerial.printf("CAN::Send : %x [%x %x %x %x %x %x %x %x]\n",
+      PACKET[0], PACKET[2], PACKET[3], PACKET[4], PACKET[5],
+      PACKET[6], PACKET[7], PACKET[8], PACKET[9]);
   }
 }
 
