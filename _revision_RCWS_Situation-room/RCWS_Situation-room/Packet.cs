@@ -30,12 +30,5 @@ namespace RCWS_Situation_room
             public byte FIRE;
             public byte MODE;
         }
-
-        public struct SEND_PACKET_UDP
-        {
-            public int Left_or_Right;
-            public int X;
-            public int Y;
-        }
     }
 }
