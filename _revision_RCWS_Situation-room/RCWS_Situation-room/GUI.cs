@@ -948,7 +948,7 @@ namespace RCWS_Situation_room
             int endXRCWS = rcws_center_X + (int)(lineLength * Math.Sin(radianAngleRCWS));
             int endYRCWS = rcws_center_Y - (int)(lineLength * Math.Cos(radianAngleRCWS));
 
-            double radianAngleWEAPON = -RECEIVED_DATA.WEAPON_TILT * Math.PI / 180.0 + 90;
+            double radianAngleWEAPON = (-RECEIVED_DATA.WEAPON_TILT) * Math.PI / 180.0 + 90.0;
             int endXWEAPON = weapon_center_X + (int)(lineLength * Math.Sin(radianAngleWEAPON));
             int endYWEAPON = weapon_center_Y - (int)(lineLength * Math.Cos(radianAngleWEAPON));
 

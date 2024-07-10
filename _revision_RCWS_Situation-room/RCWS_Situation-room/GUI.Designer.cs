@@ -47,6 +47,7 @@
             this.TB_OPTICAL_ELEVATION = new System.Windows.Forms.TextBox();
             this.BTN_PERMISSION = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.BTN_FIRE = new System.Windows.Forms.Button();
             this.BTN_TAKE_AIM = new System.Windows.Forms.Button();
@@ -56,6 +57,12 @@
             this.TB_DISTANCE = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.TB_SENTRY_AZIMUTH = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.TB_SENTRY_ELEVATION = new System.Windows.Forms.TextBox();
             this.BTN_DISCONNECT = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.suspectedEnemyActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,13 +75,6 @@
             this.addPinPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deletePinPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BTN_SETTING = new System.Windows.Forms.Button();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.TB_SENTRY_AZIMUTH = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.TB_SENTRY_ELEVATION = new System.Windows.Forms.TextBox();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.TIM_ALARM = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.PB_MAP)).BeginInit();
             this.pn_mapcontainer.SuspendLayout();
@@ -82,14 +82,14 @@
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox9.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PBL_VIDEO)).BeginInit();
-            this.groupBox6.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // PB_MAP
@@ -261,6 +261,18 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "RCWS Status";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.groupBox6.Controls.Add(this.BTN_PERMISSION);
+            this.groupBox6.ForeColor = System.Drawing.Color.White;
+            this.groupBox6.Location = new System.Drawing.Point(7, 29);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(118, 131);
+            this.groupBox6.TabIndex = 18;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Control Authority Status";
+            // 
             // groupBox4
             // 
             this.groupBox4.BackColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -352,6 +364,69 @@
             this.groupBox5.TabIndex = 17;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "AZEL";
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.groupBox9.Controls.Add(this.groupBox2);
+            this.groupBox9.Controls.Add(this.TB_RCWS_AZIMUTH);
+            this.groupBox9.Controls.Add(this.groupBox1);
+            this.groupBox9.Controls.Add(this.label1);
+            this.groupBox9.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.groupBox9.ForeColor = System.Drawing.Color.White;
+            this.groupBox9.Location = new System.Drawing.Point(6, 20);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(455, 67);
+            this.groupBox9.TabIndex = 27;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "RCWS";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.groupBox3.Controls.Add(this.TB_SENTRY_AZIMUTH);
+            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.label7);
+            this.groupBox3.Controls.Add(this.TB_SENTRY_ELEVATION);
+            this.groupBox3.ForeColor = System.Drawing.Color.White;
+            this.groupBox3.Location = new System.Drawing.Point(476, 20);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(295, 67);
+            this.groupBox3.TabIndex = 13;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Sentry";
+            // 
+            // TB_SENTRY_AZIMUTH
+            // 
+            this.TB_SENTRY_AZIMUTH.Location = new System.Drawing.Point(56, 29);
+            this.TB_SENTRY_AZIMUTH.Name = "TB_SENTRY_AZIMUTH";
+            this.TB_SENTRY_AZIMUTH.Size = new System.Drawing.Size(84, 21);
+            this.TB_SENTRY_AZIMUTH.TabIndex = 7;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 34);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(44, 12);
+            this.label6.TabIndex = 9;
+            this.label6.Text = "방위각";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(161, 34);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(31, 12);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "고각";
+            // 
+            // TB_SENTRY_ELEVATION
+            // 
+            this.TB_SENTRY_ELEVATION.Location = new System.Drawing.Point(198, 29);
+            this.TB_SENTRY_ELEVATION.Name = "TB_SENTRY_ELEVATION";
+            this.TB_SENTRY_ELEVATION.Size = new System.Drawing.Size(84, 21);
+            this.TB_SENTRY_ELEVATION.TabIndex = 8;
             // 
             // BTN_DISCONNECT
             // 
@@ -461,81 +536,6 @@
             this.BTN_SETTING.UseVisualStyleBackColor = true;
             this.BTN_SETTING.Click += new System.EventHandler(this.Setting_Click);
             // 
-            // groupBox6
-            // 
-            this.groupBox6.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.groupBox6.Controls.Add(this.BTN_PERMISSION);
-            this.groupBox6.ForeColor = System.Drawing.Color.White;
-            this.groupBox6.Location = new System.Drawing.Point(7, 29);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(118, 131);
-            this.groupBox6.TabIndex = 18;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Control Authority Status";
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.groupBox3.Controls.Add(this.TB_SENTRY_AZIMUTH);
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Controls.Add(this.TB_SENTRY_ELEVATION);
-            this.groupBox3.ForeColor = System.Drawing.Color.White;
-            this.groupBox3.Location = new System.Drawing.Point(476, 20);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(295, 67);
-            this.groupBox3.TabIndex = 13;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Sentry";
-            // 
-            // TB_SENTRY_AZIMUTH
-            // 
-            this.TB_SENTRY_AZIMUTH.Location = new System.Drawing.Point(56, 29);
-            this.TB_SENTRY_AZIMUTH.Name = "TB_SENTRY_AZIMUTH";
-            this.TB_SENTRY_AZIMUTH.Size = new System.Drawing.Size(84, 21);
-            this.TB_SENTRY_AZIMUTH.TabIndex = 7;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 34);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(44, 12);
-            this.label6.TabIndex = 9;
-            this.label6.Text = "방위각";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(161, 34);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(31, 12);
-            this.label7.TabIndex = 10;
-            this.label7.Text = "고각";
-            // 
-            // TB_SENTRY_ELEVATION
-            // 
-            this.TB_SENTRY_ELEVATION.Location = new System.Drawing.Point(198, 29);
-            this.TB_SENTRY_ELEVATION.Name = "TB_SENTRY_ELEVATION";
-            this.TB_SENTRY_ELEVATION.Size = new System.Drawing.Size(84, 21);
-            this.TB_SENTRY_ELEVATION.TabIndex = 8;
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.groupBox9.Controls.Add(this.groupBox2);
-            this.groupBox9.Controls.Add(this.TB_RCWS_AZIMUTH);
-            this.groupBox9.Controls.Add(this.groupBox1);
-            this.groupBox9.Controls.Add(this.label1);
-            this.groupBox9.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.groupBox9.ForeColor = System.Drawing.Color.White;
-            this.groupBox9.Location = new System.Drawing.Point(6, 20);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(455, 67);
-            this.groupBox9.TabIndex = 27;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "RCWS";
-            // 
             // TIM_ALARM
             // 
             this.TIM_ALARM.Tick += new System.EventHandler(this.ALARM_Tick);
@@ -575,18 +575,18 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox7.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.groupBox5.ResumeLayout(false);
-            this.contextMenuStrip1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.PBL_VIDEO)).EndInit();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.PBL_VIDEO)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
