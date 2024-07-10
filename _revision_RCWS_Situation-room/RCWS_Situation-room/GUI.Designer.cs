@@ -35,62 +35,61 @@
             this.pn_mapcontainer = new System.Windows.Forms.Panel();
             this.RTB_SEND_DISPLAY = new System.Windows.Forms.RichTextBox();
             this.RTB_RECEIVED_DISPLAY = new System.Windows.Forms.RichTextBox();
-            this.btn_RCWS_connect = new System.Windows.Forms.Button();
-            this.pictureBox_azimuth = new System.Windows.Forms.PictureBox();
-            this.tb_body_azimuth = new System.Windows.Forms.TextBox();
-            this.tb_body_elevation = new System.Windows.Forms.TextBox();
+            this.BTN_RCWS_CONNECT = new System.Windows.Forms.Button();
+            this.PB_AZIMUTH = new System.Windows.Forms.PictureBox();
+            this.TB_RCWS_AZIMUTH = new System.Windows.Forms.TextBox();
+            this.TB_WEAPON_ELEVATION = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.tb_optical_azimuth = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.tb_optical_elevation = new System.Windows.Forms.TextBox();
-            this.btn_Permission = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.TB_OPTICAL_ELEVATION = new System.Windows.Forms.TextBox();
+            this.BTN_PERMISSION = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.btn_fire = new System.Windows.Forms.Button();
-            this.btn_takeaim = new System.Windows.Forms.Button();
-            this.tb_gunvoltage = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
+            this.BTN_FIRE = new System.Windows.Forms.Button();
+            this.BTN_TAKE_AIM = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
-            this.tb_RemainingBullets = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.tb_Magnification = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tb_Pointdistance = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.tb_Distance = new System.Windows.Forms.TextBox();
+            this.TB_DISTANCE = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.btn_disconnect = new System.Windows.Forms.Button();
+            this.BTN_DISCONNECT = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.suspectedEnemyActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enemyMovementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enemyConcentrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btn_Camera_connect = new System.Windows.Forms.Button();
-            this.pbI_Video = new OpenCvSharp.UserInterface.PictureBoxIpl();
+            this.BTN_CAMERA_CONNECT = new System.Windows.Forms.Button();
+            this.PBL_VIDEO = new OpenCvSharp.UserInterface.PictureBoxIpl();
             this.lb_xx = new System.Windows.Forms.Label();
             this.lb_yy = new System.Windows.Forms.Label();
             this.addPinPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deletePinPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btn_setting = new System.Windows.Forms.Button();
+            this.BTN_SETTING = new System.Windows.Forms.Button();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.TB_SENTRY_AZIMUTH = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.TB_SENTRY_ELEVATION = new System.Windows.Forms.TextBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.TIM_ALARM = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.PB_MAP)).BeginInit();
             this.pn_mapcontainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_azimuth)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PB_AZIMUTH)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbI_Video)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PBL_VIDEO)).BeginInit();
+            this.groupBox6.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // PB_MAP
@@ -140,49 +139,49 @@
             this.RTB_RECEIVED_DISPLAY.TabIndex = 4;
             this.RTB_RECEIVED_DISPLAY.Text = "";
             // 
-            // btn_RCWS_connect
+            // BTN_RCWS_CONNECT
             // 
-            this.btn_RCWS_connect.FlatAppearance.BorderSize = 0;
-            this.btn_RCWS_connect.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btn_RCWS_connect.Location = new System.Drawing.Point(13, 13);
-            this.btn_RCWS_connect.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_RCWS_connect.Name = "btn_RCWS_connect";
-            this.btn_RCWS_connect.Size = new System.Drawing.Size(92, 46);
-            this.btn_RCWS_connect.TabIndex = 5;
-            this.btn_RCWS_connect.Text = "RCWS Connect";
-            this.btn_RCWS_connect.UseVisualStyleBackColor = true;
-            this.btn_RCWS_connect.Click += new System.EventHandler(this.btn_RCWS_Connect_Click);
+            this.BTN_RCWS_CONNECT.FlatAppearance.BorderSize = 0;
+            this.BTN_RCWS_CONNECT.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.BTN_RCWS_CONNECT.Location = new System.Drawing.Point(13, 13);
+            this.BTN_RCWS_CONNECT.Margin = new System.Windows.Forms.Padding(0);
+            this.BTN_RCWS_CONNECT.Name = "BTN_RCWS_CONNECT";
+            this.BTN_RCWS_CONNECT.Size = new System.Drawing.Size(92, 46);
+            this.BTN_RCWS_CONNECT.TabIndex = 5;
+            this.BTN_RCWS_CONNECT.Text = "RCWS Connect";
+            this.BTN_RCWS_CONNECT.UseVisualStyleBackColor = true;
+            this.BTN_RCWS_CONNECT.Click += new System.EventHandler(this.btn_RCWS_Connect_Click);
             // 
-            // pictureBox_azimuth
+            // PB_AZIMUTH
             // 
-            this.pictureBox_azimuth.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox_azimuth.Image")));
-            this.pictureBox_azimuth.Location = new System.Drawing.Point(798, 86);
-            this.pictureBox_azimuth.Name = "pictureBox_azimuth";
-            this.pictureBox_azimuth.Size = new System.Drawing.Size(456, 677);
-            this.pictureBox_azimuth.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox_azimuth.TabIndex = 6;
-            this.pictureBox_azimuth.TabStop = false;
-            this.pictureBox_azimuth.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox_azimuth_Paint);
-            this.pictureBox_azimuth.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_azimuth_MouseDown);
+            this.PB_AZIMUTH.Image = ((System.Drawing.Image)(resources.GetObject("PB_AZIMUTH.Image")));
+            this.PB_AZIMUTH.Location = new System.Drawing.Point(798, 86);
+            this.PB_AZIMUTH.Name = "PB_AZIMUTH";
+            this.PB_AZIMUTH.Size = new System.Drawing.Size(456, 677);
+            this.PB_AZIMUTH.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.PB_AZIMUTH.TabIndex = 6;
+            this.PB_AZIMUTH.TabStop = false;
+            this.PB_AZIMUTH.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox_azimuth_Paint);
+            this.PB_AZIMUTH.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_azimuth_MouseDown);
             // 
-            // tb_body_azimuth
+            // TB_RCWS_AZIMUTH
             // 
-            this.tb_body_azimuth.Location = new System.Drawing.Point(6, 38);
-            this.tb_body_azimuth.Name = "tb_body_azimuth";
-            this.tb_body_azimuth.Size = new System.Drawing.Size(84, 21);
-            this.tb_body_azimuth.TabIndex = 7;
+            this.TB_RCWS_AZIMUTH.Location = new System.Drawing.Point(54, 29);
+            this.TB_RCWS_AZIMUTH.Name = "TB_RCWS_AZIMUTH";
+            this.TB_RCWS_AZIMUTH.Size = new System.Drawing.Size(84, 21);
+            this.TB_RCWS_AZIMUTH.TabIndex = 7;
             // 
-            // tb_body_elevation
+            // TB_WEAPON_ELEVATION
             // 
-            this.tb_body_elevation.Location = new System.Drawing.Point(96, 38);
-            this.tb_body_elevation.Name = "tb_body_elevation";
-            this.tb_body_elevation.Size = new System.Drawing.Size(84, 21);
-            this.tb_body_elevation.TabIndex = 8;
+            this.TB_WEAPON_ELEVATION.Location = new System.Drawing.Point(43, 14);
+            this.TB_WEAPON_ELEVATION.Name = "TB_WEAPON_ELEVATION";
+            this.TB_WEAPON_ELEVATION.Size = new System.Drawing.Size(84, 21);
+            this.TB_WEAPON_ELEVATION.TabIndex = 8;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 23);
+            this.label1.Location = new System.Drawing.Point(4, 32);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(44, 12);
             this.label1.TabIndex = 9;
@@ -191,7 +190,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(94, 23);
+            this.label2.Location = new System.Drawing.Point(6, 19);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(31, 12);
             this.label2.TabIndex = 10;
@@ -200,96 +199,64 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.groupBox1.Controls.Add(this.tb_body_azimuth);
-            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.tb_body_elevation);
+            this.groupBox1.Controls.Add(this.TB_WEAPON_ELEVATION);
             this.groupBox1.ForeColor = System.Drawing.Color.White;
-            this.groupBox1.Location = new System.Drawing.Point(6, 29);
+            this.groupBox1.Location = new System.Drawing.Point(152, 15);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(186, 70);
+            this.groupBox1.Size = new System.Drawing.Size(140, 44);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "RCWS Body";
+            this.groupBox1.Text = "Weapon";
             // 
             // groupBox2
             // 
             this.groupBox2.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.groupBox2.Controls.Add(this.tb_optical_azimuth);
-            this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.tb_optical_elevation);
+            this.groupBox2.Controls.Add(this.TB_OPTICAL_ELEVATION);
             this.groupBox2.ForeColor = System.Drawing.Color.White;
-            this.groupBox2.Location = new System.Drawing.Point(198, 29);
+            this.groupBox2.Location = new System.Drawing.Point(307, 15);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(186, 70);
+            this.groupBox2.Size = new System.Drawing.Size(140, 44);
             this.groupBox2.TabIndex = 12;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Optical Body";
-            // 
-            // tb_optical_azimuth
-            // 
-            this.tb_optical_azimuth.Location = new System.Drawing.Point(6, 38);
-            this.tb_optical_azimuth.Name = "tb_optical_azimuth";
-            this.tb_optical_azimuth.Size = new System.Drawing.Size(84, 21);
-            this.tb_optical_azimuth.TabIndex = 7;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 23);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(44, 12);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "방위각";
+            this.groupBox2.Text = "Optical";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(94, 23);
+            this.label4.Location = new System.Drawing.Point(4, 19);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(31, 12);
             this.label4.TabIndex = 10;
             this.label4.Text = "고각";
             // 
-            // tb_optical_elevation
+            // TB_OPTICAL_ELEVATION
             // 
-            this.tb_optical_elevation.Location = new System.Drawing.Point(96, 38);
-            this.tb_optical_elevation.Name = "tb_optical_elevation";
-            this.tb_optical_elevation.Size = new System.Drawing.Size(84, 21);
-            this.tb_optical_elevation.TabIndex = 8;
+            this.TB_OPTICAL_ELEVATION.Location = new System.Drawing.Point(41, 14);
+            this.TB_OPTICAL_ELEVATION.Name = "TB_OPTICAL_ELEVATION";
+            this.TB_OPTICAL_ELEVATION.Size = new System.Drawing.Size(84, 21);
+            this.TB_OPTICAL_ELEVATION.TabIndex = 8;
             // 
-            // btn_Permission
+            // BTN_PERMISSION
             // 
-            this.btn_Permission.Location = new System.Drawing.Point(6, 29);
-            this.btn_Permission.Name = "btn_Permission";
-            this.btn_Permission.Size = new System.Drawing.Size(231, 70);
-            this.btn_Permission.TabIndex = 13;
-            this.btn_Permission.UseVisualStyleBackColor = true;
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.groupBox3.Controls.Add(this.btn_Permission);
-            this.groupBox3.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.groupBox3.ForeColor = System.Drawing.Color.White;
-            this.groupBox3.Location = new System.Drawing.Point(410, 86);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(243, 105);
-            this.groupBox3.TabIndex = 14;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Control Authority Status";
+            this.BTN_PERMISSION.Location = new System.Drawing.Point(6, 38);
+            this.BTN_PERMISSION.Name = "BTN_PERMISSION";
+            this.BTN_PERMISSION.Size = new System.Drawing.Size(106, 87);
+            this.BTN_PERMISSION.TabIndex = 13;
+            this.BTN_PERMISSION.UseVisualStyleBackColor = true;
             // 
             // groupBox7
             // 
             this.groupBox7.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.groupBox7.Controls.Add(this.groupBox6);
             this.groupBox7.Controls.Add(this.groupBox4);
             this.groupBox7.Controls.Add(this.groupBox8);
             this.groupBox7.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.groupBox7.ForeColor = System.Drawing.Color.White;
-            this.groupBox7.Location = new System.Drawing.Point(659, 86);
+            this.groupBox7.Location = new System.Drawing.Point(659, 179);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(131, 677);
+            this.groupBox7.Size = new System.Drawing.Size(131, 584);
             this.groupBox7.TabIndex = 16;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "RCWS Status";
@@ -297,55 +264,33 @@
             // groupBox4
             // 
             this.groupBox4.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.groupBox4.Controls.Add(this.btn_fire);
-            this.groupBox4.Controls.Add(this.btn_takeaim);
-            this.groupBox4.Controls.Add(this.tb_gunvoltage);
-            this.groupBox4.Controls.Add(this.label7);
+            this.groupBox4.Controls.Add(this.BTN_FIRE);
+            this.groupBox4.Controls.Add(this.BTN_TAKE_AIM);
             this.groupBox4.Controls.Add(this.label8);
-            this.groupBox4.Controls.Add(this.tb_RemainingBullets);
-            this.groupBox4.Controls.Add(this.label11);
             this.groupBox4.Controls.Add(this.label13);
             this.groupBox4.ForeColor = System.Drawing.Color.White;
-            this.groupBox4.Location = new System.Drawing.Point(6, 196);
+            this.groupBox4.Location = new System.Drawing.Point(7, 242);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(118, 255);
+            this.groupBox4.Size = new System.Drawing.Size(118, 118);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Weapon";
             // 
-            // btn_fire
+            // BTN_FIRE
             // 
-            this.btn_fire.Location = new System.Drawing.Point(6, 82);
-            this.btn_fire.Name = "btn_fire";
-            this.btn_fire.Size = new System.Drawing.Size(105, 23);
-            this.btn_fire.TabIndex = 31;
-            this.btn_fire.Text = "Fire";
-            this.btn_fire.UseVisualStyleBackColor = true;
+            this.BTN_FIRE.Location = new System.Drawing.Point(6, 82);
+            this.BTN_FIRE.Name = "BTN_FIRE";
+            this.BTN_FIRE.Size = new System.Drawing.Size(105, 23);
+            this.BTN_FIRE.TabIndex = 31;
+            this.BTN_FIRE.UseVisualStyleBackColor = true;
             // 
-            // btn_takeaim
+            // BTN_TAKE_AIM
             // 
-            this.btn_takeaim.Location = new System.Drawing.Point(6, 39);
-            this.btn_takeaim.Name = "btn_takeaim";
-            this.btn_takeaim.Size = new System.Drawing.Size(105, 23);
-            this.btn_takeaim.TabIndex = 30;
-            this.btn_takeaim.Text = "Take Aim";
-            this.btn_takeaim.UseVisualStyleBackColor = true;
-            // 
-            // tb_gunvoltage
-            // 
-            this.tb_gunvoltage.Location = new System.Drawing.Point(6, 174);
-            this.tb_gunvoltage.Name = "tb_gunvoltage";
-            this.tb_gunvoltage.Size = new System.Drawing.Size(105, 21);
-            this.tb_gunvoltage.TabIndex = 20;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(5, 159);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(85, 12);
-            this.label7.TabIndex = 29;
-            this.label7.Text = "Gun Voltage";
+            this.BTN_TAKE_AIM.Location = new System.Drawing.Point(6, 39);
+            this.BTN_TAKE_AIM.Name = "BTN_TAKE_AIM";
+            this.BTN_TAKE_AIM.Size = new System.Drawing.Size(105, 23);
+            this.BTN_TAKE_AIM.TabIndex = 30;
+            this.BTN_TAKE_AIM.UseVisualStyleBackColor = true;
             // 
             // label8
             // 
@@ -355,22 +300,6 @@
             this.label8.Size = new System.Drawing.Size(67, 12);
             this.label8.TabIndex = 27;
             this.label8.Text = "Take Aim";
-            // 
-            // tb_RemainingBullets
-            // 
-            this.tb_RemainingBullets.Location = new System.Drawing.Point(6, 126);
-            this.tb_RemainingBullets.Name = "tb_RemainingBullets";
-            this.tb_RemainingBullets.Size = new System.Drawing.Size(105, 21);
-            this.tb_RemainingBullets.TabIndex = 24;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(4, 111);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(124, 12);
-            this.label11.TabIndex = 26;
-            this.label11.Text = "Remaining Bullets";
             // 
             // label13
             // 
@@ -384,63 +313,27 @@
             // groupBox8
             // 
             this.groupBox8.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.groupBox8.Controls.Add(this.tb_Magnification);
-            this.groupBox8.Controls.Add(this.label12);
-            this.groupBox8.Controls.Add(this.tb_Pointdistance);
-            this.groupBox8.Controls.Add(this.label6);
-            this.groupBox8.Controls.Add(this.tb_Distance);
+            this.groupBox8.Controls.Add(this.TB_DISTANCE);
             this.groupBox8.Controls.Add(this.label5);
             this.groupBox8.ForeColor = System.Drawing.Color.White;
-            this.groupBox8.Location = new System.Drawing.Point(6, 29);
+            this.groupBox8.Location = new System.Drawing.Point(7, 166);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(118, 161);
+            this.groupBox8.Size = new System.Drawing.Size(118, 70);
             this.groupBox8.TabIndex = 17;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Range Founder";
             // 
-            // tb_Magnification
+            // TB_DISTANCE
             // 
-            this.tb_Magnification.Location = new System.Drawing.Point(6, 39);
-            this.tb_Magnification.Name = "tb_Magnification";
-            this.tb_Magnification.Size = new System.Drawing.Size(105, 21);
-            this.tb_Magnification.TabIndex = 22;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 24);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(93, 12);
-            this.label12.TabIndex = 21;
-            this.label12.Text = "Magnification";
-            // 
-            // tb_Pointdistance
-            // 
-            this.tb_Pointdistance.Location = new System.Drawing.Point(6, 126);
-            this.tb_Pointdistance.Name = "tb_Pointdistance";
-            this.tb_Pointdistance.Size = new System.Drawing.Size(105, 21);
-            this.tb_Pointdistance.TabIndex = 12;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(4, 111);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(100, 12);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "Point Distance";
-            // 
-            // tb_Distance
-            // 
-            this.tb_Distance.Location = new System.Drawing.Point(6, 82);
-            this.tb_Distance.Name = "tb_Distance";
-            this.tb_Distance.Size = new System.Drawing.Size(105, 21);
-            this.tb_Distance.TabIndex = 11;
+            this.TB_DISTANCE.Location = new System.Drawing.Point(6, 38);
+            this.TB_DISTANCE.Name = "TB_DISTANCE";
+            this.TB_DISTANCE.Size = new System.Drawing.Size(105, 21);
+            this.TB_DISTANCE.TabIndex = 11;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(4, 67);
+            this.label5.Location = new System.Drawing.Point(4, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(62, 12);
             this.label5.TabIndex = 13;
@@ -449,27 +342,28 @@
             // groupBox5
             // 
             this.groupBox5.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.groupBox5.Controls.Add(this.groupBox2);
-            this.groupBox5.Controls.Add(this.groupBox1);
+            this.groupBox5.Controls.Add(this.groupBox9);
+            this.groupBox5.Controls.Add(this.groupBox3);
             this.groupBox5.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.groupBox5.ForeColor = System.Drawing.Color.White;
             this.groupBox5.Location = new System.Drawing.Point(13, 86);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(391, 105);
+            this.groupBox5.Size = new System.Drawing.Size(777, 105);
             this.groupBox5.TabIndex = 17;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "AZEL";
             // 
-            // btn_disconnect
+            // BTN_DISCONNECT
             // 
-            this.btn_disconnect.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btn_disconnect.Location = new System.Drawing.Point(211, 13);
-            this.btn_disconnect.Name = "btn_disconnect";
-            this.btn_disconnect.Size = new System.Drawing.Size(92, 46);
-            this.btn_disconnect.TabIndex = 18;
-            this.btn_disconnect.Text = "Disconnect";
-            this.btn_disconnect.UseVisualStyleBackColor = true;
-            this.btn_disconnect.Click += new System.EventHandler(this.btn_disconnect_Click);
+            this.BTN_DISCONNECT.FlatAppearance.BorderSize = 0;
+            this.BTN_DISCONNECT.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.BTN_DISCONNECT.Location = new System.Drawing.Point(211, 13);
+            this.BTN_DISCONNECT.Name = "BTN_DISCONNECT";
+            this.BTN_DISCONNECT.Size = new System.Drawing.Size(92, 46);
+            this.BTN_DISCONNECT.TabIndex = 18;
+            this.BTN_DISCONNECT.Text = "Disconnect";
+            this.BTN_DISCONNECT.UseVisualStyleBackColor = true;
+            this.BTN_DISCONNECT.Click += new System.EventHandler(this.btn_disconnect_Click);
             // 
             // contextMenuStrip1
             // 
@@ -502,28 +396,28 @@
             this.enemyConcentrationToolStripMenuItem.Text = "Enemy Concentration";
             this.enemyConcentrationToolStripMenuItem.Click += new System.EventHandler(this.enemyConcentrationToolStripMenuItem_Click);
             // 
-            // btn_Camera_connect
+            // BTN_CAMERA_CONNECT
             // 
-            this.btn_Camera_connect.FlatAppearance.BorderSize = 0;
-            this.btn_Camera_connect.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btn_Camera_connect.Location = new System.Drawing.Point(111, 13);
-            this.btn_Camera_connect.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_Camera_connect.Name = "btn_Camera_connect";
-            this.btn_Camera_connect.Size = new System.Drawing.Size(92, 46);
-            this.btn_Camera_connect.TabIndex = 20;
-            this.btn_Camera_connect.Text = "Camera Connect";
-            this.btn_Camera_connect.UseVisualStyleBackColor = true;
-            this.btn_Camera_connect.Click += new System.EventHandler(this.btn_Camera_Connect_Click);
+            this.BTN_CAMERA_CONNECT.FlatAppearance.BorderSize = 0;
+            this.BTN_CAMERA_CONNECT.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.BTN_CAMERA_CONNECT.Location = new System.Drawing.Point(111, 13);
+            this.BTN_CAMERA_CONNECT.Margin = new System.Windows.Forms.Padding(0);
+            this.BTN_CAMERA_CONNECT.Name = "BTN_CAMERA_CONNECT";
+            this.BTN_CAMERA_CONNECT.Size = new System.Drawing.Size(92, 46);
+            this.BTN_CAMERA_CONNECT.TabIndex = 20;
+            this.BTN_CAMERA_CONNECT.Text = "Camera Connect";
+            this.BTN_CAMERA_CONNECT.UseVisualStyleBackColor = true;
+            this.BTN_CAMERA_CONNECT.Click += new System.EventHandler(this.btn_Camera_Connect_Click);
             // 
-            // pbI_Video
+            // PBL_VIDEO
             // 
-            this.pbI_Video.Location = new System.Drawing.Point(13, 197);
-            this.pbI_Video.Name = "pbI_Video";
-            this.pbI_Video.Size = new System.Drawing.Size(640, 480);
-            this.pbI_Video.TabIndex = 21;
-            this.pbI_Video.TabStop = false;
-            this.pbI_Video.Paint += new System.Windows.Forms.PaintEventHandler(this.pbI_Video_Paint);
-            this.pbI_Video.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pbI_Video_MouseClick);
+            this.PBL_VIDEO.Location = new System.Drawing.Point(13, 197);
+            this.PBL_VIDEO.Name = "PBL_VIDEO";
+            this.PBL_VIDEO.Size = new System.Drawing.Size(640, 480);
+            this.PBL_VIDEO.TabIndex = 21;
+            this.PBL_VIDEO.TabStop = false;
+            this.PBL_VIDEO.Paint += new System.Windows.Forms.PaintEventHandler(this.PBI_VIDEO_Paint);
+            this.PBL_VIDEO.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PBI_Video_MouseClick);
             // 
             // lb_xx
             // 
@@ -555,52 +449,131 @@
             this.deletePinPointToolStripMenuItem.Text = "Delete Pin Point";
             this.deletePinPointToolStripMenuItem.Click += new System.EventHandler(this.deletePinPointToolStripMenuItem_Click);
             // 
-            // btn_setting
+            // BTN_SETTING
             // 
-            this.btn_setting.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btn_setting.Location = new System.Drawing.Point(312, 13);
-            this.btn_setting.Name = "btn_setting";
-            this.btn_setting.Size = new System.Drawing.Size(92, 46);
-            this.btn_setting.TabIndex = 26;
-            this.btn_setting.Text = "Setting";
-            this.btn_setting.UseVisualStyleBackColor = true;
-            this.btn_setting.Click += new System.EventHandler(this.Setting_Click);
+            this.BTN_SETTING.FlatAppearance.BorderSize = 0;
+            this.BTN_SETTING.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.BTN_SETTING.Location = new System.Drawing.Point(312, 13);
+            this.BTN_SETTING.Name = "BTN_SETTING";
+            this.BTN_SETTING.Size = new System.Drawing.Size(92, 46);
+            this.BTN_SETTING.TabIndex = 26;
+            this.BTN_SETTING.Text = "Setting";
+            this.BTN_SETTING.UseVisualStyleBackColor = true;
+            this.BTN_SETTING.Click += new System.EventHandler(this.Setting_Click);
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.groupBox6.Controls.Add(this.BTN_PERMISSION);
+            this.groupBox6.ForeColor = System.Drawing.Color.White;
+            this.groupBox6.Location = new System.Drawing.Point(7, 29);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(118, 131);
+            this.groupBox6.TabIndex = 18;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Control Authority Status";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.groupBox3.Controls.Add(this.TB_SENTRY_AZIMUTH);
+            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.label7);
+            this.groupBox3.Controls.Add(this.TB_SENTRY_ELEVATION);
+            this.groupBox3.ForeColor = System.Drawing.Color.White;
+            this.groupBox3.Location = new System.Drawing.Point(476, 20);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(295, 67);
+            this.groupBox3.TabIndex = 13;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Sentry";
+            // 
+            // TB_SENTRY_AZIMUTH
+            // 
+            this.TB_SENTRY_AZIMUTH.Location = new System.Drawing.Point(56, 29);
+            this.TB_SENTRY_AZIMUTH.Name = "TB_SENTRY_AZIMUTH";
+            this.TB_SENTRY_AZIMUTH.Size = new System.Drawing.Size(84, 21);
+            this.TB_SENTRY_AZIMUTH.TabIndex = 7;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 34);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(44, 12);
+            this.label6.TabIndex = 9;
+            this.label6.Text = "방위각";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(161, 34);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(31, 12);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "고각";
+            // 
+            // TB_SENTRY_ELEVATION
+            // 
+            this.TB_SENTRY_ELEVATION.Location = new System.Drawing.Point(198, 29);
+            this.TB_SENTRY_ELEVATION.Name = "TB_SENTRY_ELEVATION";
+            this.TB_SENTRY_ELEVATION.Size = new System.Drawing.Size(84, 21);
+            this.TB_SENTRY_ELEVATION.TabIndex = 8;
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.groupBox9.Controls.Add(this.groupBox2);
+            this.groupBox9.Controls.Add(this.TB_RCWS_AZIMUTH);
+            this.groupBox9.Controls.Add(this.groupBox1);
+            this.groupBox9.Controls.Add(this.label1);
+            this.groupBox9.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.groupBox9.ForeColor = System.Drawing.Color.White;
+            this.groupBox9.Location = new System.Drawing.Point(6, 20);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(455, 67);
+            this.groupBox9.TabIndex = 27;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "RCWS";
+            // 
+            // TIM_ALARM
+            // 
+            this.TIM_ALARM.Tick += new System.EventHandler(this.ALARM_Tick);
             // 
             // GUI
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1830, 782);
-            this.Controls.Add(this.btn_setting);
+            this.Controls.Add(this.BTN_SETTING);
             this.Controls.Add(this.lb_yy);
             this.Controls.Add(this.lb_xx);
-            this.Controls.Add(this.pbI_Video);
-            this.Controls.Add(this.btn_Camera_connect);
-            this.Controls.Add(this.btn_disconnect);
-            this.Controls.Add(this.groupBox5);
+            this.Controls.Add(this.PBL_VIDEO);
+            this.Controls.Add(this.BTN_CAMERA_CONNECT);
+            this.Controls.Add(this.BTN_DISCONNECT);
             this.Controls.Add(this.groupBox7);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.pictureBox_azimuth);
-            this.Controls.Add(this.btn_RCWS_connect);
+            this.Controls.Add(this.PB_AZIMUTH);
+            this.Controls.Add(this.BTN_RCWS_CONNECT);
             this.Controls.Add(this.RTB_RECEIVED_DISPLAY);
             this.Controls.Add(this.RTB_SEND_DISPLAY);
             this.Controls.Add(this.btn_close);
             this.Controls.Add(this.pn_mapcontainer);
+            this.Controls.Add(this.groupBox5);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.KeyPreview = true;
             this.Name = "GUI";
             this.Padding = new System.Windows.Forms.Padding(10);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MotionControl";
+            this.Load += new System.EventHandler(this.GUI_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GUI_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GUI_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.PB_MAP)).EndInit();
             this.pn_mapcontainer.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_azimuth)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PB_AZIMUTH)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
@@ -608,7 +581,12 @@
             this.groupBox8.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbI_Video)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PBL_VIDEO)).EndInit();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -618,59 +596,56 @@
 
 
         private System.Windows.Forms.Button btn_close;
-        private System.Windows.Forms.Button btn_RCWS_connect;
-        private System.Windows.Forms.Button btn_Permission;
-        private System.Windows.Forms.Button btn_disconnect;
+        private System.Windows.Forms.Button BTN_RCWS_CONNECT;
+        private System.Windows.Forms.Button BTN_PERMISSION;
+        private System.Windows.Forms.Button BTN_DISCONNECT;
 
         private System.Windows.Forms.Panel pn_mapcontainer;
 
         private System.Windows.Forms.RichTextBox RTB_SEND_DISPLAY;
         private System.Windows.Forms.RichTextBox RTB_RECEIVED_DISPLAY;
 
-        private System.Windows.Forms.PictureBox pictureBox_azimuth;
+        private System.Windows.Forms.PictureBox PB_AZIMUTH;
         private System.Windows.Forms.PictureBox PB_MAP;
 
-        private System.Windows.Forms.TextBox tb_body_azimuth;
-        private System.Windows.Forms.TextBox tb_body_elevation;
-        private System.Windows.Forms.TextBox tb_optical_azimuth;
-        private System.Windows.Forms.TextBox tb_optical_elevation;
-        private System.Windows.Forms.TextBox tb_Distance;
-        private System.Windows.Forms.TextBox tb_Pointdistance;
-        private System.Windows.Forms.TextBox tb_Magnification;
-        private System.Windows.Forms.TextBox tb_RemainingBullets;
+        private System.Windows.Forms.TextBox TB_RCWS_AZIMUTH;
+        private System.Windows.Forms.TextBox TB_WEAPON_ELEVATION;
+        private System.Windows.Forms.TextBox TB_OPTICAL_ELEVATION;
+        private System.Windows.Forms.TextBox TB_DISTANCE;
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
 
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.TextBox tb_gunvoltage;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem suspectedEnemyActivityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enemyMovementToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enemyConcentrationToolStripMenuItem;
-        private System.Windows.Forms.Button btn_fire;
-        private System.Windows.Forms.Button btn_takeaim;
-        private System.Windows.Forms.Button btn_Camera_connect;
-        private OpenCvSharp.UserInterface.PictureBoxIpl pbI_Video;
+        private System.Windows.Forms.Button BTN_FIRE;
+        private System.Windows.Forms.Button BTN_TAKE_AIM;
+        private System.Windows.Forms.Button BTN_CAMERA_CONNECT;
+        private OpenCvSharp.UserInterface.PictureBoxIpl PBL_VIDEO;
         private System.Windows.Forms.Label lb_xx;
         private System.Windows.Forms.Label lb_yy;
         private System.Windows.Forms.ToolStripMenuItem addPinPointToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deletePinPointToolStripMenuItem;
-        private System.Windows.Forms.Button btn_setting;
+        private System.Windows.Forms.Button BTN_SETTING;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.TextBox TB_SENTRY_AZIMUTH;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox TB_SENTRY_ELEVATION;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.Timer TIM_ALARM;
     }
 }

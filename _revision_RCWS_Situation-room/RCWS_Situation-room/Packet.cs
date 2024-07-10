@@ -19,10 +19,16 @@ namespace RCWS_Situation_room
 
         public struct RECEIVED_PACKET
         {
-            public float OpticalTilt;
-            public float OpticalPan;
-            public float BodyTilt;
-            public float BodyPan;
+            public float OPTICAL_TILT;
+            public float WEAPON_TILT; //기총
+            public float BODY_PAN; //바디
+            public float SENTRY_AZIMUTH;
+            public float SENTRY_ELEVATION;
+            public float DISTANCE;
+            public byte PERMISSION;
+            public byte TAKE_AIM;
+            public byte FIRE;
+            public byte MODE;
         }
 
         public struct SEND_PACKET_UDP

@@ -68,6 +68,44 @@ namespace RCWS_Situation_room
         {
             InitializeComponent();
 
+            RECEIVED_DATA.WEAPON_TILT = 0;
+
+            TB_RCWS_AZIMUTH.ForeColor = Color.Black;
+            TB_RCWS_AZIMUTH.BackColor = Color.White;
+            TB_RCWS_AZIMUTH.Text = "No Data";
+
+            TB_WEAPON_ELEVATION.ForeColor = Color.Black;
+            TB_WEAPON_ELEVATION.BackColor = Color.White;
+            TB_WEAPON_ELEVATION.Text = "No Data";
+
+            TB_OPTICAL_ELEVATION.ForeColor = Color.Black;
+            TB_OPTICAL_ELEVATION.BackColor = Color.White;
+            TB_OPTICAL_ELEVATION.Text = "No Data";
+
+            TB_SENTRY_AZIMUTH.ForeColor = Color.Black;
+            TB_SENTRY_AZIMUTH.BackColor = Color.White;
+            TB_SENTRY_AZIMUTH.Text = "No Data";
+
+            TB_SENTRY_ELEVATION.ForeColor = Color.Black;
+            TB_SENTRY_ELEVATION.BackColor = Color.White;
+            TB_SENTRY_ELEVATION.Text = "No Data";
+
+            BTN_PERMISSION.ForeColor = Color.Black;
+            BTN_PERMISSION.BackColor = Color.White;
+            BTN_PERMISSION.Text = "No Data";
+
+            TB_DISTANCE.ForeColor = Color.Black;
+            TB_DISTANCE.BackColor = Color.White;
+            TB_DISTANCE.Text = "No Data";
+
+            BTN_TAKE_AIM.ForeColor = Color.Black;
+            BTN_TAKE_AIM.BackColor = Color.White;
+            BTN_TAKE_AIM.Text = "No Data";
+
+            BTN_FIRE.ForeColor = Color.Black;
+            BTN_FIRE.BackColor = Color.White;
+            BTN_FIRE.Text = "No Data";
+
             this.formDataSetting = formDataSetting;
             this.STREAM_WRITER = streamWriter;
 
@@ -237,6 +275,24 @@ namespace RCWS_Situation_room
                 else if (buttons[7] == false)
                 {
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000080));
+                }
+
+                if (buttons[10] == true)
+                {
+                    SEND_DATA.Button = SEND_DATA.Button | 0x400;
+                }
+                else if (buttons[10] == false)
+                {
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000400));
+                }
+
+                if (buttons[11] == true)
+                {
+                    SEND_DATA.Button = SEND_DATA.Button | 0x800;
+                }
+                else if (buttons[11] == false)
+                {
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000800));
                 }
 
                 if (pre_1 != SEND_DATA.BodyPan || pre_2 != SEND_DATA.BodyTilt || pre_3 != SEND_DATA.Button)
@@ -443,6 +499,7 @@ namespace RCWS_Situation_room
             }
 
             ReceiveDisplay("Server Connected");
+            BTN_RCWS_CONNECT.BackColor = Color.Green;
 
             try
             {
@@ -454,84 +511,131 @@ namespace RCWS_Situation_room
 
                     RECEIVED_DATA = TcpReturn.BytesToStruct<Packet.RECEIVED_PACKET>(receivedData);
 
-                    ReceiveDisplay($"OpticalTilt: {RECEIVED_DATA.OpticalTilt}, OpticalPan: {RECEIVED_DATA.OpticalPan}, BodyTilt: {RECEIVED_DATA.BodyTilt}" +
-                        $", BodyPan: {RECEIVED_DATA.BodyPan}");
+                    ReceiveDisplay($"OpticalTilt: {RECEIVED_DATA.OPTICAL_TILT}, BodyTilt: {RECEIVED_DATA.WEAPON_TILT}" +
+                        $", BodyPan: {RECEIVED_DATA.BODY_PAN}, Sentry Azimuth: {RECEIVED_DATA.SENTRY_AZIMUTH}, Sentry Elevation: {RECEIVED_DATA.SENTRY_ELEVATION}"+
+                        $", Permission: {RECEIVED_DATA.PERMISSION}, Take Aim: {RECEIVED_DATA.TAKE_AIM}, Fire: {RECEIVED_DATA.FIRE}, Mode: {RECEIVED_DATA.MODE}");
+
+                    PB_AZIMUTH.Invalidate();
+                    PB_AZIMUTH.Refresh();
+
+                    TB_RCWS_AZIMUTH.Text = RECEIVED_DATA.BODY_PAN.ToString();
+                    TB_WEAPON_ELEVATION.Text = RECEIVED_DATA.WEAPON_TILT.ToString();
+                    TB_OPTICAL_ELEVATION.Text = RECEIVED_DATA.OPTICAL_TILT.ToString();
+                    TB_SENTRY_AZIMUTH.Text = RECEIVED_DATA.SENTRY_AZIMUTH.ToString();
+                    TB_SENTRY_ELEVATION.Text = RECEIVED_DATA.SENTRY_ELEVATION.ToString();
+
+
+                    // PERMISSION | 0: 상황실 1: 요청 2: 초소
+                    // MODE | 0: 수동 1: auto scan 2: 레이저 트래킹 3: 사람 추적
+                    if (RECEIVED_DATA.PERMISSION == 0)
+                    {
+                        BTN_PERMISSION.ForeColor = Color.White;
+                        BTN_PERMISSION.BackColor = Color.Green;                        
+                        
+                        if(RECEIVED_DATA.MODE == 0)
+                        {
+                            BTN_PERMISSION.Text = "Controlable";
+                        }
+
+                        else if (RECEIVED_DATA.MODE == 1)
+                        {
+                            BTN_PERMISSION.Text = "Auto Scan Mode";
+                        }
+
+                        else if (RECEIVED_DATA.MODE == 3)
+                        {
+                            BTN_PERMISSION.Text = "Human Tracking Mode";
+                        }
+
+                        else
+                        {
+                            BTN_PERMISSION.ForeColor = Color.Black;
+                            BTN_PERMISSION.BackColor = Color.White;
+                            BTN_PERMISSION.Text = "Err";
+                        }
+                    }
+
+                    else if (RECEIVED_DATA.PERMISSION == 1)
+                    {
+                        BTN_PERMISSION.ForeColor = Color.White;
+                        BTN_PERMISSION.BackColor = Color.Yellow;
+                        BTN_PERMISSION.Text = "Requesting...";
+                    }
+
+                    else if (RECEIVED_DATA.PERMISSION == 2)
+                    {
+                        BTN_PERMISSION.ForeColor = Color.White;
+                        BTN_PERMISSION.BackColor = Color.Blue;
+
+                        if (RECEIVED_DATA.MODE == 2)
+                        {
+                            BTN_PERMISSION.Text = "Laser Tracking Mode";
+                        }                        
+                    }
+
+                    else
+                    {
+                        BTN_PERMISSION.ForeColor = Color.Black;
+                        BTN_PERMISSION.BackColor = Color.White;
+                        BTN_PERMISSION.Text = "Err";
+                    }
+
+                    TB_DISTANCE.Text = RECEIVED_DATA.DISTANCE.ToString();
+
+                    // TAKE_AIM | 0: 초록, 수동 1: 조준중 2: 초록, 오토
+                    if (RECEIVED_DATA.TAKE_AIM == 0)
+                    {
+                        BTN_TAKE_AIM.ForeColor = Color.White;
+                        BTN_TAKE_AIM.BackColor = Color.Green;
+                        BTN_TAKE_AIM.Text = "Manual Aiming";
+                    }
+
+                    else if (RECEIVED_DATA.TAKE_AIM == 1)
+                    {
+                        BTN_TAKE_AIM.ForeColor = Color.White;
+                        BTN_TAKE_AIM.BackColor = Color.Red;
+                        BTN_TAKE_AIM.Text = "Aiming Complete";
+                    }
+
+                    else if (RECEIVED_DATA.TAKE_AIM == 2)
+                    {
+                        BTN_TAKE_AIM.ForeColor = Color.White;
+                        BTN_TAKE_AIM.BackColor = Color.Green;
+                        BTN_TAKE_AIM.Text = "Automatic Aiming";
+                    }
+
+                    else
+                    {
+                        BTN_TAKE_AIM.ForeColor = Color.Black;
+                        BTN_TAKE_AIM.BackColor = Color.White;
+                        BTN_TAKE_AIM.Text = "Err";
+                    }
+
+                    // FIRE | 
+                    if (RECEIVED_DATA.FIRE == 0 || RECEIVED_DATA.FIRE == 2)
+                    {
+                        BTN_FIRE.ForeColor = Color.White;
+                        BTN_FIRE.BackColor = Color.Green;
+                        BTN_FIRE.Text = "Not Fired";
+                    }
+
+                    else if (RECEIVED_DATA.FIRE == 1)
+                    {
+                        BTN_FIRE.ForeColor = Color.White;
+                        BTN_FIRE.BackColor = Color.Red;
+                        BTN_FIRE.Text = "Fire";
+                    }
+
+                    else
+                    {
+                        BTN_FIRE.ForeColor = Color.Black;
+                        BTN_FIRE.BackColor = Color.White;
+                        BTN_FIRE.Text = "Err";
+                    }
 
                     /*
                     string dataToShow = $"OpticalTilt: {receivedStruct.OpticalTilt}, OpticalPan: {receivedStruct.OpticalPan}, BodyTilt: {receivedStruct.BodyTilt}" +
-                        $", BodyPan: {receivedStruct.BodyPan}";
-
-                    formDataSetting.DisplayReceivedData(dataToShow);
-                    await Task.Run(() => ProcessReceivedData(receivedData));
-
-                    pictureBox_azimuth.Invalidate();
-                    pictureBox_azimuth.Refresh();
-
-                    tb_body_azimuth.Text = receivedStruct.BodyPan.ToString();
-                    tb_body_elevation.Text = receivedStruct.BodyTilt.ToString();
-                    tb_optical_azimuth.Text = receivedStruct.OpticalPan.ToString();
-                    tb_optical_elevation.Text = receivedStruct.OpticalTilt.ToString();
-
-                    tb_Magnification.Text = receivedStruct.Magnification.ToString();
-                    tb_Pointdistance.Text = receivedStruct.pointdistance.ToString();
-                    tb_Distance.Text = receivedStruct.distance.ToString();
-
-                    tb_RemainingBullets.Text = receivedStruct.Remaining_bullets.ToString();
-                    tb_gunvoltage.Text = receivedStruct.GunVoltage.ToString();
-
-                    if (receivedStruct.TakeAim == 0 || receivedStruct.TakeAim == 2)
-                    {
-                        btn_takeaim.BackColor = Color.Green;
-                        btn_takeaim.Text = "Controlable";
-                    }
-
-                    else if (receivedStruct.TakeAim == 1)
-                    {
-                        btn_takeaim.BackColor = Color.Red;
-                        btn_takeaim.Text = "Uncontrolable";
-                    }
-
-                    else
-                    {
-                        btn_takeaim.BackColor = Color.Empty;
-                        btn_takeaim.Text = "No Aim data. RETRY";
-                    }
-
-                    if (receivedStruct.Fire == 0 || receivedStruct.Fire == 2)
-                    {
-                        btn_fire.BackColor = Color.Green;
-                        btn_fire.Text = "Controlable";
-                    }
-
-                    else if (receivedStruct.Fire == 1)
-                    {
-                        btn_fire.BackColor = Color.Red;
-                        btn_fire.Text = "Uncontrolable";
-                    }
-
-                    else
-                    {
-                        btn_fire.BackColor = Color.Empty;
-                        btn_fire.Text = "No Fire data. RETRY";
-                    }
-
-                    if (receivedStruct.Permission == 0 || receivedStruct.Permission == 2)
-                    {
-                        btn_Permission.BackColor = Color.Green;
-                        btn_Permission.Text = "Controlable";
-                    }
-
-                    else if (receivedStruct.Permission == 1)
-                    {
-                        btn_Permission.BackColor = Color.Red;
-                        btn_Permission.Text = "Uncontrolable";
-                    }
-
-                    else
-                    {
-                        btn_Permission.BackColor = Color.Empty;
-                        btn_Permission.Text = "No Permission data. RETRY";
-                    }
+                        $", BodyPan: {receivedStruct.BodyPan}";                    
                     */
                 }
             }
@@ -567,22 +671,17 @@ namespace RCWS_Situation_room
             }
             catch (Exception ex)
             {
-                btn_Camera_connect.BackColor = Color.Red;
-                btn_Camera_connect.ForeColor = Color.White;
+                BTN_CAMERA_CONNECT.BackColor = Color.Red;
+                BTN_CAMERA_CONNECT.ForeColor = Color.White;
                 
                 SendDisplay("Send Data: " + ex.Message);
             }
-            btn_Camera_connect.BackColor = Color.Green;
-            btn_Camera_connect.ForeColor = Color.White;
-            btn_Camera_connect.Enabled = false;
+            BTN_CAMERA_CONNECT.BackColor = Color.Green;
+            BTN_CAMERA_CONNECT.ForeColor = Color.White;
+            BTN_CAMERA_CONNECT.Enabled = false;
         }
 
-        private void pbI_Video_Paint(object sender, PaintEventArgs e)
-        {
-            
-        }
-
-        private async void pbI_Video_MouseClick(object sender, MouseEventArgs e)
+        private async void PBI_Video_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -622,7 +721,7 @@ namespace RCWS_Situation_room
                     using (var ms = new MemoryStream(Data_))
                     {
                         var receivedImage = System.Drawing.Image.FromStream(ms);
-                        pbI_Video.Image = receivedImage;
+                        PBL_VIDEO.Image = receivedImage;
                     }
                 }
                 catch (Exception ex)
@@ -684,8 +783,8 @@ namespace RCWS_Situation_room
         {
             var g = e.Graphics;
 
-            int centerX = pictureBox_azimuth.Width / 2;
-            int centerY = pictureBox_azimuth.Height / 3 * 2;
+            int centerX = PB_AZIMUTH.Width / 2;
+            int centerY = PB_AZIMUTH.Height / 3 * 2;
 
             /* */
             Pen redPen = new Pen(Color.Red, 8);
@@ -700,18 +799,18 @@ namespace RCWS_Situation_room
             /* */
 
             /* Body Pan */
-            double radianAngleRCWS = RECEIVED_DATA.BodyPan * Math.PI / 180.0;
+            double radianAngleRCWS = RECEIVED_DATA.BODY_PAN * Math.PI / 180.0;
             int endXRCWS = centerX + (int)(lineLength * Math.Sin(radianAngleRCWS));
             int endYRCWS = centerY - (int)(lineLength * Math.Cos(radianAngleRCWS));
             g.DrawLine(Pens.Red, new Point(centerX, centerY), new Point(endXRCWS, endYRCWS));
             /* */
 
-            /* Optical Pan */
-            double radianAngleOptical = RECEIVED_DATA.OpticalPan * Math.PI / 180.0;
-            int endXOptical = centerX + (int)(lineLength * Math.Sin(radianAngleOptical));
-            int endYOptical = centerY - (int)(lineLength * Math.Cos(radianAngleOptical));
-            g.DrawLine(Pens.Blue, new Point(centerX, centerY), new Point(endXOptical, endYOptical));
-            /* */
+            ///* Optical Pan */
+            //double radianAngleOptical = RECEIVED_DATA.OPTICAL_PAN * Math.PI / 180.0;
+            //int endXOptical = centerX + (int)(lineLength * Math.Sin(radianAngleOptical));
+            //int endYOptical = centerY - (int)(lineLength * Math.Cos(radianAngleOptical));
+            //g.DrawLine(Pens.Blue, new Point(centerX, centerY), new Point(endXOptical, endYOptical));
+            ///* */
 
             DRAW.Drawing(e.Graphics);
         }
@@ -722,13 +821,13 @@ namespace RCWS_Situation_room
             if (e.Button == MouseButtons.Right)
             {
                 clickLocation = e.Location;
-                contextMenuStrip1.Show(pictureBox_azimuth, clickLocation);
+                contextMenuStrip1.Show(PB_AZIMUTH, clickLocation);
 
                 Bitmap bmp;
-                if (pictureBox_azimuth.Image == null) bmp = new Bitmap(pictureBox_azimuth.Width, pictureBox_azimuth.Height);
-                else bmp = new Bitmap(pictureBox_azimuth.Image);
+                if (PB_AZIMUTH.Image == null) bmp = new Bitmap(PB_AZIMUTH.Width, PB_AZIMUTH.Height);
+                else bmp = new Bitmap(PB_AZIMUTH.Image);
 
-                pictureBox_azimuth.Image = bmp;
+                PB_AZIMUTH.Image = bmp;
             }
         }
 
@@ -759,26 +858,26 @@ namespace RCWS_Situation_room
         private void addPinPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DRAW.AddPinPoint(lastposition);
-            pictureBox_azimuth.Invalidate();
+            PB_AZIMUTH.Invalidate();
         }
 
         private void deletePinPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DRAW.DeletePinPoint(lastposition);
-            pictureBox_azimuth.Invalidate();
+            PB_AZIMUTH.Invalidate();
         }
 
         void DrawImage(string path)
         {
-            using (Graphics g = Graphics.FromImage(pictureBox_azimuth.Image))
+            using (Graphics g = Graphics.FromImage(PB_AZIMUTH.Image))
             {
                 try
                 {
                     using (System.Drawing.Image image = System.Drawing.Image.FromFile(path))
                     {
-                        Point clickLocation = new Point(pictureBox_azimuth.Width / 2, pictureBox_azimuth.Height / 2);
+                        Point clickLocation = new Point(PB_AZIMUTH.Width / 2, PB_AZIMUTH.Height / 2);
                         g.DrawImage(image, clickLocation.X - image.Width / 2, clickLocation.Y - image.Height / 2);
-                        pictureBox_azimuth.Refresh();
+                        PB_AZIMUTH.Refresh();
                     }
                 }
                 catch (Exception ex)
@@ -815,5 +914,48 @@ namespace RCWS_Situation_room
             SettingForm.Show();
         }
         #endregion
+
+        int CNT = 0;
+        private void ALARM_Tick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GUI_Load(object sender, EventArgs e)
+        {           
+            TIM_ALARM.Interval = 500;
+            //TIM_ALARM.Tick
+        }
+
+        private void PBI_VIDEO_Paint(object sender, PaintEventArgs e)
+        {
+            var g = e.Graphics;
+
+            int rcws_center_X = define.VIDEO_WIDTH / 14;
+            int rcws_center_Y = define.VIDEO_HEIGHT / 12 + 15;
+
+            int weapon_center_X = rcws_center_X;
+            int weapon_center_Y = rcws_center_Y + 100;
+
+            Pen redPen = new Pen(Color.Red, 3);
+
+            int lineLength = 40;
+
+            g.DrawEllipse(redPen, rcws_center_X - lineLength, rcws_center_Y - lineLength, lineLength * 2, lineLength * 2);
+            g.DrawEllipse(redPen, weapon_center_X - lineLength, weapon_center_Y - lineLength, lineLength * 2, lineLength * 2);
+
+            double radianAngleRCWS = RECEIVED_DATA.BODY_PAN * Math.PI / 180.0;
+            int endXRCWS = rcws_center_X + (int)(lineLength * Math.Sin(radianAngleRCWS));
+            int endYRCWS = rcws_center_Y - (int)(lineLength * Math.Cos(radianAngleRCWS));
+
+            double radianAngleWEAPON = -RECEIVED_DATA.WEAPON_TILT * Math.PI / 180.0 + 90;
+            int endXWEAPON = weapon_center_X + (int)(lineLength * Math.Sin(radianAngleWEAPON));
+            int endYWEAPON = weapon_center_Y - (int)(lineLength * Math.Cos(radianAngleWEAPON));
+
+            g.DrawLine(redPen, new Point(rcws_center_X, rcws_center_Y), new Point(endXRCWS, endYRCWS));
+            g.DrawLine(redPen, new Point(weapon_center_X, weapon_center_Y), new Point(endXWEAPON, endYWEAPON));
+
+            redPen.Dispose();
+        }
     }
 }
