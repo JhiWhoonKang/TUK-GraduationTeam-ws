@@ -43,7 +43,8 @@ namespace RCWS_Server
 
         private void TcpConnect()  // thread1에 연결된 함수. 메인폼과는 별도로 동작
         {
-            TcpListener tcpListener1 = new TcpListener(IPAddress.Parse(textBox_TCPIP.Text), int.Parse(textBox_TCPPort.Text)); // 서버 객체 생성 및 IP주소와 Port번호를 할당
+            //TcpListener tcpListener1 = new TcpListener(IPAddress.Parse(textBox_TCPIP.Text), int.Parse(textBox_TCPPort.Text)); // 서버 객체 생성 및 IP주소와 Port번호를 할당
+            TcpListener tcpListener1 = new TcpListener(IPAddress.Parse("127.0.0.1"), int.Parse("7000")); // 서버 객체 생성 및 IP주소와 Port번호를 할당
             tcpListener1.Start();  // 서버 시작
             writeTcpRichTextbox("서버 준비...클라이언트 기다리는 중...");
 

@@ -16,7 +16,7 @@ CANListener listener;
 
 static CAN_message_t rxmsg, txmsg;
 
-const int PACKET_SIZE = 10;
+const int PACKET_SIZE = 8;
 uint8_t PACKET[PACKET_SIZE];
 int PACKET_INDEX = 0;
 bool canflag = true;
