@@ -198,11 +198,11 @@ class Gun:
             packet = [0,0,0]
         else: 
             if data == "open":
-                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x14]
+                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x14, data2]
             elif data == "ready":
-                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x17]
+                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x17, data2]
             elif data == "fire": # on
-                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x16]
+                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x16, data2]
             else:
                 print("[ERROR] GUN::SetTriggerDegree name error")
                 packet = [0,0,0]
@@ -256,6 +256,7 @@ class Gun:
                 if self.ack == True:
                     break
         packet = self.SetTriggerDegree("on", 55)
+        mcu.write(packet)
         
 
 
