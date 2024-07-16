@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
-using System.IO.Ports;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -11,7 +10,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Diagnostics;
 using SharpDX.DirectInput;
 
 namespace RCWS_Situation_room
@@ -43,9 +41,10 @@ namespace RCWS_Situation_room
 
         /* AZEL Class */
         private Draw DRAW = new Draw();
-        private Point lastposition;
+        private bool pp_flag = false;
+        private bool pp_del_flag = false;
         /* */
-        
+
         /* Video */
         UdpClient UDP_CLIENT;
         IPEndPoint ENDPOINT;        
@@ -61,11 +60,8 @@ namespace RCWS_Situation_room
         private Joystick JOYSTICK;
         Thread THREAD;
         /* */
-        private float panAngle;
-        private float distance;
-        private bool pp_flag = false;
-        private bool pp_del_flag = false;
 
+        private bool pwr_flag = false;
         #endregion
 
         public GUI(StreamWriter streamWriter, FormDataSetting formDataSetting)
@@ -73,6 +69,9 @@ namespace RCWS_Situation_room
             InitializeComponent();
 
             RECEIVED_DATA.WEAPON_TILT = 0;
+
+            BTN_POWER.BackColor = Color.Red;
+            BTN_POWER.ForeColor = Color.White;
 
             TB_RCWS_AZIMUTH.ForeColor = Color.Black;
             TB_RCWS_AZIMUTH.BackColor = Color.White;
@@ -177,7 +176,7 @@ namespace RCWS_Situation_room
             
             joystick.Acquire();
 
-            SEND_DATA.Button = 0xfc000004;
+            SEND_DATA.Button = 0xfc100004;
 
             int pre_1 = SEND_DATA.BodyPan;
             int pre_2 = SEND_DATA.BodyTilt;
@@ -336,7 +335,7 @@ namespace RCWS_Situation_room
                     pre_3 = SEND_DATA.Button;
                 }
 
-                Thread.Sleep(1);
+                Thread.Sleep(5);
             }
         }
         #endregion
@@ -892,13 +891,11 @@ namespace RCWS_Situation_room
 
         private void addPinPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //DRAW.AddPinPoint(lastposition);
             PB_AZIMUTH.Invalidate();
         }
 
         private void deletePinPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //DRAW.DeletePinPoint(lastposition);
             PB_AZIMUTH.Invalidate();
         }
 
@@ -1087,6 +1084,21 @@ namespace RCWS_Situation_room
 
             redPen.Dispose();
             font.Dispose();
+        }
+        
+        private void BTN_POWER_Click(object sender, EventArgs e)
+        {
+            pwr_flag = !pwr_flag;
+            if (pwr_flag == false)
+            {
+                BTN_POWER.BackColor = Color.Red;
+                SEND_DATA.Button = SEND_DATA.Button | 0x100000;
+            }
+            else
+            {
+                BTN_POWER.BackColor = Color.Green;
+                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00100000));                
+            }
         }
     }
 }

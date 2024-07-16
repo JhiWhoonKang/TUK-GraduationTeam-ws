@@ -76,6 +76,7 @@
             this.deletePinPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BTN_SETTING = new System.Windows.Forms.Button();
             this.TIM_ALARM = new System.Windows.Forms.Timer(this.components);
+            this.BTN_POWER = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PB_MAP)).BeginInit();
             this.pn_mapcontainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PB_AZIMUTH)).BeginInit();
@@ -528,7 +529,8 @@
             // 
             this.BTN_SETTING.FlatAppearance.BorderSize = 0;
             this.BTN_SETTING.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.BTN_SETTING.Location = new System.Drawing.Point(312, 13);
+            this.BTN_SETTING.Location = new System.Drawing.Point(1725, 13);
+            this.BTN_SETTING.Margin = new System.Windows.Forms.Padding(0);
             this.BTN_SETTING.Name = "BTN_SETTING";
             this.BTN_SETTING.Size = new System.Drawing.Size(92, 46);
             this.BTN_SETTING.TabIndex = 26;
@@ -540,10 +542,22 @@
             // 
             this.TIM_ALARM.Tick += new System.EventHandler(this.ALARM_Tick);
             // 
+            // BTN_POWER
+            // 
+            this.BTN_POWER.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold);
+            this.BTN_POWER.Location = new System.Drawing.Point(312, 13);
+            this.BTN_POWER.Name = "BTN_POWER";
+            this.BTN_POWER.Size = new System.Drawing.Size(92, 46);
+            this.BTN_POWER.TabIndex = 27;
+            this.BTN_POWER.Text = "Power";
+            this.BTN_POWER.UseVisualStyleBackColor = true;
+            this.BTN_POWER.Click += new System.EventHandler(this.BTN_POWER_Click);
+            // 
             // GUI
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1830, 782);
+            this.Controls.Add(this.BTN_POWER);
             this.Controls.Add(this.BTN_SETTING);
             this.Controls.Add(this.lb_yy);
             this.Controls.Add(this.lb_xx);
@@ -647,5 +661,6 @@
         private System.Windows.Forms.TextBox TB_SENTRY_ELEVATION;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.Timer TIM_ALARM;
+        private System.Windows.Forms.Button BTN_POWER;
     }
 }
