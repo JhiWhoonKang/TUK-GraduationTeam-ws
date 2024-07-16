@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using SharpDX.DirectInput;
-using static System.Windows.Forms.AxHost;
-using static RCWS_Situation_room.Packet;
 
 namespace RCWS_Situation_room
 {
@@ -65,7 +63,8 @@ namespace RCWS_Situation_room
         /* */
         private float panAngle;
         private float distance;
-        private bool dataReceived = false;
+        private bool pp_flag = false;
+        private bool pp_del_flag = false;
 
         #endregion
 
@@ -125,7 +124,9 @@ namespace RCWS_Situation_room
             PB_MAP.MouseDown += MapPictureBox_MouseDown;
             PB_MAP.MouseMove += MapPictureBox_MouseMove;
             PB_MAP.MouseUp += MapPictureBox_MouseUp;
-            
+
+            PB_AZIMUTH.Paint += new PaintEventHandler(pictureBox_azimuth_Paint);
+
             KeyDown += new KeyEventHandler(GUI_KeyDown);
             KeyUp += new KeyEventHandler(GUI_KeyUp);
 
@@ -303,27 +304,21 @@ namespace RCWS_Situation_room
                 if (buttons[10] == true)
                 {
                     SEND_DATA.Button = SEND_DATA.Button | 0x400;
-                    byte[] receivedData = new byte[Marshal.SizeOf(typeof(Packet.RECEIVED_PACKET))];
-                    RECEIVED_DATA = TcpReturn.BytesToStruct<Packet.RECEIVED_PACKET>(receivedData);
 
-                    // 수신된 데이터 설정
-                    panAngle = RECEIVED_DATA.BODY_PAN;
-                    distance = RECEIVED_DATA.WEAPON_TILT;
-
-                    // 받은 데이터가 있다고 설정
-                    dataReceived = true;
-
-                    // PictureBox를 다시 그리도록 요청
-                    PB_AZIMUTH.Invalidate();
+                    pp_flag = true;                    
                 }
                 else if (buttons[10] == false)
                 {
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000400));
+
+                    pp_flag = false;
                 }
 
                 if (buttons[11] == true)
                 {
                     SEND_DATA.Button = SEND_DATA.Button | 0x800;
+
+                    pp_del_flag = true;
                 }
                 else if (buttons[11] == false)
                 {
@@ -345,6 +340,12 @@ namespace RCWS_Situation_room
             }
         }
         #endregion
+
+        private void pinpoint(float _pan, float _distance)      
+        {
+            
+            
+        }
 
         #region Map
         private void UpdateMapImage()
@@ -549,6 +550,27 @@ namespace RCWS_Situation_room
                     ReceiveDisplay($"OpticalTilt: {RECEIVED_DATA.OPTICAL_TILT}, BodyTilt: {RECEIVED_DATA.WEAPON_TILT}" +
                         $", BodyPan: {RECEIVED_DATA.BODY_PAN}, Sentry Azimuth: {RECEIVED_DATA.SENTRY_AZIMUTH}, Sentry Elevation: {RECEIVED_DATA.SENTRY_ELEVATION}"+
                         $", Permission: {RECEIVED_DATA.PERMISSION}, Take Aim: {RECEIVED_DATA.TAKE_AIM}, Fire: {RECEIVED_DATA.FIRE}, Mode: {RECEIVED_DATA.MODE}");
+
+                    if(pp_del_flag == true)
+                    {
+                        DRAW.DeleteAllPinPoints();
+
+                        pp_del_flag = false;
+                    }
+
+                    if(pp_flag == true)
+                    {
+                        float centerX = PB_AZIMUTH.Width / 2;
+                        float centerY = PB_AZIMUTH.Height / 3 * 2;
+                        float radians = -RECEIVED_DATA.BODY_PAN * (float)(Math.PI / 180) + (float)(Math.PI / 2);
+                        float x = centerX + RECEIVED_DATA.DISTANCE / 5 * (float)Math.Cos(radians);
+                        float y = centerY - RECEIVED_DATA.DISTANCE / 5 * (float)Math.Sin(radians);
+                        float radius = 10;
+                                                                         
+                        DRAW.AddPinPoint(new Point((int)x, (int)y), radius);
+                                              
+                        pp_flag = false;
+                    }
 
                     PB_AZIMUTH.Invalidate();
                     PB_AZIMUTH.Refresh();
@@ -870,13 +892,13 @@ namespace RCWS_Situation_room
 
         private void addPinPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DRAW.AddPinPoint(lastposition);
+            //DRAW.AddPinPoint(lastposition);
             PB_AZIMUTH.Invalidate();
         }
 
         private void deletePinPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DRAW.DeletePinPoint(lastposition);
+            //DRAW.DeletePinPoint(lastposition);
             PB_AZIMUTH.Invalidate();
         }
 
@@ -940,6 +962,8 @@ namespace RCWS_Situation_room
         {           
             TIM_ALARM.Interval = 500;
             //TIM_ALARM.Tick
+
+
         }
 
         private void PBI_VIDEO_Paint(object sender, PaintEventArgs e)

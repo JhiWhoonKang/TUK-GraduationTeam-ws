@@ -11,9 +11,9 @@ namespace RCWS_Situation_room
     public struct PinPoint
     {
         public Point Center;
-        public int Radius;
+        public float Radius;
 
-        public PinPoint(Point center, int radius)
+        public PinPoint(Point center, float radius)
         {
             Center = center;
             Radius = radius;
@@ -24,14 +24,19 @@ namespace RCWS_Situation_room
     {
         private List<PinPoint> pinpoint = new List<PinPoint>();
 
-        public void AddPinPoint(Point point)
+        public void AddPinPoint(Point center, float radius)
         {
-            pinpoint.Add(new PinPoint(point, 10));
+            pinpoint.Add(new PinPoint(center, radius));
         }
 
         public void DeletePinPoint(Point point)
         {
             pinpoint.RemoveAll(pinpoint => IsPointInCircle(point, pinpoint));
+        }
+
+        public void DeleteAllPinPoints()
+        {
+            pinpoint.Clear();
         }
 
         private bool IsPointInCircle(Point point, PinPoint circle)
@@ -44,7 +49,7 @@ namespace RCWS_Situation_room
         {
             foreach (var circle in pinpoint)
             {
-                g.DrawEllipse(Pens.Black, circle.Center.X - circle.Radius, circle.Center.Y - circle.Radius, circle.Radius * 2, circle.Radius * 2);
+                g.DrawEllipse(Pens.Red, circle.Center.X - circle.Radius, circle.Center.Y - circle.Radius, circle.Radius * 2, circle.Radius * 2);
             }
         }
     }
