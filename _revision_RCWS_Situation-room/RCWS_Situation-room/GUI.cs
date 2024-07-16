@@ -63,6 +63,10 @@ namespace RCWS_Situation_room
         private Joystick JOYSTICK;
         Thread THREAD;
         /* */
+        private float panAngle;
+        private float distance;
+        private bool dataReceived = false;
+
         #endregion
 
         public GUI(StreamWriter streamWriter, FormDataSetting formDataSetting)
@@ -299,6 +303,18 @@ namespace RCWS_Situation_room
                 if (buttons[10] == true)
                 {
                     SEND_DATA.Button = SEND_DATA.Button | 0x400;
+                    byte[] receivedData = new byte[Marshal.SizeOf(typeof(Packet.RECEIVED_PACKET))];
+                    RECEIVED_DATA = TcpReturn.BytesToStruct<Packet.RECEIVED_PACKET>(receivedData);
+
+                    // 수신된 데이터 설정
+                    panAngle = RECEIVED_DATA.BODY_PAN;
+                    distance = RECEIVED_DATA.WEAPON_TILT;
+
+                    // 받은 데이터가 있다고 설정
+                    dataReceived = true;
+
+                    // PictureBox를 다시 그리도록 요청
+                    PB_AZIMUTH.Invalidate();
                 }
                 else if (buttons[10] == false)
                 {
@@ -698,32 +714,7 @@ namespace RCWS_Situation_room
             BTN_CAMERA_CONNECT.BackColor = Color.Green;
             BTN_CAMERA_CONNECT.ForeColor = Color.White;
             BTN_CAMERA_CONNECT.Enabled = false;
-        }
-
-        private async void PBI_Video_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                SEND_DATA.C_X = (short)(e.X);
-                SEND_DATA.C_Y = (short)(e.Y);
-                SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
-                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
-                byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-                await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-                await STREAM_WRITER.BaseStream.FlushAsync();
-                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
-            }
-
-            if (e.Button == MouseButtons.Right)
-            {
-                SEND_DATA.Button = (SEND_DATA.Button | 0x00002000);
-                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00001000));
-                byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-                await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-                await STREAM_WRITER.BaseStream.FlushAsync();
-                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
-            }
-        }
+        }        
 
         private void StartReceiving(string ip, int port)
         {
@@ -777,25 +768,30 @@ namespace RCWS_Situation_room
             UDP_CLIENT.BeginReceive(new AsyncCallback(ReceiveCallback), null);
         }
 
-        private void SendUdpData(string serverIp, int port, bool mouse_L, bool mouse_R)
+        private async void PBI_Video_MouseClick(object sender, MouseEventArgs e)
         {
-            try
+            if (e.Button == MouseButtons.Left)
             {
-                UdpClient client = new UdpClient();
-
-                byte[] bytes = new byte[2];
-                bytes[0] = Convert.ToByte(mouse_L);
-                bytes[1] = Convert.ToByte(mouse_R);
-
-                client.Send(bytes, bytes.Length, serverIp, port);
-
-                client.Close();
+                SEND_DATA.C_X = (short)(e.X);
+                SEND_DATA.C_Y = (short)(e.Y);
+                SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
+                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
+                byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                await STREAM_WRITER.BaseStream.FlushAsync();
+                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
             }
-            catch (Exception ex)
-            {   
-                Console.WriteLine("ERROR: " + ex.Message);
+
+            if (e.Button == MouseButtons.Right)
+            {
+                SEND_DATA.Button = (SEND_DATA.Button | 0x00002000);
+                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00001000));
+                byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                await STREAM_WRITER.BaseStream.FlushAsync();
+                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
             }
-        }                
+        }
         #endregion
 
         #region AZEL GUI
@@ -816,7 +812,6 @@ namespace RCWS_Situation_room
 
             /* */
             int lineLength = centerX * 2;
-            //g.DrawEllipse(Pens.Black, 0, 0, pictureBox_azimuth.Width - 1, pictureBox_azimuth.Height - 1);
             /* */
 
             /* Body Pan */
@@ -826,14 +821,11 @@ namespace RCWS_Situation_room
             g.DrawLine(Pens.Red, new Point(centerX, centerY), new Point(endXRCWS, endYRCWS));
             /* */
 
-            ///* Optical Pan */
-            //double radianAngleOptical = RECEIVED_DATA.OPTICAL_PAN * Math.PI / 180.0;
-            //int endXOptical = centerX + (int)(lineLength * Math.Sin(radianAngleOptical));
-            //int endYOptical = centerY - (int)(lineLength * Math.Cos(radianAngleOptical));
-            //g.DrawLine(Pens.Blue, new Point(centerX, centerY), new Point(endXOptical, endYOptical));
-            ///* */
-
             DRAW.Drawing(e.Graphics);
+
+            /* Pin Point */
+
+            /* */
         }
 
         Point clickLocation;
