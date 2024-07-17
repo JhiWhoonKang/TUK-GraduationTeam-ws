@@ -25,6 +25,9 @@ class Optical:
         
         self.distance = 0
         self.strength = 0
+        self.autodelay = 100
+        
+        self._info = True
 
         
     def __int_from_bytes(self,data):
@@ -42,12 +45,22 @@ class Optical:
             com = (data[0] & self.__CAMMANMASK)
             if com == 0x01: # 고정초점 값
                 index = int.from_bytes(data[1], 'big')
-                self.fixed_focus_table[index] = self.__int_from_bytes(data[2:])
-                print("[INFO] OPT::Fixed table ", index, " : ", self.fixed_focus_table[index])
+                self.fixed_zoom_table[index] = self.__int_from_bytes(data[2:])
+                if self._info:
+                    print("[INFO] OPT::Fixed Zoom table ", index, " : ", self.fixed_zoom_table[index])
             if com == 0x02: # 고정배율 값
                 index = int.from_bytes(data[1], 'big')
-                self.fixed_zoom_table[index] = self.__int_from_bytes(data[2:])
-                print("[INFO] OPT::Zoom table ", index, " : ", self.fixed_zoom_table[index])
+                self.fixed_focus_table[index] = self.__int_from_bytes(data[2:])
+                if self._info:
+                    print("[INFO] OPT::Fixed Focus table ", index, " : ", self.fixed_focus_table[index])
+            if com == 0x03: # 현재 배율값
+                value = self.__int_from_bytes(data[2:])
+                if self._info:
+                    print("[INFO] OPT::Current Zoom Value : ", value)
+            if com == 0x04: # 현재 초점값
+                value = self.__int_from_bytes(data[2:])
+                if self._info:
+                    print("[INFO] OPT::Current Focus Value : ", value)
         
     def __TOFData(self, data):
         if ((data[0] & self.__MODEMASK) >> 7) == 0x00:           # 읽기 모드
@@ -55,12 +68,20 @@ class Optical:
             if com == 0x00: 
                 if (data[1] == self.__optical_ID):
                     self.ack = True
-                    print("INFO] OPT::Optical Ack")
+                    if self._info:
+                        print("INFO] OPT::Optical Ack")
             if com == 0x01: 
                 self.distance = self.__int_from_bytes(data[1:])
-                print("INFO] OPT::Distance : ", self.distance)
+                if self._info: 
+                    print("INFO] OPT::Distance : ", self.distance)
+            if com == 0x02: 
+                self.autodelay = self.__int_from_bytes(data[1:])
+                if self._info:
+                    print("INFO] OPT::AutoDelay : ", self.autodelay)
                 
-                
+    def Info(self, bool:bool):
+        self._info = bool
+    
     def CheckPacket(self, data):
         if ((data[0] & self.__DEVICEMASK) >> 6) == 0x00:     # tof
             self.__TOFData(data[2])
@@ -116,7 +137,7 @@ class Optical:
         packet = [self.__optical_ID, 1, 0x03]
         return bytearray(packet)
     
-    def ReadFZoomTable(self, index, value):
+    def SetZoomTableValue(self, index, value):
         if self.__CHECKACK == True:
             return self.ACK()
         if (index > 10) or (index < 0):
@@ -124,6 +145,90 @@ class Optical:
         if (value < 0) or (value > 180):
             return self.__DUMMY
         packet = [self.__optical_ID, 3, 0xC1, index, value]
+        return bytearray(packet)
+    
+    def SetFocusTableValue(self, index, value):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        if (index > 10) or (index < 0):
+            return self.__DUMMY
+        if (value < 0) or (value > 180):
+            return self.__DUMMY
+        packet = [self.__optical_ID, 3, 0xC2, index, value]
+        return bytearray(packet)
+    
+    def SetZoomCurrent(self, value):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        if (value < 0) or (value > 180):
+            return self.__DUMMY
+        packet = [self.__optical_ID, 3, 0xC3, 0x00, value]
+        return bytearray(packet)
+    
+    def SetFocusCurrent(self, value):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        if (value < 0) or (value > 180):
+            return self.__DUMMY
+        packet = [self.__optical_ID, 3, 0xC4, 0x00, value]
+        return bytearray(packet)
+    
+    def SetAutoZoom(self, value):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        if (value < 0) or (value > 180):
+            return self.__DUMMY
+        packet = [self.__optical_ID, 3, 0xC5, 0x00, value]
+        return bytearray(packet)
+    
+    def SetAutoFocus(self, value):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        if (value < 0) or (value > 180):
+            return self.__DUMMY
+        packet = [self.__optical_ID, 3, 0xC6, 0x00, value]
+        return bytearray(packet)
+    
+    def UseFixedCameraTable(self, index):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        if (index > 10) or (index < 0):
+            return self.__DUMMY
+        packet = [self.__optical_ID, 2, 0xC7, index]
+        return bytearray(packet)
+    
+    def UseAutoFocus(self):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        packet = [self.__optical_ID, 1, 0xC8]
+        return bytearray(packet)
+    
+    def GetZoomTableValue(self, index):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        if (index > 10) or (index < 0):
+            return self.__DUMMY
+        packet = [self.__optical_ID, 2, 0x41, index]
+        return bytearray(packet)
+    
+    def GetFocusTableValue(self, index):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        if (index > 10) or (index < 0):
+            return self.__DUMMY
+        packet = [self.__optical_ID, 2, 0x42, index]
+        return bytearray(packet)
+    
+    def GetZoomCurrent(self):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        packet = [self.__optical_ID, 2, 0x43]
+        return bytearray(packet)
+    
+    def GetFocusCurrent(self,):
+        if self.__CHECKACK == True:
+            return self.ACK()
+        packet = [self.__optical_ID, 2, 0x44]
         return bytearray(packet)
     
     def Reset(self):

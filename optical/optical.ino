@@ -276,12 +276,12 @@ bool Data_Read() {
         focus_pos = rxmsg.buf[2];
         CANDEBUG DEBUGSerial.printf("Set focus %d, %02X\n",focus_pos ,focus_pos);
       break;
-      case 0x05:
+      case 0x05: // Set auto zoom offset
         memcpy(&offset_, &rxmsg.buf[2], 1);
         zoom_offset = offset_;
         CANDEBUG DEBUGSerial.printf("Set zoom offset %d, %02X\n",zoom_offset ,zoom_offset);
       break;
-      case 0x06:
+      case 0x06: // Set auto focus offset
         memcpy(&offset_, &rxmsg.buf[2], 1);
         focus_offset = offset_;
         CANDEBUG DEBUGSerial.printf("Set focus offset %d, %02X\n",focus_offset ,focus_offset);
