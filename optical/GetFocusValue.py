@@ -79,6 +79,7 @@ if __name__=="__main__":
             print(com , " value from ", opt.fixed_focus_table[index], " to ", value)
         
         WriteAndWait(teensy)
+        print("Setting Done")
         
             
             
