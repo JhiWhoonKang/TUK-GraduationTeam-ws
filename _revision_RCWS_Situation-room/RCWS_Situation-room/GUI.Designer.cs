@@ -77,6 +77,11 @@
             this.BTN_SETTING = new System.Windows.Forms.Button();
             this.TIM_ALARM = new System.Windows.Forms.Timer(this.components);
             this.BTN_POWER = new System.Windows.Forms.Button();
+            this.CB_AUTO_AIM_ENABLED = new System.Windows.Forms.CheckBox();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.CB_AUTO_TRACKING_ENABLED = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.PB_MAP)).BeginInit();
             this.pn_mapcontainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PB_AZIMUTH)).BeginInit();
@@ -91,6 +96,7 @@
             this.groupBox3.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PBL_VIDEO)).BeginInit();
+            this.groupBox10.SuspendLayout();
             this.SuspendLayout();
             // 
             // PB_MAP
@@ -250,6 +256,7 @@
             // groupBox7
             // 
             this.groupBox7.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.groupBox7.Controls.Add(this.groupBox10);
             this.groupBox7.Controls.Add(this.groupBox6);
             this.groupBox7.Controls.Add(this.groupBox4);
             this.groupBox7.Controls.Add(this.groupBox8);
@@ -282,7 +289,7 @@
             this.groupBox4.Controls.Add(this.label8);
             this.groupBox4.Controls.Add(this.label13);
             this.groupBox4.ForeColor = System.Drawing.Color.White;
-            this.groupBox4.Location = new System.Drawing.Point(7, 242);
+            this.groupBox4.Location = new System.Drawing.Point(7, 356);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(118, 118);
             this.groupBox4.TabIndex = 20;
@@ -329,7 +336,7 @@
             this.groupBox8.Controls.Add(this.TB_DISTANCE);
             this.groupBox8.Controls.Add(this.label5);
             this.groupBox8.ForeColor = System.Drawing.Color.White;
-            this.groupBox8.Location = new System.Drawing.Point(7, 166);
+            this.groupBox8.Location = new System.Drawing.Point(7, 280);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(118, 70);
             this.groupBox8.TabIndex = 17;
@@ -553,6 +560,61 @@
             this.BTN_POWER.UseVisualStyleBackColor = true;
             this.BTN_POWER.Click += new System.EventHandler(this.BTN_POWER_Click);
             // 
+            // CB_AUTO_AIM_ENABLED
+            // 
+            this.CB_AUTO_AIM_ENABLED.AutoSize = true;
+            this.CB_AUTO_AIM_ENABLED.Location = new System.Drawing.Point(7, 38);
+            this.CB_AUTO_AIM_ENABLED.Name = "CB_AUTO_AIM_ENABLED";
+            this.CB_AUTO_AIM_ENABLED.Size = new System.Drawing.Size(100, 16);
+            this.CB_AUTO_AIM_ENABLED.TabIndex = 29;
+            this.CB_AUTO_AIM_ENABLED.Text = "Deactivated";
+            this.CB_AUTO_AIM_ENABLED.UseVisualStyleBackColor = true;
+            this.CB_AUTO_AIM_ENABLED.CheckedChanged += new System.EventHandler(this.CB_AUTO_AIM_ENABLED_CheckedChanged);
+            // 
+            // groupBox10
+            // 
+            this.groupBox10.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.groupBox10.Controls.Add(this.CB_AUTO_TRACKING_ENABLED);
+            this.groupBox10.Controls.Add(this.CB_AUTO_AIM_ENABLED);
+            this.groupBox10.Controls.Add(this.label9);
+            this.groupBox10.Controls.Add(this.label3);
+            this.groupBox10.ForeColor = System.Drawing.Color.White;
+            this.groupBox10.Location = new System.Drawing.Point(7, 166);
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.Size = new System.Drawing.Size(118, 108);
+            this.groupBox10.TabIndex = 18;
+            this.groupBox10.TabStop = false;
+            this.groupBox10.Text = "Mode";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 23);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(62, 12);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "자동 조준";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(4, 68);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(106, 12);
+            this.label9.TabIndex = 14;
+            this.label9.Text = "사람 자동 트래킹";
+            // 
+            // CB_AUTO_TRACKING_ENABLED
+            // 
+            this.CB_AUTO_TRACKING_ENABLED.AutoSize = true;
+            this.CB_AUTO_TRACKING_ENABLED.Location = new System.Drawing.Point(7, 83);
+            this.CB_AUTO_TRACKING_ENABLED.Name = "CB_AUTO_TRACKING_ENABLED";
+            this.CB_AUTO_TRACKING_ENABLED.Size = new System.Drawing.Size(100, 16);
+            this.CB_AUTO_TRACKING_ENABLED.TabIndex = 30;
+            this.CB_AUTO_TRACKING_ENABLED.Text = "Deactivated";
+            this.CB_AUTO_TRACKING_ENABLED.UseVisualStyleBackColor = true;
+            this.CB_AUTO_TRACKING_ENABLED.CheckedChanged += new System.EventHandler(this.CB_AUTO_TRACKING_ENABLED_CheckedChanged);
+            // 
             // GUI
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -601,6 +663,8 @@
             this.groupBox3.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PBL_VIDEO)).EndInit();
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -662,5 +726,10 @@
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.Timer TIM_ALARM;
         private System.Windows.Forms.Button BTN_POWER;
+        private System.Windows.Forms.CheckBox CB_AUTO_AIM_ENABLED;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox CB_AUTO_TRACKING_ENABLED;
     }
 }

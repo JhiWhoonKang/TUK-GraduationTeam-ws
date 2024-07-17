@@ -264,14 +264,14 @@ namespace RCWS_Situation_room
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x0000001C));
                 }
 
-                if (buttons[6] == true)
-                {
-                    SEND_DATA.Button = SEND_DATA.Button | 0x40;
-                }
-                else if (buttons[6] == false)
-                {
-                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000040));
-                }
+                //if (buttons[6] == true)
+                //{
+                //    SEND_DATA.Button = SEND_DATA.Button | 0x40;
+                //}
+                //else if (buttons[6] == false)
+                //{
+                //    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000040));
+                //}
 
                 if (buttons[7] == true)
                 {
@@ -282,14 +282,14 @@ namespace RCWS_Situation_room
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000080));
                 }
 
-                if (buttons[8] == true)
-                {
-                    SEND_DATA.Button = SEND_DATA.Button | 0x100;
-                }
-                else if (buttons[8] == false)
-                {
-                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000100));
-                }
+                //if (buttons[8] == true)
+                //{
+                //    SEND_DATA.Button = SEND_DATA.Button | 0x100;
+                //}
+                //else if (buttons[8] == false)
+                //{
+                //    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000100));
+                //}
 
                 if (buttons[9] == true)
                 {
@@ -339,12 +339,6 @@ namespace RCWS_Situation_room
             }
         }
         #endregion
-
-        private void pinpoint(float _pan, float _distance)      
-        {
-            
-            
-        }
 
         #region Map
         private void UpdateMapImage()
@@ -1040,17 +1034,6 @@ namespace RCWS_Situation_room
             g.DrawString((80).ToString(), font, brush, A80X, A_Y);
             g.DrawString((100).ToString(), font, brush, A100X, A_Y);
 
-
-
-            //float startX = lineA_X - 220;
-            //float interval = 40;            
-
-            //for (int i = -100; i <= 100; i += 20)
-            //{
-            //    g.DrawString(i.ToString(), font, brush, startX, A_Y);
-            //    startX += interval;
-            //}
-
             /* 고각 */
             // # 막대기
             float lineE_X = define.VIDEO_WIDTH / 24 * 21;
@@ -1098,6 +1081,38 @@ namespace RCWS_Situation_room
             {
                 BTN_POWER.BackColor = Color.Green;
                 SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00100000));                
+            }
+        }
+
+        private void CB_AUTO_AIM_ENABLED_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CB_AUTO_AIM_ENABLED.Checked)
+            {
+                CB_AUTO_AIM_ENABLED.Text = "Activated";
+
+                SEND_DATA.Button = SEND_DATA.Button | 0x40;
+            }
+            else
+            {
+                CB_AUTO_AIM_ENABLED.Text = "Deactivated";
+
+                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000040));
+            }
+        }
+
+        private void CB_AUTO_TRACKING_ENABLED_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CB_AUTO_TRACKING_ENABLED.Checked)
+            {
+                CB_AUTO_TRACKING_ENABLED.Text = "Activated";
+
+                SEND_DATA.Button = SEND_DATA.Button | 0x10000;
+            }
+            else
+            {
+                CB_AUTO_TRACKING_ENABLED.Text = "Deactivated";
+
+                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00010000));
             }
         }
     }
