@@ -62,6 +62,7 @@ namespace RCWS_Situation_room
         /* */
 
         private bool pwr_flag = false;
+        double HSB_VEL_VALUE;
         #endregion
 
         public GUI(StreamWriter streamWriter, FormDataSetting formDataSetting)
@@ -128,6 +129,8 @@ namespace RCWS_Situation_room
 
             KeyDown += new KeyEventHandler(GUI_KeyDown);
             KeyUp += new KeyEventHandler(GUI_KeyUp);
+
+            HSB_VEL_VALUE = 1.0;
 
             this.Focus();
         }
@@ -198,11 +201,13 @@ namespace RCWS_Situation_room
                 {
                     if (ax_X >= 0.2025)
                     {
-                        SEND_DATA.BodyPan = (int)(ax_X * 400 - 80);
+                        //SEND_DATA.BodyPan = (int)(ax_X * 400 - 80);
+                        SEND_DATA.BodyPan = (int)((ax_X * 400 - 80) * HSB_VEL_VALUE);
                     }
                     else if (ax_X <= -0.2025)
                     {
-                        SEND_DATA.BodyPan = (int)(ax_X * 400 + 80);
+                        //SEND_DATA.BodyPan = (int)(ax_X * 400 + 80);
+                        SEND_DATA.BodyPan = (int)((ax_X * 400 + 80) * HSB_VEL_VALUE);
                     }
                 }
 
@@ -215,11 +220,13 @@ namespace RCWS_Situation_room
                 {
                     if (ax_Y >= 0.22)
                     {
-                        SEND_DATA.BodyTilt = (int)(ax_Y * 100 - 20);
+                        //SEND_DATA.BodyTilt = (int)(ax_Y * 100 - 20);
+                        SEND_DATA.BodyTilt = (int)((ax_Y * 100 - 20) * HSB_VEL_VALUE);
                     }
                     else if (ax_Y <= -0.22)
                     {
-                        SEND_DATA.BodyTilt = (int)(ax_Y * 100 + 20);
+                        //SEND_DATA.BodyTilt = (int)(ax_Y * 100 + 20);
+                        SEND_DATA.BodyTilt = (int)((ax_Y * 100 + 20) * HSB_VEL_VALUE);
                     }
                 }
 
@@ -1128,13 +1135,10 @@ namespace RCWS_Situation_room
                 SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00010000));
             }
         }
-
+        
         private void HSB_Vel_Scroll(object sender, ScrollEventArgs e)
         {
-            double value = HSB_Vel.Value / 1000.0;
-            //lb_test.Text = value.ToString("0.000");
-
-            SEND_DATA.BodyPan = (int)((ax_X * 400 - 80) * value);
+            HSB_VEL_VALUE = HSB_Vel.Value / 1000.0;
         }
     }
 }

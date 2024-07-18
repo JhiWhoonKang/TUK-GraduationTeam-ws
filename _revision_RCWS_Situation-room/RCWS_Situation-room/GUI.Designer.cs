@@ -84,7 +84,6 @@
             this.BTN_SETTING = new System.Windows.Forms.Button();
             this.TIM_ALARM = new System.Windows.Forms.Timer(this.components);
             this.BTN_POWER = new System.Windows.Forms.Button();
-            this.lb_test = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.PB_MAP)).BeginInit();
             this.pn_mapcontainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PB_AZIMUTH)).BeginInit();
@@ -639,20 +638,10 @@
             this.BTN_POWER.UseVisualStyleBackColor = true;
             this.BTN_POWER.Click += new System.EventHandler(this.BTN_POWER_Click);
             // 
-            // lb_test
-            // 
-            this.lb_test.AutoSize = true;
-            this.lb_test.Location = new System.Drawing.Point(436, 45);
-            this.lb_test.Name = "lb_test";
-            this.lb_test.Size = new System.Drawing.Size(44, 12);
-            this.lb_test.TabIndex = 28;
-            this.lb_test.Text = "label11";
-            // 
             // GUI
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1830, 782);
-            this.Controls.Add(this.lb_test);
             this.Controls.Add(this.BTN_POWER);
             this.Controls.Add(this.BTN_SETTING);
             this.Controls.Add(this.lb_yy);
@@ -767,6 +756,5 @@
         private System.Windows.Forms.CheckBox CB_AUTO_TRACKING_ENABLED;
         private System.Windows.Forms.HScrollBar HSB_Vel;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label lb_test;
     }
 }
