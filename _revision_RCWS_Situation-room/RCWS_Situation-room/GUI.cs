@@ -1115,5 +1115,11 @@ namespace RCWS_Situation_room
                 SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00010000));
             }
         }
+
+        private void HSB_Vel_Scroll(object sender, ScrollEventArgs e)
+        {
+            double value = HSB_Vel.Value / 1000.0;
+            lb_test.Text = value.ToString("0.000");
+        }
     }
 }
