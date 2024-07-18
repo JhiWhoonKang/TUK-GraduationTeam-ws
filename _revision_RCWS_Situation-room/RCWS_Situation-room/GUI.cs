@@ -176,7 +176,7 @@ namespace RCWS_Situation_room
             
             joystick.Acquire();
 
-            SEND_DATA.Button = 0xfc100004;
+            SEND_DATA.Button = 0xfc100000;
 
             int pre_1 = SEND_DATA.BodyPan;
             int pre_2 = SEND_DATA.BodyTilt;
@@ -243,25 +243,37 @@ namespace RCWS_Situation_room
                 if (buttons[2] == true)
                 {
                     SEND_DATA.Button = SEND_DATA.Button | 0x04;
-                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000038));
+                }
+                else if (buttons[2] == false)
+                {
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000004));
                 }
 
                 if (buttons[3] == true)
                 {
                     SEND_DATA.Button = SEND_DATA.Button | 0x08;
-                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000034));
+                }
+                else if (buttons[3] == false)
+                {
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000008));
                 }
 
                 if (buttons[4] == true)
                 {
                     SEND_DATA.Button = SEND_DATA.Button | 0x10;
-                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x0000002C));
+                }
+                else if (buttons[4] == false)
+                {
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000010));
                 }
 
                 if (buttons[5] == true)
                 {
                     SEND_DATA.Button = SEND_DATA.Button | 0x20;
-                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x0000001C));
+                }
+                else if (buttons[5] == false)
+                {
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000020));
                 }
 
                 //if (buttons[6] == true)
