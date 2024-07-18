@@ -170,6 +170,7 @@ namespace RCWS_Situation_room
             }
         }
 
+        float ax_X;
         private void Joy_Run()
         {
             var joystick = new Joystick(DIRECT_INPUT, JOYSTICK_GUID);
@@ -188,7 +189,7 @@ namespace RCWS_Situation_room
                 var state = joystick.GetCurrentState();
                 var buttons = state.Buttons;
 
-                float ax_X = ((float)(state.X - 32511) / (float)(33024));
+                ax_X = ((float)(state.X - 32511) / (float)(33024));
                 if (ax_X < 0.2025 && ax_X > -0.2025)
                 {
                     SEND_DATA.BodyPan = 0;
@@ -1131,7 +1132,9 @@ namespace RCWS_Situation_room
         private void HSB_Vel_Scroll(object sender, ScrollEventArgs e)
         {
             double value = HSB_Vel.Value / 1000.0;
-            lb_test.Text = value.ToString("0.000");
+            //lb_test.Text = value.ToString("0.000");
+
+            SEND_DATA.BodyPan = (int)((ax_X * 400 - 80) * value);
         }
     }
 }

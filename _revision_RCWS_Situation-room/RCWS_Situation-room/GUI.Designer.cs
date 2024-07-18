@@ -48,7 +48,9 @@
             this.BTN_PERMISSION = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.CB_AUTO_TRACKING_ENABLED = new System.Windows.Forms.CheckBox();
+            this.HSB_Vel = new System.Windows.Forms.HScrollBar();
             this.CB_AUTO_AIM_ENABLED = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -82,8 +84,6 @@
             this.BTN_SETTING = new System.Windows.Forms.Button();
             this.TIM_ALARM = new System.Windows.Forms.Timer(this.components);
             this.BTN_POWER = new System.Windows.Forms.Button();
-            this.HSB_Vel = new System.Windows.Forms.HScrollBar();
-            this.label10 = new System.Windows.Forms.Label();
             this.lb_test = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.PB_MAP)).BeginInit();
             this.pn_mapcontainer.SuspendLayout();
@@ -289,6 +289,15 @@
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Option";
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(4, 112);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(62, 12);
+            this.label10.TabIndex = 31;
+            this.label10.Text = "회전 속도";
+            // 
             // CB_AUTO_TRACKING_ENABLED
             // 
             this.CB_AUTO_TRACKING_ENABLED.AutoSize = true;
@@ -299,6 +308,16 @@
             this.CB_AUTO_TRACKING_ENABLED.Text = "Deactivated";
             this.CB_AUTO_TRACKING_ENABLED.UseVisualStyleBackColor = true;
             this.CB_AUTO_TRACKING_ENABLED.CheckedChanged += new System.EventHandler(this.CB_AUTO_TRACKING_ENABLED_CheckedChanged);
+            // 
+            // HSB_Vel
+            // 
+            this.HSB_Vel.LargeChange = 1;
+            this.HSB_Vel.Location = new System.Drawing.Point(7, 133);
+            this.HSB_Vel.Maximum = 1000;
+            this.HSB_Vel.Name = "HSB_Vel";
+            this.HSB_Vel.Size = new System.Drawing.Size(106, 16);
+            this.HSB_Vel.TabIndex = 28;
+            this.HSB_Vel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.HSB_Vel_Scroll);
             // 
             // CB_AUTO_AIM_ENABLED
             // 
@@ -619,25 +638,6 @@
             this.BTN_POWER.Text = "Power";
             this.BTN_POWER.UseVisualStyleBackColor = true;
             this.BTN_POWER.Click += new System.EventHandler(this.BTN_POWER_Click);
-            // 
-            // HSB_Vel
-            // 
-            this.HSB_Vel.LargeChange = 1;
-            this.HSB_Vel.Location = new System.Drawing.Point(7, 133);
-            this.HSB_Vel.Maximum = 1000;
-            this.HSB_Vel.Name = "HSB_Vel";
-            this.HSB_Vel.Size = new System.Drawing.Size(106, 16);
-            this.HSB_Vel.TabIndex = 28;
-            this.HSB_Vel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.HSB_Vel_Scroll);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(4, 112);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(62, 12);
-            this.label10.TabIndex = 31;
-            this.label10.Text = "회전 속도";
             // 
             // lb_test
             // 
