@@ -188,21 +188,21 @@ class Gun:
         
         return bytearray(packet)
     
-    def SetTriggerDegree(self, data:str, data2:int):
+    def SetTriggerDegree(self, name:str, degree:int):
         if self.__CHECKACK == True:
             return self.ACK()
         packet = list()
         
-        if data2 > 0xFF or data2 < 0:
+        if degree > 0xFF or degree < 0:
             print("[ERROR] GUN::SetTriggerDegree degree value error")
             packet = [0,0,0]
         else: 
-            if data == "open":
-                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x14]
-            elif data == "ready":
-                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x17]
-            elif data == "fire": # on
-                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x16]
+            if name == "open":
+                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x14, degree]
+            elif name == "ready":
+                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x17, degree]
+            elif name == "fire": # on
+                packet = [self.__gun_ID, 2, self.WRITE+self.DEVICE+0x16, degree]
             else:
                 print("[ERROR] GUN::SetTriggerDegree name error")
                 packet = [0,0,0]
@@ -215,7 +215,7 @@ class Gun:
         packet = list()
         packed_data = struct.pack('<i', data)
         if data < 0:
-            print("[ERROR] GUN::SetSingleTime time isn't minus")
+            print("[ERROR] GUN::SetSingleTime can't set minus")
             packet = [0,0,0]
         else:
             packet = [self.__gun_ID, 5, self.WRITE+self.DEVICE+0x15]
