@@ -284,14 +284,14 @@ namespace RCWS_Situation_room
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000020));
                 }
 
-                //if (buttons[6] == true)
-                //{
-                //    SEND_DATA.Button = SEND_DATA.Button | 0x40;
-                //}
-                //else if (buttons[6] == false)
-                //{
-                //    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000040));
-                //}
+                if (buttons[6] == true)
+                {
+                    SEND_DATA.Button = SEND_DATA.Button | 0x20000;
+                }
+                else if (buttons[6] == false)
+                {
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00020000));
+                }
 
                 if (buttons[7] == true)
                 {
@@ -302,14 +302,14 @@ namespace RCWS_Situation_room
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000080));
                 }
 
-                //if (buttons[8] == true)
-                //{
-                //    SEND_DATA.Button = SEND_DATA.Button | 0x100;
-                //}
-                //else if (buttons[8] == false)
-                //{
-                //    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000100));
-                //}
+                if (buttons[8] == true)
+                {
+                    SEND_DATA.Button = SEND_DATA.Button | 0x40000;
+                }
+                else if (buttons[8] == false)
+                {
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00040000));
+                }
 
                 if (buttons[9] == true)
                 {
@@ -803,12 +803,14 @@ namespace RCWS_Situation_room
             UDP_CLIENT.BeginReceive(new AsyncCallback(ReceiveCallback), null);
         }
 
+
+
         private async void PBI_Video_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                SEND_DATA.C_X = (short)(e.X);
-                SEND_DATA.C_Y = (short)(e.Y);
+                SEND_DATA.C_X1 = (short)(e.X);
+                SEND_DATA.C_Y1 = (short)(e.Y);                
                 SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
                 SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
                 byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
@@ -818,7 +820,7 @@ namespace RCWS_Situation_room
             }
 
             if (e.Button == MouseButtons.Right)
-            {
+            {                
                 SEND_DATA.Button = (SEND_DATA.Button | 0x00002000);
                 SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00001000));
                 byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
@@ -1139,6 +1141,27 @@ namespace RCWS_Situation_room
         private void HSB_Vel_Scroll(object sender, ScrollEventArgs e)
         {
             HSB_VEL_VALUE = HSB_Vel.Value / 1000.0;
+        }
+
+        private void PBL_VIDEO_MouseDown(object sender, MouseEventArgs e)
+        {
+            SEND_DATA.C_X1 = (short)(e.X);
+            SEND_DATA.C_Y1 = (short)(e.Y);            
+
+
+        }
+
+        private async void PBL_VIDEO_MouseUp(object sender, MouseEventArgs e)
+        {            
+            SEND_DATA.C_X2 = (short)(e.X);
+            SEND_DATA.C_Y2 = (short)(e.Y);
+
+            SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
+            SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
+            byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+            await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+            await STREAM_WRITER.BaseStream.FlushAsync();
+            SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
         }
     }
 }

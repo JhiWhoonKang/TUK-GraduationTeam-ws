@@ -13,8 +13,10 @@ namespace RCWS_Situation_room
             public int BodyPan;
             public int BodyTilt;
             public uint Button;
-            public short C_X;
-            public short C_Y;
+            public short C_X1;
+            public short C_Y1;
+            public short C_X2;
+            public short C_Y2;
         }
 
         public struct RECEIVED_PACKET

@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RCWS_Situation_room
@@ -22,6 +12,8 @@ namespace RCWS_Situation_room
         public Form1()
         {
             InitializeComponent();
+            TB_PW.UseSystemPasswordChar = true;
+            TB_PW.PasswordChar = '*';
         }
 
         StreamWriter streamWriter;
@@ -33,8 +25,8 @@ namespace RCWS_Situation_room
         }
 
         private void btn_login_Click(object sender, EventArgs e)
-        {
-            if (TB_ID.Text == "까불면메카약이다" && TB_PW.Text == "메카트로닉스")
+        {            
+            if (TB_ID.Text == "까불면 메카 약이다" && TB_PW.Text == "mecha")
             {
                 MessageBox.Show("Successfully Login");
                 this.Visible = false;
@@ -63,7 +55,9 @@ namespace RCWS_Situation_room
         private void TB_ID_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
+            {
                 TB_PW.Focus();
+            }              
         }
 
         private void TB_PW_KeyDown(object sender, KeyEventArgs e)

@@ -579,6 +579,8 @@
             this.PBL_VIDEO.TabStop = false;
             this.PBL_VIDEO.Paint += new System.Windows.Forms.PaintEventHandler(this.PBI_VIDEO_Paint);
             this.PBL_VIDEO.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PBI_Video_MouseClick);
+            this.PBL_VIDEO.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBL_VIDEO_MouseDown);
+            this.PBL_VIDEO.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PBL_VIDEO_MouseUp);
             // 
             // lb_xx
             // 
