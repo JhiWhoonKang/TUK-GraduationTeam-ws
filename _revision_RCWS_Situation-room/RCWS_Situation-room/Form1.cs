@@ -34,45 +34,41 @@ namespace RCWS_Situation_room
 
         private void btn_login_Click(object sender, EventArgs e)
         {
-            //if (tb_username.Text == "까불면메카약이다" && tb_password.Text == "메카트로닉스")
-            //{
-            //    MessageBox.Show("Successfully Login");
-            //    this.Visible = false;
-            //    GUI gui = new GUI(streamWriter, formDataSetting);
-            //    gui.Show();
-            //}
+            if (TB_ID.Text == "까불면메카약이다" && TB_PW.Text == "메카트로닉스")
+            {
+                MessageBox.Show("Successfully Login");
+                this.Visible = false;
+                GUI gui = new GUI(streamWriter, formDataSetting);
+                gui.Show();
+            }
 
-            //else if (tb_username.Text == "")
-            //{
-            //    MessageBox.Show("Invalid User Name");
-            //    tb_username.Focus();
-            //    return;
-            //}
+            else if (TB_ID.Text == "")
+            {
+                MessageBox.Show("Invalid User Name");
+                TB_ID.Focus();
+                return;
+            }
 
-            //else if (tb_password.Text == "")
-            //{
-            //    MessageBox.Show("Invalid Password");
-            //    tb_password.Focus();
-            //    return;
-            //}
+            else if (TB_PW.Text == "")
+            {
+                MessageBox.Show("Invalid Password");
+                TB_PW.Focus();
+                return;
+            }
 
-            //else
-            //    MessageBox.Show("Invalid User Name or Password");
-
-            this.Visible = false;
-            GUI gui = new GUI(streamWriter, formDataSetting);
-            gui.Show();
+            else
+                MessageBox.Show("Invalid User Name or Password");
         }
 
-        private void tb_username_KeyDown(object sender, KeyEventArgs e)
+        private void TB_ID_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                tb_password.Focus();
+                TB_PW.Focus();
         }
 
-        private void tb_password_KeyDown(object sender, KeyEventArgs e)
+        private void TB_PW_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter && tb_username.Text=="까불면 메카 약이다" && tb_password.Text == "mecha")
+            if(e.KeyCode == Keys.Enter && TB_ID.Text=="까불면 메카 약이다" && TB_PW.Text == "mecha")
             {
                 MessageBox.Show("Successfully Login");
                 this.Visible = false;

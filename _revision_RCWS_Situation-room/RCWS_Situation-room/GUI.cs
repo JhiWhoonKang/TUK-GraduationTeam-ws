@@ -827,6 +827,118 @@ namespace RCWS_Situation_room
                 SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
             }
         }
+
+        private void PBI_VIDEO_Paint(object sender, PaintEventArgs e)
+        {
+            var g = e.Graphics;
+            Pen redPen = new Pen(Color.Red, 3);
+
+            /* 삼각형 */
+            float At1_X = define.VIDEO_WIDTH / 2;
+            float At1_Y = define.VIDEO_HEIGHT / 12 + 40;
+
+            float At2_X = define.VIDEO_WIDTH / 2 - 10;
+            float At2_Y = define.VIDEO_HEIGHT / 12 + 50;
+
+            float At3_X = define.VIDEO_WIDTH / 2 + 10;
+            float At3_Y = define.VIDEO_HEIGHT / 12 + 50;
+
+            g.DrawLine(redPen, At1_X, At1_Y, At2_X, At2_Y);
+            g.DrawLine(redPen, At2_X, At2_Y, At3_X, At3_Y);
+            g.DrawLine(redPen, At3_X, At3_Y, At1_X, At1_Y);
+
+            int Et1_X = define.VIDEO_WIDTH / 24 * 21 - 10;
+            int Et1_Y = define.VIDEO_HEIGHT / 2;
+
+            int Et2_X = define.VIDEO_WIDTH / 24 * 21 - 20;
+            int Et2_Y = define.VIDEO_HEIGHT / 2 + 10;
+
+            int Et3_X = define.VIDEO_WIDTH / 24 * 21 - 20;
+            int Et3_Y = define.VIDEO_HEIGHT / 2 - 10;
+
+            g.DrawLine(redPen, new Point(Et1_X, Et1_Y), new Point(Et2_X, Et2_Y));
+            g.DrawLine(redPen, new Point(Et2_X, Et2_Y), new Point(Et3_X, Et3_Y));
+            g.DrawLine(redPen, new Point(Et3_X, Et3_Y), new Point(Et1_X, Et1_Y));
+            /* */
+
+            /* 방위각 */
+            // # 막대기
+            float lineA_X = define.VIDEO_WIDTH / 2;
+            float lineA_Y = define.VIDEO_HEIGHT / 12 + 15;
+
+            int spacingA = 10;
+            int lineLength = 20;
+
+            for (int i = -20; i <= 20; i++)
+            {
+                float line_X = lineA_X + (i * spacingA) + (-RECEIVED_DATA.BODY_PAN) * 2;
+                //g.DrawLine(redPen, new Point(line_X, lineA_Y), new Point(line_X, lineA_Y + lineLength));          
+                g.DrawLine(redPen, line_X, lineA_Y, line_X, lineA_Y + lineLength);
+            }
+
+            // # 숫자
+            Font font = new Font("Arial", 12);
+            Brush brush = Brushes.Red;
+
+            float A_Y = lineA_Y - 20;
+            float A_100X = lineA_X - 200 - 20 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_80X = lineA_X - 180 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_60X = lineA_X - 140 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_40X = lineA_X - 100 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_20X = lineA_X - 60 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_0X = lineA_X - 7 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A20X = lineA_X + 40 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A40X = lineA_X + 80 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A60X = lineA_X + 120 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A80X = lineA_X + 160 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A100X = lineA_X + 200 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
+
+            g.DrawString((-100).ToString(), font, brush, A_100X, A_Y);
+            g.DrawString((-80).ToString(), font, brush, A_80X, A_Y);
+            g.DrawString((-60).ToString(), font, brush, A_60X, A_Y);
+            g.DrawString((-40).ToString(), font, brush, A_40X, A_Y);
+            g.DrawString((-20).ToString(), font, brush, A_20X, A_Y);
+            g.DrawString((0).ToString(), font, brush, A_0X, A_Y);
+            g.DrawString((20).ToString(), font, brush, A20X, A_Y);
+            g.DrawString((40).ToString(), font, brush, A40X, A_Y);
+            g.DrawString((60).ToString(), font, brush, A60X, A_Y);
+            g.DrawString((80).ToString(), font, brush, A80X, A_Y);
+            g.DrawString((100).ToString(), font, brush, A100X, A_Y);
+
+            /* 고각 */
+            // # 막대기
+            float lineE_X = define.VIDEO_WIDTH / 24 * 21;
+            float lineE_Y = define.VIDEO_HEIGHT / 2;
+
+            int spacingE = 10;
+
+            for (int i = -6; i <= 6; i++)
+            {
+                float line_Y = lineE_Y + (i * spacingE) + (RECEIVED_DATA.WEAPON_TILT) * 2;
+                g.DrawLine(redPen, lineE_X, line_Y, lineE_X + lineLength, line_Y);
+            }
+
+            // # 숫자
+            float E_X = lineE_X + 20;
+            float E_30Y = lineE_Y + 30 + 20 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+            float E_20Y = lineE_Y + 20 + 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+            float E_10Y = lineE_Y + 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+            float E_0Y = lineE_Y - 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+            float E10Y = lineE_Y - 10 - 20 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+            float E20Y = lineE_Y - 20 - 30 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+            float E30Y = lineE_Y - 30 - 40 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+
+            g.DrawString((-30).ToString(), font, brush, E_X, E_30Y);
+            g.DrawString((-20).ToString(), font, brush, E_X, E_20Y);
+            g.DrawString((-10).ToString(), font, brush, E_X, E_10Y);
+            g.DrawString((0).ToString(), font, brush, E_X, E_0Y);
+            g.DrawString((10).ToString(), font, brush, E_X, E10Y);
+            g.DrawString((20).ToString(), font, brush, E_X, E20Y);
+            g.DrawString((30).ToString(), font, brush, E_X, E30Y);
+
+            redPen.Dispose();
+            font.Dispose();
+        }
         #endregion
 
         #region AZEL GUI
@@ -975,119 +1087,7 @@ namespace RCWS_Situation_room
             //TIM_ALARM.Tick
 
 
-        }
-
-        private void PBI_VIDEO_Paint(object sender, PaintEventArgs e)
-        {
-            var g = e.Graphics;
-            Pen redPen = new Pen(Color.Red, 3);
-
-            /* 삼각형 */
-            float At1_X = define.VIDEO_WIDTH / 2;
-            float At1_Y =define.VIDEO_HEIGHT / 12 + 40;
-
-            float At2_X = define.VIDEO_WIDTH / 2 - 10;
-            float At2_Y = define.VIDEO_HEIGHT / 12 + 50;
-
-            float At3_X = define.VIDEO_WIDTH / 2 + 10;
-            float At3_Y = define.VIDEO_HEIGHT / 12 + 50;
-
-            g.DrawLine(redPen, At1_X, At1_Y, At2_X, At2_Y);
-            g.DrawLine(redPen, At2_X, At2_Y, At3_X, At3_Y);
-            g.DrawLine(redPen, At3_X, At3_Y, At1_X, At1_Y);
-
-            int Et1_X = define.VIDEO_WIDTH / 24 * 21 - 10;
-            int Et1_Y = define.VIDEO_HEIGHT / 2;
-
-            int Et2_X = define.VIDEO_WIDTH / 24 * 21 - 20;
-            int Et2_Y = define.VIDEO_HEIGHT / 2 + 10;
-
-            int Et3_X = define.VIDEO_WIDTH / 24 * 21 - 20;
-            int Et3_Y = define.VIDEO_HEIGHT / 2 - 10;
-
-            g.DrawLine(redPen, new Point(Et1_X, Et1_Y), new Point(Et2_X, Et2_Y));
-            g.DrawLine(redPen, new Point(Et2_X, Et2_Y), new Point(Et3_X, Et3_Y));
-            g.DrawLine(redPen, new Point(Et3_X, Et3_Y), new Point(Et1_X, Et1_Y));
-            /* */
-
-            /* 방위각 */
-            // # 막대기
-            float lineA_X = define.VIDEO_WIDTH / 2;
-            float lineA_Y = define.VIDEO_HEIGHT / 12 + 15;
-
-            int spacingA = 10;
-            int lineLength = 20;
-
-            for (int i = -20; i <= 20; i++)
-            {
-                float line_X = lineA_X + (i * spacingA) + (-RECEIVED_DATA.BODY_PAN) * 2;
-                //g.DrawLine(redPen, new Point(line_X, lineA_Y), new Point(line_X, lineA_Y + lineLength));          
-                g.DrawLine(redPen, line_X, lineA_Y, line_X, lineA_Y + lineLength);
-            }
-
-            // # 숫자
-            Font font = new Font("Arial", 12);
-            Brush brush = Brushes.Red;
-
-            float A_Y = lineA_Y - 20;
-            float A_100X = lineA_X - 200 - 20 + (-RECEIVED_DATA.BODY_PAN) * 2;
-            float A_80X = lineA_X - 180 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
-            float A_60X = lineA_X - 140 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
-            float A_40X = lineA_X - 100 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
-            float A_20X = lineA_X - 60 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
-            float A_0X = lineA_X - 7 + (-RECEIVED_DATA.BODY_PAN) * 2;
-            float A20X= lineA_X + 40 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
-            float A40X = lineA_X + 80 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
-            float A60X = lineA_X + 120 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
-            float A80X = lineA_X + 160 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
-            float A100X = lineA_X + 200 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
-
-            g.DrawString((-100).ToString(), font, brush, A_100X, A_Y);
-            g.DrawString((-80).ToString(), font, brush, A_80X, A_Y);
-            g.DrawString((-60).ToString(), font, brush, A_60X, A_Y);
-            g.DrawString((-40).ToString(), font, brush, A_40X, A_Y);
-            g.DrawString((-20).ToString(), font, brush, A_20X, A_Y);
-            g.DrawString((0).ToString(), font, brush, A_0X, A_Y);
-            g.DrawString((20).ToString(), font, brush, A20X, A_Y);
-            g.DrawString((40).ToString(), font, brush, A40X, A_Y);
-            g.DrawString((60).ToString(), font, brush, A60X, A_Y);
-            g.DrawString((80).ToString(), font, brush, A80X, A_Y);
-            g.DrawString((100).ToString(), font, brush, A100X, A_Y);
-
-            /* 고각 */
-            // # 막대기
-            float lineE_X = define.VIDEO_WIDTH / 24 * 21;
-            float lineE_Y = define.VIDEO_HEIGHT / 2;
-
-            int spacingE = 10;
-
-            for (int i = -6; i <= 6; i++)
-            {
-                float line_Y = lineE_Y + (i * spacingE) + (RECEIVED_DATA.WEAPON_TILT) * 2;
-                g.DrawLine(redPen, lineE_X, line_Y, lineE_X + lineLength, line_Y);
-            }
-
-            // # 숫자
-            float E_X = lineE_X + 20;
-            float E_30Y = lineE_Y + 30 + 20 + (RECEIVED_DATA.WEAPON_TILT) * 2;
-            float E_20Y = lineE_Y + 20 + 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
-            float E_10Y = lineE_Y + 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
-            float E_0Y = lineE_Y - 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
-            float E10Y = lineE_Y - 10 - 20 + (RECEIVED_DATA.WEAPON_TILT) * 2;
-            float E20Y = lineE_Y - 20 - 30 + (RECEIVED_DATA.WEAPON_TILT) * 2;
-            float E30Y = lineE_Y - 30 - 40 + (RECEIVED_DATA.WEAPON_TILT) * 2;
-
-            g.DrawString((-30).ToString(), font, brush, E_X, E_30Y);
-            g.DrawString((-20).ToString(), font, brush, E_X, E_20Y);
-            g.DrawString((-10).ToString(), font, brush, E_X, E_10Y);
-            g.DrawString((0).ToString(), font, brush, E_X, E_0Y);
-            g.DrawString((10).ToString(), font, brush, E_X, E10Y);
-            g.DrawString((20).ToString(), font, brush, E_X, E20Y);
-            g.DrawString((30).ToString(), font, brush, E_X, E30Y);
-
-            redPen.Dispose();
-            font.Dispose();
-        }
+        }        
         
         private void BTN_POWER_Click(object sender, EventArgs e)
         {
