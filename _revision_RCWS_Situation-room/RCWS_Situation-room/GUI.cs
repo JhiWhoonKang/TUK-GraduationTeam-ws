@@ -1146,18 +1146,14 @@ namespace RCWS_Situation_room
         private void PBL_VIDEO_MouseDown(object sender, MouseEventArgs e)
         {
             SEND_DATA.C_X1 = (short)(e.X);
-            SEND_DATA.C_Y1 = (short)(e.Y);            
-
-
+            SEND_DATA.C_Y1 = (short)(e.Y);
         }
 
         private async void PBL_VIDEO_MouseUp(object sender, MouseEventArgs e)
         {            
             SEND_DATA.C_X2 = (short)(e.X);
             SEND_DATA.C_Y2 = (short)(e.Y);
-
-            SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
-            SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
+            
             byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
             await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
             await STREAM_WRITER.BaseStream.FlushAsync();
