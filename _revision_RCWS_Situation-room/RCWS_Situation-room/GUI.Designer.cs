@@ -111,19 +111,6 @@
             this.PB_MAP.TabIndex = 0;
             this.PB_MAP.TabStop = false;
             // 
-            // btn_close
-            // 
-            this.btn_close.BackColor = System.Drawing.Color.White;
-            this.btn_close.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_close.BackgroundImage")));
-            this.btn_close.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btn_close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_close.Location = new System.Drawing.Point(2067, 13);
-            this.btn_close.Name = "btn_close";
-            this.btn_close.Size = new System.Drawing.Size(27, 27);
-            this.btn_close.TabIndex = 1;
-            this.btn_close.UseVisualStyleBackColor = false;
-            this.btn_close.Click += new System.EventHandler(this.btn_close_Click);
-            // 
             // pn_mapcontainer
             // 
             this.pn_mapcontainer.Controls.Add(this.PB_MAP);
@@ -524,7 +511,7 @@
             this.BTN_DISCONNECT.TabIndex = 18;
             this.BTN_DISCONNECT.Text = "Disconnect";
             this.BTN_DISCONNECT.UseVisualStyleBackColor = true;
-            this.BTN_DISCONNECT.Click += new System.EventHandler(this.btn_disconnect_Click);
+            this.BTN_DISCONNECT.Click += new System.EventHandler(this.BTN_DISCONNECT_Click);
             // 
             // contextMenuStrip1
             // 

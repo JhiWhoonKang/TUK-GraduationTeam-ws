@@ -135,6 +135,14 @@ namespace RCWS_Situation_room
             this.Focus();
         }
 
+        private void GUI_Load(object sender, EventArgs e)
+        {
+            TIM_ALARM.Interval = 500;
+            //TIM_ALARM.Tick
+
+
+        }
+
         #region Joystick
         private void InitializeJoystick()
         {
@@ -523,7 +531,207 @@ namespace RCWS_Situation_room
         #region TCP
         private async void btn_RCWS_Connect_Click(object sender, EventArgs e)
         {
-            await Task.Run(() => TcpConnectAsync());
+            //await Task.Run(() => TcpConnectAsync());
+            await Task.Run(() => Try_TCP_connect());
+        }
+
+        private async Task Try_TCP_connect()
+        {
+            TcpClient tcpClient = new TcpClient();
+
+            try
+            {
+                SendDisplay("Connecting...");
+                tcpClient.Connect(define.SERVER_IP, define.TCPPORT);
+
+                NETWORK_STREAM = tcpClient.GetStream();
+                STREAM_READER = new StreamReader(NETWORK_STREAM);
+                STREAM_WRITER = new StreamWriter(NETWORK_STREAM);
+                STREAM_WRITER.AutoFlush = true;
+                InitializeJoystick();
+            }
+            catch (Exception ex)
+            {
+                ReceiveDisplay("Connect ERROR: " + ex.Message);
+                return;
+            }
+
+            ReceiveDisplay("Server Connected");
+            BTN_RCWS_CONNECT.BackColor = Color.Green;
+            BTN_RCWS_CONNECT.ForeColor = Color.White;
+
+            await ReceiveDataAsync();
+        }
+
+        private async Task ReceiveDataAsync()
+        {            
+            try
+            {
+                while (true)
+                {
+                    byte[] receivedData = new byte[Marshal.SizeOf(typeof(Packet.RECEIVED_PACKET))];
+                    await NETWORK_STREAM.ReadAsync(receivedData, 0, receivedData.Length);
+                    RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.AppendText(receivedData + "\r\n"); });
+
+                    RECEIVED_DATA = TcpReturn.BytesToStruct<Packet.RECEIVED_PACKET>(receivedData);
+
+                    ProcessReceivedData(RECEIVED_DATA);
+                }
+            }
+            catch (Exception ex)
+            {
+                ReceiveDisplay("Connect ERROR: " + ex.Message);
+            }
+        }
+
+        private void ProcessReceivedData(Packet.RECEIVED_PACKET receivedData)
+        {
+            ReceiveDisplay($"OpticalTilt: {receivedData.OPTICAL_TILT}, BodyTilt: {receivedData.WEAPON_TILT}" +
+                $", BodyPan: {receivedData.BODY_PAN}, Sentry Azimuth: {receivedData.SENTRY_AZIMUTH}, Sentry Elevation: {receivedData.SENTRY_ELEVATION}" +
+                $", Permission: {receivedData.PERMISSION}, Take Aim: {receivedData.TAKE_AIM}, Fire: {receivedData.FIRE}, Mode: {receivedData.MODE}");
+
+            UpdateParam(receivedData);
+        }
+
+        private void UpdateParam(Packet.RECEIVED_PACKET receivedData)
+        {
+
+            if (pp_del_flag)
+            {
+                DRAW.DeleteAllPinPoints();
+                pp_del_flag = false;
+            }
+
+            if (pp_flag)
+            {
+                float centerX = PB_AZIMUTH.Width / 2;
+                float centerY = PB_AZIMUTH.Height / 3 * 2;
+                float radians = -receivedData.BODY_PAN * (float)(Math.PI / 180) + (float)(Math.PI / 2);
+                float x = centerX + receivedData.DISTANCE / 5 * (float)Math.Cos(radians);
+                float y = centerY - receivedData.DISTANCE / 5 * (float)Math.Sin(radians);
+                float radius = 10;
+
+                DRAW.AddPinPoint(new Point((int)x, (int)y), radius);
+                pp_flag = false;
+            }
+
+            PB_AZIMUTH.Invalidate();
+            PB_AZIMUTH.Refresh();
+
+            TB_RCWS_AZIMUTH.Text = receivedData.BODY_PAN.ToString();
+            TB_WEAPON_ELEVATION.Text = receivedData.WEAPON_TILT.ToString();
+            TB_OPTICAL_ELEVATION.Text = receivedData.OPTICAL_TILT.ToString();
+            TB_SENTRY_AZIMUTH.Text = receivedData.SENTRY_AZIMUTH.ToString();
+            TB_SENTRY_ELEVATION.Text = receivedData.SENTRY_ELEVATION.ToString();
+            TB_DISTANCE.Text = receivedData.DISTANCE.ToString();
+
+            // PERMISSION | 0: 상황실 1: 요청 2: 초소
+            // MODE | 0: 수동 1: auto scan 2: 레이저 트래킹 3: 사람 추적
+            if (RECEIVED_DATA.PERMISSION == 0)
+            {
+                BTN_PERMISSION.ForeColor = Color.White;
+                BTN_PERMISSION.BackColor = Color.Green;
+
+                if (RECEIVED_DATA.MODE == 0)
+                {
+                    BTN_PERMISSION.Text = "Controlable";
+                }
+
+                else if (RECEIVED_DATA.MODE == 1)
+                {
+                    BTN_PERMISSION.Text = "Auto Scan Mode";
+                }
+
+                else if (RECEIVED_DATA.MODE == 3)
+                {
+                    BTN_PERMISSION.Text = "Human Tracking Mode";
+                }
+
+                else
+                {
+                    BTN_PERMISSION.ForeColor = Color.Black;
+                    BTN_PERMISSION.BackColor = Color.White;
+                    BTN_PERMISSION.Text = "Err";
+                }
+            }
+
+            else if (RECEIVED_DATA.PERMISSION == 1)
+            {
+                BTN_PERMISSION.ForeColor = Color.White;
+                BTN_PERMISSION.BackColor = Color.Yellow;
+                BTN_PERMISSION.Text = "Requesting...";
+            }
+
+            else if (RECEIVED_DATA.PERMISSION == 2)
+            {
+                BTN_PERMISSION.ForeColor = Color.White;
+                BTN_PERMISSION.BackColor = Color.Blue;
+
+                if (RECEIVED_DATA.MODE == 2)
+                {
+                    BTN_PERMISSION.Text = "Laser Tracking Mode";
+                }
+            }
+
+            else
+            {
+                BTN_PERMISSION.ForeColor = Color.Black;
+                BTN_PERMISSION.BackColor = Color.White;
+                BTN_PERMISSION.Text = "Err";
+            }
+
+            TB_DISTANCE.Text = RECEIVED_DATA.DISTANCE.ToString();
+
+            // TAKE_AIM | 0: 초록, 수동 1: 조준중 2: 초록, 오토
+            if (RECEIVED_DATA.TAKE_AIM == 0)
+            {
+                BTN_TAKE_AIM.ForeColor = Color.White;
+                BTN_TAKE_AIM.BackColor = Color.Green;
+                BTN_TAKE_AIM.Text = "Manual Aiming";
+            }
+
+            else if (RECEIVED_DATA.TAKE_AIM == 1)
+            {
+                BTN_TAKE_AIM.ForeColor = Color.White;
+                BTN_TAKE_AIM.BackColor = Color.Red;
+                BTN_TAKE_AIM.Text = "Aiming Complete";
+            }
+
+            else if (RECEIVED_DATA.TAKE_AIM == 2)
+            {
+                BTN_TAKE_AIM.ForeColor = Color.White;
+                BTN_TAKE_AIM.BackColor = Color.Green;
+                BTN_TAKE_AIM.Text = "Automatic Aiming";
+            }
+
+            else
+            {
+                BTN_TAKE_AIM.ForeColor = Color.Black;
+                BTN_TAKE_AIM.BackColor = Color.White;
+                BTN_TAKE_AIM.Text = "Err";
+            }
+
+            // FIRE | 
+            if (RECEIVED_DATA.FIRE == 0 || RECEIVED_DATA.FIRE == 2)
+            {
+                BTN_FIRE.ForeColor = Color.White;
+                BTN_FIRE.BackColor = Color.Green;
+                BTN_FIRE.Text = "Not Fired";
+            }
+
+            else if (RECEIVED_DATA.FIRE == 1)
+            {
+                BTN_FIRE.ForeColor = Color.White;
+                BTN_FIRE.BackColor = Color.Red;
+                BTN_FIRE.Text = "Fire";
+            }
+
+            else
+            {
+                BTN_FIRE.ForeColor = Color.Black;
+                BTN_FIRE.BackColor = Color.White;
+                BTN_FIRE.Text = "Err";
+            }
         }
 
         private async Task TcpConnectAsync()
@@ -549,6 +757,7 @@ namespace RCWS_Situation_room
 
             ReceiveDisplay("Server Connected");
             BTN_RCWS_CONNECT.BackColor = Color.Green;
+            BTN_RCWS_CONNECT.ForeColor = Color.White;
 
             try
             {
@@ -731,6 +940,12 @@ namespace RCWS_Situation_room
         #endregion
 
         #region UDP, Video
+
+        private void btn_Camera_Connect_Click(object sender, EventArgs e)
+        {
+            Task.Run(() => UdpConnect());
+        }
+
         private void UdpConnect()
         {
             MemoryStream ms = new MemoryStream();
@@ -802,8 +1017,6 @@ namespace RCWS_Situation_room
             }
             UDP_CLIENT.BeginReceive(new AsyncCallback(ReceiveCallback), null);
         }
-
-
 
         private async void PBI_Video_MouseClick(object sender, MouseEventArgs e)
         {
@@ -1049,47 +1262,20 @@ namespace RCWS_Situation_room
         #endregion
 
         #region GUI Button
-        private void btn_close_Click(object sender, EventArgs e)
-        {
-            Close();
-            ;
-            Application.Exit();
-        }
-
-        private void btn_disconnect_Click(object sender, EventArgs e)
+        private void BTN_DISCONNECT_Click(object sender, EventArgs e)
         {
             //SEND_DATA.Button = (SEND_DATA.Button | 0x00000000);        
             Close();
             Application.Exit();
 
             THREAD.Join();
-        }
-
-        private void btn_Camera_Connect_Click(object sender, EventArgs e)
-        {
-            Task.Run(() => UdpConnect());
-        }
+        }        
 
         private void Setting_Click(object sender, EventArgs e)
         {
             Setting SettingForm = new Setting();
             SettingForm.Show();
-        }
-        #endregion
-
-        int CNT = 0;
-        private void ALARM_Tick(object sender, EventArgs e)
-        {
-
-        }
-
-        private void GUI_Load(object sender, EventArgs e)
-        {           
-            TIM_ALARM.Interval = 500;
-            //TIM_ALARM.Tick
-
-
-        }        
+        }                         
         
         private void BTN_POWER_Click(object sender, EventArgs e)
         {
@@ -1104,6 +1290,13 @@ namespace RCWS_Situation_room
                 BTN_POWER.BackColor = Color.Green;
                 SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00100000));                
             }
+        }
+        #endregion
+
+        int CNT = 0;
+        private void ALARM_Tick(object sender, EventArgs e)
+        {
+
         }
 
         private void CB_AUTO_AIM_ENABLED_CheckedChanged(object sender, EventArgs e)
