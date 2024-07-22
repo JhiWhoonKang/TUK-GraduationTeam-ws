@@ -69,7 +69,17 @@ namespace RCWS_Situation_room
         {
             InitializeComponent();
 
+            RTB_RECEIVED_DISPLAY.ReadOnly = true;
+            RTB_SEND_DISPLAY.ReadOnly = true;
+
             RECEIVED_DATA.WEAPON_TILT = 0;
+
+            TB_DISTANCE.ReadOnly = true;
+            TB_OPTICAL_ELEVATION.ReadOnly = true;
+            TB_RCWS_AZIMUTH.ReadOnly = true;
+            TB_WEAPON_ELEVATION.ReadOnly = true;
+            TB_SENTRY_AZIMUTH.ReadOnly = true;
+            TB_SENTRY_ELEVATION.ReadOnly = true;
 
             BTN_POWER.BackColor = Color.Red;
             BTN_POWER.ForeColor = Color.White;
@@ -185,7 +195,7 @@ namespace RCWS_Situation_room
         private void Joy_Run()
         {
             var joystick = new Joystick(DIRECT_INPUT, JOYSTICK_GUID);
-            
+
             joystick.Acquire();
 
             SEND_DATA.Button = 0xfc100000;
@@ -332,7 +342,7 @@ namespace RCWS_Situation_room
                 {
                     SEND_DATA.Button = SEND_DATA.Button | 0x400;
 
-                    pp_flag = true;                    
+                    pp_flag = true;
                 }
                 else if (buttons[10] == false)
                 {
@@ -444,36 +454,37 @@ namespace RCWS_Situation_room
         private readonly SemaphoreSlim keySemaphore = new SemaphoreSlim(1, 1);
         private async void GUI_KeyDown(object sender, KeyEventArgs e)
         {
-            await keySemaphore.WaitAsync();
+            //await keySemaphore.WaitAsync();
             
-            try
-            {
-                if (PRESSEDKEYS.Add(e.KeyCode))
-                {
-                    await SendCommandStructure();
-                }
-            }
-            finally
-            {
-                keySemaphore.Release();
-            }
+            //try
+            //{
+            //    if (PRESSEDKEYS.Add(e.KeyCode))
+            //    {
+            //        await SendCommandStructure();
+            //    }
+            //}
+            //finally
+            //{
+            //    keySemaphore.Release();
+            //}
+            
         }
 
         private async void GUI_KeyUp(object sender, KeyEventArgs e)
         {
-            await keySemaphore.WaitAsync();
+            //await keySemaphore.WaitAsync();
 
-            try
-            {
-                if (PRESSEDKEYS.Remove(e.KeyCode))
-                {
-                    await SendCommandStructure();
-                }
-            }
-            finally
-            {
-                keySemaphore.Release();
-            }
+            //try
+            //{
+            //    if (PRESSEDKEYS.Remove(e.KeyCode))
+            //    {
+            //        await SendCommandStructure();
+            //    }
+            //}
+            //finally
+            //{
+            //    keySemaphore.Release();
+            //}
         }
 
         private async Task SendCommandStructure()
@@ -558,13 +569,13 @@ namespace RCWS_Situation_room
 
             ReceiveDisplay("Server Connected");
             BTN_RCWS_CONNECT.BackColor = Color.Green;
-            BTN_RCWS_CONNECT.ForeColor = Color.White;
+            BTN_RCWS_CONNECT.ForeColor = Color.White;            
 
             await ReceiveDataAsync();
         }
 
         private async Task ReceiveDataAsync()
-        {            
+        {
             try
             {
                 while (true)
@@ -942,7 +953,7 @@ namespace RCWS_Situation_room
         #region UDP, Video
 
         private void btn_Camera_Connect_Click(object sender, EventArgs e)
-        {
+        {            
             Task.Run(() => UdpConnect());
         }
 
@@ -953,6 +964,9 @@ namespace RCWS_Situation_room
             try
             {
                 StartReceiving(define.SERVER_IP, define.UDPPORT);
+
+                BTN_CAMERA_CONNECT.ForeColor = Color.White;
+                BTN_CAMERA_CONNECT.BackColor = Color.Green;
             }
             catch (Exception ex)
             {
@@ -961,10 +975,7 @@ namespace RCWS_Situation_room
                 
                 SendDisplay("Send Data: " + ex.Message);
             }
-            BTN_CAMERA_CONNECT.BackColor = Color.Green;
-            BTN_CAMERA_CONNECT.ForeColor = Color.White;
-            BTN_CAMERA_CONNECT.Enabled = false;
-        }        
+        }
 
         private void StartReceiving(string ip, int port)
         {
@@ -1023,7 +1034,7 @@ namespace RCWS_Situation_room
             if (e.Button == MouseButtons.Left)
             {
                 SEND_DATA.C_X1 = (short)(e.X);
-                SEND_DATA.C_Y1 = (short)(e.Y);                
+                SEND_DATA.C_Y1 = (short)(e.Y);
                 SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
                 SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
                 byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
@@ -1033,7 +1044,7 @@ namespace RCWS_Situation_room
             }
 
             if (e.Button == MouseButtons.Right)
-            {                
+            {
                 SEND_DATA.Button = (SEND_DATA.Button | 0x00002000);
                 SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00001000));
                 byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
@@ -1338,19 +1349,38 @@ namespace RCWS_Situation_room
 
         private void PBL_VIDEO_MouseDown(object sender, MouseEventArgs e)
         {
-            SEND_DATA.C_X1 = (short)(e.X);
-            SEND_DATA.C_Y1 = (short)(e.Y);
+            IS_DRAGGING = true;
+            SEND_DATA.D_X1 = (short)(e.X);
+            SEND_DATA.D_Y1 = (short)(e.Y);
         }
 
         private async void PBL_VIDEO_MouseUp(object sender, MouseEventArgs e)
-        {            
-            SEND_DATA.C_X2 = (short)(e.X);
-            SEND_DATA.C_Y2 = (short)(e.Y);
-            
-            byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-            await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-            await STREAM_WRITER.BaseStream.FlushAsync();
-            SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
-        }
+        {
+            try
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    if (IS_DRAGGING)
+                    {
+                        SEND_DATA.D_X2 = (short)(e.X);
+                        SEND_DATA.D_Y2 = (short)(e.Y);
+
+                        SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
+                        SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
+                        byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                        await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                        await STREAM_WRITER.BaseStream.FlushAsync();
+                        SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
+
+                        IS_DRAGGING = false;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error in Video Pictureu Box: " + ex.Message);
+            }            
+        }        
     }
 }

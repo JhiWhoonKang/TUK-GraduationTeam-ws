@@ -33,6 +33,9 @@
             this.rtb_receivetcp = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.eventLog1 = new System.Diagnostics.EventLog();
+            this.pageSetupDialog1 = new System.Windows.Forms.PageSetupDialog();
+            ((System.ComponentModel.ISupportInitialize)(this.eventLog1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -81,6 +84,10 @@
             this.label3.TabIndex = 7;
             this.label3.Text = "상황실 수신 데이터";
             // 
+            // eventLog1
+            // 
+            this.eventLog1.SynchronizingObject = this;
+            // 
             // FormDataSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -95,6 +102,7 @@
             this.Name = "FormDataSetting";
             this.Text = "FormDataSetting";
             this.Load += new System.EventHandler(this.FormDataSetting_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.eventLog1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -107,5 +115,7 @@
         private System.Windows.Forms.RichTextBox rtb_receivetcp;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Diagnostics.EventLog eventLog1;
+        private System.Windows.Forms.PageSetupDialog pageSetupDialog1;
     }
 }

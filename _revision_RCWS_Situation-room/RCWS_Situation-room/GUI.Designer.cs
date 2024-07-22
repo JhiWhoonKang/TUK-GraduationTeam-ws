@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI));
             this.PB_MAP = new System.Windows.Forms.PictureBox();
-            this.btn_close = new System.Windows.Forms.Button();
             this.pn_mapcontainer = new System.Windows.Forms.Panel();
             this.RTB_SEND_DISPLAY = new System.Windows.Forms.RichTextBox();
             this.RTB_RECEIVED_DISPLAY = new System.Windows.Forms.RichTextBox();
@@ -139,6 +138,7 @@
             // 
             this.BTN_RCWS_CONNECT.FlatAppearance.BorderSize = 0;
             this.BTN_RCWS_CONNECT.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.BTN_RCWS_CONNECT.ForeColor = System.Drawing.Color.Black;
             this.BTN_RCWS_CONNECT.Location = new System.Drawing.Point(13, 13);
             this.BTN_RCWS_CONNECT.Margin = new System.Windows.Forms.Padding(0);
             this.BTN_RCWS_CONNECT.Name = "BTN_RCWS_CONNECT";
@@ -548,6 +548,7 @@
             // 
             this.BTN_CAMERA_CONNECT.FlatAppearance.BorderSize = 0;
             this.BTN_CAMERA_CONNECT.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.BTN_CAMERA_CONNECT.ForeColor = System.Drawing.Color.Black;
             this.BTN_CAMERA_CONNECT.Location = new System.Drawing.Point(111, 13);
             this.BTN_CAMERA_CONNECT.Margin = new System.Windows.Forms.Padding(0);
             this.BTN_CAMERA_CONNECT.Name = "BTN_CAMERA_CONNECT";
@@ -643,7 +644,6 @@
             this.Controls.Add(this.BTN_RCWS_CONNECT);
             this.Controls.Add(this.RTB_RECEIVED_DISPLAY);
             this.Controls.Add(this.RTB_SEND_DISPLAY);
-            this.Controls.Add(this.btn_close);
             this.Controls.Add(this.pn_mapcontainer);
             this.Controls.Add(this.groupBox5);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -684,8 +684,6 @@
 
         #endregion
 
-
-        private System.Windows.Forms.Button btn_close;
         private System.Windows.Forms.Button BTN_RCWS_CONNECT;
         private System.Windows.Forms.Button BTN_PERMISSION;
         private System.Windows.Forms.Button BTN_DISCONNECT;

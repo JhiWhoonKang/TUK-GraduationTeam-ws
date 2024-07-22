@@ -25,31 +25,34 @@ namespace RCWS_Situation_room
         }
 
         private void btn_login_Click(object sender, EventArgs e)
-        {            
-            if (TB_ID.Text == "까불면 메카 약이다" && TB_PW.Text == "mecha")
-            {
-                MessageBox.Show("Successfully Login");
-                this.Visible = false;
-                GUI gui = new GUI(streamWriter, formDataSetting);
-                gui.Show();
-            }
+        {
+            //if (TB_ID.Text == "까불면 메카 약이다" && TB_PW.Text == "mecha")
+            //{
+            //    MessageBox.Show("Successfully Login");
+            //    this.Visible = false;
+            //    GUI gui = new GUI(streamWriter, formDataSetting);
+            //    gui.Show();
+            //}
 
-            else if (TB_ID.Text == "")
-            {
-                MessageBox.Show("Invalid User Name");
-                TB_ID.Focus();
-                return;
-            }
+            //else if (TB_ID.Text == "")
+            //{
+            //    MessageBox.Show("Invalid User Name");
+            //    TB_ID.Focus();
+            //    return;
+            //}
 
-            else if (TB_PW.Text == "")
-            {
-                MessageBox.Show("Invalid Password");
-                TB_PW.Focus();
-                return;
-            }
+            //else if (TB_PW.Text == "")
+            //{
+            //    MessageBox.Show("Invalid Password");
+            //    TB_PW.Focus();
+            //    return;
+            //}
 
-            else
-                MessageBox.Show("Invalid User Name or Password");
+            //else
+            //    MessageBox.Show("Invalid User Name or Password");
+            this.Visible = false;
+            GUI gui = new GUI(streamWriter, formDataSetting);
+            gui.Show();
         }
 
         private void TB_ID_KeyDown(object sender, KeyEventArgs e)
