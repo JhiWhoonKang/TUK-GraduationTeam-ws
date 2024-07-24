@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -26,12 +27,17 @@ namespace RCWS_Situation_room
         private int LAST_Y;
         /* */
 
+        /* TCP */
+        private TcpClient TCP_CLIENT;
+        private StreamWriter STREAM_WRITER;
+        private StreamReader STREAM_READER;
+        private NetworkStream NETWORK_STREAM;
+        //private Thread receiveThread;
+        /* */
+
         /* motion control */
         private HashSet<Keys> PRESSEDKEYS = new HashSet<Keys>();
-
-        StreamWriter STREAM_WRITER;
-        StreamReader STREAM_READER;
-        private NetworkStream NETWORK_STREAM;
+        int PAN_SPEED;
         /* */
 
         /* Packet */
@@ -43,6 +49,7 @@ namespace RCWS_Situation_room
         private Draw DRAW = new Draw();
         private bool pp_flag = false;
         private bool pp_del_flag = false;
+        Point clickLocation;
         /* */
 
         /* Video */
@@ -63,6 +70,12 @@ namespace RCWS_Situation_room
 
         private bool pwr_flag = false;
         double HSB_VEL_VALUE;
+
+        Point startPoint = Point.Empty;
+        Point endPoint = Point.Empty;
+
+        private bool RCWS_CONNECT_FLAG = false;
+        private bool CAMERA_CONNECT_FLAG = false;
         #endregion
 
         public GUI(StreamWriter streamWriter, FormDataSetting formDataSetting)
@@ -187,7 +200,8 @@ namespace RCWS_Situation_room
             }
             catch (Exception ex)
             {
-                RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.AppendText("Joy Error" + ex.Message + "\r\n"); });
+                ErrorHandleDisplay("Joy Error" + ex.Message + "\r\n");
+                //RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.AppendText("Joy Error" + ex.Message + "\r\n"); });
             }
         }
 
@@ -437,7 +451,8 @@ namespace RCWS_Situation_room
 
             catch (Exception ex)
             {
-                MessageBox.Show("Error in MapPictureBox_MouseMove: " + ex.Message);
+                ErrorHandleDisplay("Error in MapPictureBox_MouseMove: " + ex.Message + "\r\n");
+                //MessageBox.Show("Error in MapPictureBox_MouseMove: " + ex.Message);
             }
         }
 
@@ -451,43 +466,22 @@ namespace RCWS_Situation_room
         #endregion
 
         #region Motion Control
-        private readonly SemaphoreSlim keySemaphore = new SemaphoreSlim(1, 1);
         private async void GUI_KeyDown(object sender, KeyEventArgs e)
         {
-            await keySemaphore.WaitAsync();
-
-            try
+            if (PRESSEDKEYS.Add(e.KeyCode))
             {
-                if (PRESSEDKEYS.Add(e.KeyCode))
-                {
-                    await SendCommandStructure();
-                }
+                await SendCommandStructure();
             }
-            finally
-            {
-                keySemaphore.Release();
-            }
-
         }
 
         private async void GUI_KeyUp(object sender, KeyEventArgs e)
         {
-            await keySemaphore.WaitAsync();
-
-            try
+            if (PRESSEDKEYS.Remove(e.KeyCode))
             {
-                if (PRESSEDKEYS.Remove(e.KeyCode))
-                {
-                    await SendCommandStructure();
-                }
-            }
-            finally
-            {
-                keySemaphore.Release();
+                await SendCommandStructure();
             }
         }
-
-        int PAN_SPEED;
+        
         private async Task SendCommandStructure()
         {
             RECEIVED_DATA.BODY_PAN = 0;
@@ -509,68 +503,84 @@ namespace RCWS_Situation_room
                 SEND_DATA.BodyPan = (PAN_SPEED);
             }
 
-            if(PRESSEDKEYS.Contains(Keys.ControlKey) && (PRESSEDKEYS.Contains(Keys.A)) || PRESSEDKEYS.Contains(Keys.D)) //느린거
+            if (PRESSEDKEYS.Contains(Keys.Z))
             {
-                ReceiveDisplay("GOOD");
-            }
-            {
-                ReceiveDisplay("control key");
+                PAN_SPEED = Math.Max(PAN_SPEED - 10, 1);
+                SEND_DATA.BodyPan = (PAN_SPEED);
             }
 
-            if (PRESSEDKEYS.Contains(Keys.ShiftKey))
+            if (PRESSEDKEYS.Contains(Keys.X))
             {
-                ReceiveDisplay("shift key");
+                PAN_SPEED = Math.Min(PAN_SPEED + 10, 1000);
+                SEND_DATA.BodyPan = (PAN_SPEED);
             }
-
-            /* */
-
-
-
             /* */
 
             /* 이외 키 무효화 */
             else
             {
-
+                
             }
             /* */
-
+            if(RCWS_CONNECT_FLAG)
+            {
+                byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                await STREAM_WRITER.BaseStream.FlushAsync();
+            }            
         }
         #endregion
 
         #region TCP
-        private async void btn_RCWS_Connect_Click(object sender, EventArgs e)
+        private async void BTN_RCWS_CONNECT_Click(object sender, EventArgs e)
         {
-            //await Task.Run(() => TcpConnectAsync());
-            await Task.Run(() => Try_TCP_connect());
+            await Task.Run(() => Try_TCP_Connect());
         }
 
-        private async Task Try_TCP_connect()
+        private async Task Try_TCP_Connect()
         {
-            TcpClient tcpClient = new TcpClient();
+            TCP_CLIENT = new TcpClient();
 
             try
             {
-                SendDisplay("Connecting...");
-                tcpClient.Connect(define.SERVER_IP, define.TCPPORT);
+                UpdateUI(() => SendDisplay("Connecting..."));
+                await TCP_CLIENT.ConnectAsync(define.SERVER_IP, define.TCPPORT);
 
-                NETWORK_STREAM = tcpClient.GetStream();
+                RCWS_CONNECT_FLAG = true;
+
+                NETWORK_STREAM = TCP_CLIENT.GetStream();
                 STREAM_READER = new StreamReader(NETWORK_STREAM);
                 STREAM_WRITER = new StreamWriter(NETWORK_STREAM);
                 STREAM_WRITER.AutoFlush = true;
+
                 InitializeJoystick();
             }
             catch (Exception ex)
             {
-                ReceiveDisplay("Connect ERROR: " + ex.Message);
+                ErrorHandleDisplay(ex.Message + "\r\n");
                 return;
             }
 
-            ReceiveDisplay("Server Connected");
-            BTN_RCWS_CONNECT.BackColor = Color.Green;
-            BTN_RCWS_CONNECT.ForeColor = Color.White;            
+            UpdateUI(() =>
+            {
+                ReceiveDisplay("Server Connected");
+                BTN_RCWS_CONNECT.BackColor = Color.Green;
+                BTN_RCWS_CONNECT.ForeColor = Color.White;
+            });
 
             await ReceiveDataAsync();
+        }
+
+        private void UpdateUI(Action action)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(action);
+            }
+            else
+            {
+                action();
+            }
         }
 
         private async Task ReceiveDataAsync()
@@ -581,16 +591,16 @@ namespace RCWS_Situation_room
                 {
                     byte[] receivedData = new byte[Marshal.SizeOf(typeof(Packet.RECEIVED_PACKET))];
                     await NETWORK_STREAM.ReadAsync(receivedData, 0, receivedData.Length);
-                    RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.AppendText(receivedData + "\r\n"); });
+                    
+                    UpdateUI(() => RTB_RECEIVED_DISPLAY.AppendText(BitConverter.ToString(receivedData) + "\r\n"));
 
                     RECEIVED_DATA = TcpReturn.BytesToStruct<Packet.RECEIVED_PACKET>(receivedData);
-
                     ProcessReceivedData(RECEIVED_DATA);
                 }
             }
             catch (Exception ex)
             {
-                ReceiveDisplay("Connect ERROR: " + ex.Message);
+                ErrorHandleDisplay(ex.Message + "\r\n");
             }
         }
 
@@ -602,10 +612,9 @@ namespace RCWS_Situation_room
 
             UpdateParam(receivedData);
         }
-
+        
         private void UpdateParam(Packet.RECEIVED_PACKET receivedData)
         {
-
             if (pp_del_flag)
             {
                 DRAW.DeleteAllPinPoints();
@@ -936,17 +945,117 @@ namespace RCWS_Situation_room
             }
         }
 
-        private void SendDisplay(string str)
+        private void ReceiveData()
         {
-            RTB_SEND_DISPLAY.Invoke((MethodInvoker)delegate { RTB_SEND_DISPLAY.AppendText(str + "\r\n"); });
-            RTB_SEND_DISPLAY.Invoke((MethodInvoker)delegate { RTB_SEND_DISPLAY.ScrollToCaret(); });
+            try
+            {
+                while (true)
+                {
+                    byte[] receivedData = new byte[Marshal.SizeOf(typeof(Packet.RECEIVED_PACKET))];
+                    NETWORK_STREAM.ReadAsync(receivedData, 0, receivedData.Length);
+                    RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.AppendText(receivedData + "\r\n"); });
+
+                    RECEIVED_DATA = TcpReturn.BytesToStruct<Packet.RECEIVED_PACKET>(receivedData);
+
+                    ProcessReceivedData(RECEIVED_DATA);
+                }
+            }
+            catch (Exception ex)
+            {
+                ReceiveDisplay("Connect ERROR: " + ex.Message);
+            }
         }
 
-        private void ReceiveDisplay(string str)
+
+        private void CB_AUTO_AIM_ENABLED_CheckedChanged(object sender, EventArgs e)
         {
-            RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.AppendText(str + "\r\n"); });
-            RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.ScrollToCaret(); });
+            if (CB_AUTO_AIM_ENABLED.Checked)
+            {
+                CB_AUTO_AIM_ENABLED.Text = "Activated";
+
+                SEND_DATA.Button = SEND_DATA.Button | 0x40;
+            }
+            else
+            {
+                CB_AUTO_AIM_ENABLED.Text = "Deactivated";
+
+                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000040));
+            }
         }
+
+        private void CB_AUTO_TRACKING_ENABLED_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CB_AUTO_TRACKING_ENABLED.Checked)
+            {
+                CB_AUTO_TRACKING_ENABLED.Text = "Activated";
+
+                SEND_DATA.Button = SEND_DATA.Button | 0x10000;
+            }
+            else
+            {
+                CB_AUTO_TRACKING_ENABLED.Text = "Deactivated";
+
+                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00010000));
+            }
+        }
+
+        private void HSB_Vel_Scroll(object sender, ScrollEventArgs e)
+        {
+            HSB_VEL_VALUE = HSB_Vel.Value / 1000.0;
+        }        
+
+        private void PBL_VIDEO_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                IS_DRAGGING = true;
+                startPoint = e.Location;
+                SEND_DATA.D_X1 = (short)(e.X);
+                SEND_DATA.D_Y1 = (short)(e.Y);
+            }
+        }
+
+        private async void PBL_VIDEO_MouseUp(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    if (IS_DRAGGING)
+                    {
+                        endPoint = e.Location;
+                        SEND_DATA.D_X2 = (short)(e.X);
+                        SEND_DATA.D_Y2 = (short)(e.Y);
+
+                        SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
+                        SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
+                        byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                        await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                        await STREAM_WRITER.BaseStream.FlushAsync();
+                        SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
+
+                        IS_DRAGGING = false;
+                        startPoint = Point.Empty;
+                        endPoint = Point.Empty;
+                        PBL_VIDEO.Invalidate(); // 사각형 지우기 위해 화면 갱신
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error in Video Pictureu Box: " + ex.Message);
+            }
+        }
+
+        private void PBL_VIDEO_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (IS_DRAGGING)
+            {
+                endPoint = e.Location;
+                PBL_VIDEO.Invalidate(); // 화면 갱신
+            }
+        }        
         #endregion
 
         #region UDP, Video
@@ -971,8 +1080,8 @@ namespace RCWS_Situation_room
             {
                 BTN_CAMERA_CONNECT.BackColor = Color.Red;
                 BTN_CAMERA_CONNECT.ForeColor = Color.White;
-                
-                SendDisplay("Send Data: " + ex.Message);
+
+                ErrorHandleDisplay(ex.Message);
             }
         }
 
@@ -998,7 +1107,7 @@ namespace RCWS_Situation_room
                 }
                 catch (Exception ex)
                 {
-                    SendDisplay("Connect ERROR: " + ex.Message);
+                    ErrorHandleDisplay(ex.Message);
                 }
             });
         }
@@ -1212,7 +1321,6 @@ namespace RCWS_Situation_room
             /* */
         }
 
-        Point clickLocation;
         private void pictureBox_azimuth_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -1284,10 +1392,23 @@ namespace RCWS_Situation_room
         #endregion
 
         #region GUI Button
+        private void CleanupResources()
+        {
+            STREAM_WRITER?.Dispose();
+            STREAM_READER?.Dispose();
+            NETWORK_STREAM?.Dispose();
+            TCP_CLIENT?.Close();
+        }
+
         private void BTN_DISCONNECT_Click(object sender, EventArgs e)
         {
-            //SEND_DATA.Button = (SEND_DATA.Button | 0x00000000);        
-            Close();
+            CleanupResources();
+
+            //if (receiveThread != null && receiveThread.IsAlive)
+            //{
+            //    receiveThread.Join();
+            //}
+
             Application.Exit();
 
             THREAD.Join();
@@ -1321,97 +1442,21 @@ namespace RCWS_Situation_room
 
         }
 
-        private void CB_AUTO_AIM_ENABLED_CheckedChanged(object sender, EventArgs e)
+        private void ErrorHandleDisplay(string message)
         {
-            if (CB_AUTO_AIM_ENABLED.Checked)
-            {
-                CB_AUTO_AIM_ENABLED.Text = "Activated";
-
-                SEND_DATA.Button = SEND_DATA.Button | 0x40;
-            }
-            else
-            {
-                CB_AUTO_AIM_ENABLED.Text = "Deactivated";
-
-                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000040));
-            }
+            UpdateUI(() => ReceiveDisplay("Connect ERROR: " + message));
         }
 
-        private void CB_AUTO_TRACKING_ENABLED_CheckedChanged(object sender, EventArgs e)
-        {
-            if (CB_AUTO_TRACKING_ENABLED.Checked)
-            {
-                CB_AUTO_TRACKING_ENABLED.Text = "Activated";
-
-                SEND_DATA.Button = SEND_DATA.Button | 0x10000;
-            }
-            else
-            {
-                CB_AUTO_TRACKING_ENABLED.Text = "Deactivated";
-
-                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00010000));
-            }
-        }
-        
-        private void HSB_Vel_Scroll(object sender, ScrollEventArgs e)
-        {
-            HSB_VEL_VALUE = HSB_Vel.Value / 1000.0;
+        private void SendDisplay(string str)
+        {            
+            RTB_SEND_DISPLAY.Invoke((MethodInvoker)delegate { RTB_SEND_DISPLAY.AppendText(str + "\r\n"); });
+            RTB_SEND_DISPLAY.Invoke((MethodInvoker)delegate { RTB_SEND_DISPLAY.ScrollToCaret(); });
         }
 
-        Point startPoint = Point.Empty;
-        Point endPoint = Point.Empty;
-
-        private void PBL_VIDEO_MouseDown(object sender, MouseEventArgs e)
+        private void ReceiveDisplay(string str)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                IS_DRAGGING = true;
-                startPoint = e.Location;
-                SEND_DATA.D_X1 = (short)(e.X);
-                SEND_DATA.D_Y1 = (short)(e.Y);
-            }                
-        }
-
-        private async void PBL_VIDEO_MouseUp(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    if (IS_DRAGGING)
-                    {
-                        endPoint = e.Location;
-                        SEND_DATA.D_X2 = (short)(e.X);
-                        SEND_DATA.D_Y2 = (short)(e.Y);
-
-                        SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
-                        SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
-                        byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-                        await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-                        await STREAM_WRITER.BaseStream.FlushAsync();
-                        SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
-
-                        IS_DRAGGING = false;
-                        startPoint = Point.Empty;
-                        endPoint = Point.Empty;
-                        PBL_VIDEO.Invalidate(); // 사각형 지우기 위해 화면 갱신
-                    }
-                }
-            }
-
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error in Video Pictureu Box: " + ex.Message);
-            }            
-        }
-
-        private void PBL_VIDEO_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (IS_DRAGGING)
-            {
-                endPoint = e.Location;
-                PBL_VIDEO.Invalidate(); // 화면 갱신
-            }
+            RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.AppendText(str + "\r\n"); });
+            RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.ScrollToCaret(); });
         }
     }
 }

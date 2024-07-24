@@ -146,7 +146,7 @@
             this.BTN_RCWS_CONNECT.TabIndex = 5;
             this.BTN_RCWS_CONNECT.Text = "RCWS Connect";
             this.BTN_RCWS_CONNECT.UseVisualStyleBackColor = true;
-            this.BTN_RCWS_CONNECT.Click += new System.EventHandler(this.btn_RCWS_Connect_Click);
+            this.BTN_RCWS_CONNECT.Click += new System.EventHandler(this.BTN_RCWS_CONNECT_Click);
             // 
             // PB_AZIMUTH
             // 
