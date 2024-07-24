@@ -454,88 +454,87 @@ namespace RCWS_Situation_room
         private readonly SemaphoreSlim keySemaphore = new SemaphoreSlim(1, 1);
         private async void GUI_KeyDown(object sender, KeyEventArgs e)
         {
-            //await keySemaphore.WaitAsync();
-            
-            //try
-            //{
-            //    if (PRESSEDKEYS.Add(e.KeyCode))
-            //    {
-            //        await SendCommandStructure();
-            //    }
-            //}
-            //finally
-            //{
-            //    keySemaphore.Release();
-            //}
-            
+            await keySemaphore.WaitAsync();
+
+            try
+            {
+                if (PRESSEDKEYS.Add(e.KeyCode))
+                {
+                    await SendCommandStructure();
+                }
+            }
+            finally
+            {
+                keySemaphore.Release();
+            }
+
         }
 
         private async void GUI_KeyUp(object sender, KeyEventArgs e)
         {
-            //await keySemaphore.WaitAsync();
+            await keySemaphore.WaitAsync();
 
-            //try
-            //{
-            //    if (PRESSEDKEYS.Remove(e.KeyCode))
-            //    {
-            //        await SendCommandStructure();
-            //    }
-            //}
-            //finally
-            //{
-            //    keySemaphore.Release();
-            //}
+            try
+            {
+                if (PRESSEDKEYS.Remove(e.KeyCode))
+                {
+                    await SendCommandStructure();
+                }
+            }
+            finally
+            {
+                keySemaphore.Release();
+            }
         }
 
+        int PAN_SPEED;
         private async Task SendCommandStructure()
         {
-            //sendStruct.BodyPan = 0;
-            //sendStruct.BodyTilt = 0;
-            //sendStruct.Fire = 0;
-            //sendStruct.TakeAim = 0;
+            RECEIVED_DATA.BODY_PAN = 0;
+            RECEIVED_DATA.WEAPON_TILT = 0;
+            RECEIVED_DATA.FIRE = 0;
+            RECEIVED_DATA.TAKE_AIM = 0;
 
-            ///* motion data */
-            //if (pressedKeys.Contains(Keys.A))
-            //    sendStruct.BodyPan = 1;
+            /* motion data */
+            if (PRESSEDKEYS.Contains(Keys.A))
+            {
+                PAN_SPEED = - 100;
+                SEND_DATA.BodyPan = (PAN_SPEED);
+            }
+                
 
-            //if (pressedKeys.Contains(Keys.D))
-            //    sendStruct.BodyPan = -1;
+            if (PRESSEDKEYS.Contains(Keys.D))
+            {
+                PAN_SPEED = 100;
+                SEND_DATA.BodyPan = (PAN_SPEED);
+            }
 
-            //if (pressedKeys.Contains(Keys.W))
-            //    sendStruct.BodyTilt = 1;
+            if(PRESSEDKEYS.Contains(Keys.ControlKey) && (PRESSEDKEYS.Contains(Keys.A)) || PRESSEDKEYS.Contains(Keys.D)) //느린거
+            {
+                ReceiveDisplay("GOOD");
+            }
+            {
+                ReceiveDisplay("control key");
+            }
 
-            //if (pressedKeys.Contains(Keys.S))
-            //    sendStruct.BodyTilt = -1;
-            ///* */
+            if (PRESSEDKEYS.Contains(Keys.ShiftKey))
+            {
+                ReceiveDisplay("shift key");
+            }
 
-            ///* weapon data */
-            //if (pressedKeys.Contains(Keys.F))
-            //    sendStruct.Fire = 1;
+            /* */
 
-            //if (pressedKeys.Contains(Keys.T))
-            //    sendStruct.TakeAim = 1;
 
-            //if (pressedKeys.Contains(Keys.C))
-            //{
-            //    if (sendStruct.Permission == 1)
-            //        sendStruct.Permission = 2;
-            //    else
-            //        sendStruct.Permission = 1;
-            //}
-            ///* */
 
-            ///* 이외 키 무효화 */
-            //else
-            //{
+            /* */
 
-            //}
-            ///* */
+            /* 이외 키 무효화 */
+            else
+            {
 
-            //SendDisplay($"Pan: {sendStruct.BodyPan}, Tilt: {sendStruct.BodyTilt}, Permission: {sendStruct.Permission}, TakeAim: {sendStruct.TakeAim}, Fire: {sendStruct.Fire}\n");
+            }
+            /* */
 
-            byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-            await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-            await STREAM_WRITER.BaseStream.FlushAsync();
         }
         #endregion
 
@@ -1162,6 +1161,18 @@ namespace RCWS_Situation_room
             g.DrawString((20).ToString(), font, brush, E_X, E20Y);
             g.DrawString((30).ToString(), font, brush, E_X, E30Y);
 
+            /* 영역 사각형 */
+            if (IS_DRAGGING && startPoint != Point.Empty && endPoint != Point.Empty)
+            {
+                Rectangle rect = new Rectangle(
+                    Math.Min(startPoint.X, endPoint.X),
+                    Math.Min(startPoint.Y, endPoint.Y),
+                    Math.Abs(startPoint.X - endPoint.X),
+                    Math.Abs(startPoint.Y - endPoint.Y));
+
+                e.Graphics.DrawRectangle(Pens.Red, rect);
+            }
+
             redPen.Dispose();
             font.Dispose();
         }
@@ -1347,11 +1358,18 @@ namespace RCWS_Situation_room
             HSB_VEL_VALUE = HSB_Vel.Value / 1000.0;
         }
 
+        Point startPoint = Point.Empty;
+        Point endPoint = Point.Empty;
+
         private void PBL_VIDEO_MouseDown(object sender, MouseEventArgs e)
         {
-            IS_DRAGGING = true;
-            SEND_DATA.D_X1 = (short)(e.X);
-            SEND_DATA.D_Y1 = (short)(e.Y);
+            if (e.Button == MouseButtons.Left)
+            {
+                IS_DRAGGING = true;
+                startPoint = e.Location;
+                SEND_DATA.D_X1 = (short)(e.X);
+                SEND_DATA.D_Y1 = (short)(e.Y);
+            }                
         }
 
         private async void PBL_VIDEO_MouseUp(object sender, MouseEventArgs e)
@@ -1362,6 +1380,7 @@ namespace RCWS_Situation_room
                 {
                     if (IS_DRAGGING)
                     {
+                        endPoint = e.Location;
                         SEND_DATA.D_X2 = (short)(e.X);
                         SEND_DATA.D_Y2 = (short)(e.Y);
 
@@ -1373,6 +1392,9 @@ namespace RCWS_Situation_room
                         SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
 
                         IS_DRAGGING = false;
+                        startPoint = Point.Empty;
+                        endPoint = Point.Empty;
+                        PBL_VIDEO.Invalidate(); // 사각형 지우기 위해 화면 갱신
                     }
                 }
             }
@@ -1381,6 +1403,15 @@ namespace RCWS_Situation_room
             {
                 MessageBox.Show("Error in Video Pictureu Box: " + ex.Message);
             }            
-        }        
+        }
+
+        private void PBL_VIDEO_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (IS_DRAGGING)
+            {
+                endPoint = e.Location;
+                PBL_VIDEO.Invalidate(); // 화면 갱신
+            }
+        }
     }
 }
