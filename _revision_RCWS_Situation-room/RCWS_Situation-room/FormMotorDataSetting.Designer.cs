@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
+            this.LV_RX = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
             // label1
@@ -41,11 +42,22 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "모터부 환경설정";
             // 
+            // LV_RX
+            // 
+            this.LV_RX.HideSelection = false;
+            this.LV_RX.Location = new System.Drawing.Point(15, 85);
+            this.LV_RX.Name = "LV_RX";
+            this.LV_RX.Scrollable = false;
+            this.LV_RX.Size = new System.Drawing.Size(771, 280);
+            this.LV_RX.TabIndex = 9;
+            this.LV_RX.UseCompatibleStateImageBehavior = false;
+            // 
             // FormMotorDataSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.LV_RX);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormMotorDataSetting";
@@ -59,5 +71,6 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ListView LV_RX;
     }
 }

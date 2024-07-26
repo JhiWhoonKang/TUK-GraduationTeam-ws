@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace RCWS_Situation_room
 {
-    internal class Packet
+    public class Packet
     {
         public struct SEND_PACKET
         {
-            public int BodyPan;
-            public int BodyTilt;
+            public int BODY_PAN;
+            public int WEAPON_TILT;
             public uint Button;
             public short C_X1;
             public short C_Y1;
