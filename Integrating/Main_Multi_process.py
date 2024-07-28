@@ -1,6 +1,7 @@
 from multiprocessing import Process, Value
 import tensorflow as tf
 import tensorflow_hub as hub
+import tensorflow_hub as keras
 import cv2 as cv
 import cv2
 import numpy as np
@@ -16,801 +17,856 @@ import math
 import struct
 import threading
 from dataclasses import dataclass
+from Joy_Module import init_gamepad, joy, get_gamepad_input, gamepad
+from Motor_Module import M3, M4, M5, set_current_axis_to_zero, go_home, read_encoder2, calculate_encoder, Cal_Anlge_Aming_Target, Motor_Calibrate
+from Optical import Optical
+from gun import Gun
+from RF import RF
+from RGB_Module import RGB_pro
+from IR_Module import IR_pro
 
-#C#UI에서 사람 클릭하면 추적을 하기 위한 클래스
+#멀티 프로세스에서 사용할 공유 변수들
+#클릭 데이터
+C_LR = Value('i', 3)
+C_X = Value('i', 0)
+C_Y = Value('i', 0)
+#드래그 데이터
+C_D_X_1 = Value('i', 0)
+C_D_Y_1 = Value('i', 0)
+C_D_X_2 = Value('i', 0)
+C_D_Y_2 = Value('i', 0)
+
+#사람 추적에서 픽셀 단위 에러값
+RGB_Com_X = Value('i', 0)
+RGB_Com_Y = Value('i', 0)
+
+#레이저 추적에서 픽셀 단위 에러값
+IR_Com_X = Value('i', 0)
+IR_Com_Y = Value('i', 0)
+
+#TOF 거리 데이터 공유 변수
+target_distance = Value('i', 0)
+
+#조이스틱 데이터 공유 변수
+Button_Command = Value('i', 0)
+
+#모드 데이터 공유 변수
+#0x00 수동조작
+#0x01 오토스캔
+#0x02 레이저 트래킹
+#0x03 사람 트래킹
+Mode_ = Value('i', 0)
+
+#권한 요청 데이터 공유 변수
+# 0 권한 요청 X
+# 1 권한 요청 O
+request_access = Value('i', 0)
+
+#조준 완료 공유 변수
+#0 조준 미완료
+#1 조준 완료
+aming_complete = Value('i', 0)
+
+#사람 감지(트래킹 시작)공유 변수
+#0 트래킹 X
+#1 트래킹 시작
+person_detected = Value('i', 0)
+
+#RCWS 각도 정보 공유 변수
+Optical_angle_ = Value('i', 0)
+Body_angle_ = Value('i', 0)
+Gun_angle_ = Value('i', 0)
+
+#적외선 트래킹 때 조준됐는지에 대한 공유 변수
+#0 조준 미완료
+#1 조준 완료
+IR_Armed = Value('i', 0)
+
+#초병이랑 RF 통신 정보 공유 변수
+#0x01 적외선 레이저 조사
+#0x02 권한요청
+#0x04 RCWS 가시광선 레이저 조사
+#0x08 RCWS 실사격
+Sentry_Communication = Value('i', 0)
+
+#초병 방위각, 고각 공유 변수
+Sentry_Azimuth = Value('i', 0)
+Sentry_Elevation = Value('i', 0)
+
+#줌 데이터 공유 변수
+#0~4 줌 인덱스
+Zoom = Value('i', 0)
+################################################################################
+#메인틴지 연결
+try:
+    teensy = serial.Serial('/dev/ttyACM2', 500000, timeout = 0)
+except IOError as e:
+    print(e)
+    print("Teensy 어디")
+    exit()
+    
+#클래스
+#모터
+m3 = M3(teensy)
+m4 = M4(teensy)
+m5 = M5(teensy)
+#광학
+optical = Optical()
+#기총
+gun = Gun()
+#RF 통신
+rf = RF()
+
+#reset
+optical.CameraTableSetup(teensy)
+gun.TriggerTableSetup(teensy)
+
+#RF 수신 데이터 클래스
+class RF_R_D:
+    Azimuth_Y:int = 0
+    Azimuth_Z:int = 0
+    dead:int = 0
+    S_Check:int = 0
+
+RF_R = RF_R_D()
+
+#RF 송신 데이터
+RF_S_D = 0x00
+
+gun.Initialization(teensy)
+
+#TOF 데이터 보내라는 명령어
+def read_dist(canid):
+    packet = optical.PollingDistance()
+    teensy.write(packet)            
+
+################################################################################
+#엔코더값으로 각도 환산한 광학부, Z축, 기총부 각도 저장 전역변수
+Optical_angle : float = 0
+Body_angle : float = 0
+Gun_angle : float = 0
+
+#초병 권한
+#0x00 초병 권한 X
+#0x01 초병 권한 요청
+#0x02 초병 권한 O
+Sentry_Access = 0x00
+
+#조준 여부 변수
+#0x01 조준 완료
+#그 외에 조준 미완료
+Take_Aim = 0x00
+
+#모드 저장 변수
+#0x00 수동조작
+#0x01 오토스캔
+#0x02 레이저 트래킹
+#0x03 사람 트래킹
+Mode = 0x00
+
+#TCP/IP로 각도 값 전해줄 때 변할 때만 보내주게 이전 각도 저장 전역 변수
+pre_Optical_angle : float = 0
+pre_Body_angle : float = 0
+pre_Gun_angle : float = 0
+
+#방아쇠 확인 변수
+#1 방아쇠 당김
+#0, 2 방아쇠 놓음
+gun_trig = 0
+
+#시퀀스 제어 때문에 사용하는 변수
+aming_seq = 0
+
+#수동/ 자동 조준
+#0 자동 조준
+#1 수동 조준
+Manual_aming = 1
+
+Manual_aming_seq = 0
+
+#목표 기총 각도
+Gun_targ_Angle = 0
+
+#오토 스캔 관련 변수
+#오토 스캔 시퀀스 제어 때문에 사용하는 변수
+auto_scan_seq = 0
+auto_scan_moving_seq = 0
+auto_scan_dir = 0
+auto_scan_angle = []
+auto_scan_index = 0
+auto_scan_stop_time = 0
+auto_scan_complete_flag = 0
+auto_tracking_flag = 0
+
+#모드 변환 플래그
+Mode_Change_Flag = 0
+
+#RCWS 전원 변수
+#0 전원 On
+#1 전원 Off
+Power_control = 0
+
+#줌 플래그
+Zoom_flag = 0
+#줌, 포커스 인덱스 변수
+Zoom_Focus_Index = 0
+
+################################################################################
+# TCP/IP로 클릭 데이터 받기 위한 클래스
 class click_data:
     Left_or_right:int = 3
     X:int = 0
     Y:int = 0
 Click = click_data()
 
-#멀티 스레드에 사용할 공유변수
-###########################멀티 스레드에 사용할 공유변수##########################
-#C#클릭 데이터
-C_LR = Value('i', 3)
-C_X = Value('i', 0)
-C_Y = Value('i', 0)
-
-#사람 트래킹 에러값
-RGB_Com_X = Value('i', 0)
-RGB_Com_Y = Value('i', 0)
-
-#레이저 트래킹 에러값
-IR_Com_X = Value('i', 0)
-IR_Com_Y = Value('i', 0)
-
-#tof센서값
-target_distance = Value('i', 0)
-
-#모드 변환 정보 데이터(조이스틱 버튼 데이터)
-Button_Command = Value('i', 0)
-################################################################################
-
-##############################사람 트래킹 프로세스################################
-def RGB_pro(C_LR_, C_X_, C_Y_, RGB_Com_X_, RGB_Com_Y_, target_distance_, Button_Command_):
-    #영상 송신을 위한 UDP 통신 설정
-    max_length = 65000
-    UDP_host_IP = "10.254.1.20"
-    UDP_host_port = 9000
-    UDP_Client_IP = "10.254.2.172"
-    UDP_Client_port = 8000
-
-    UDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    UDP.bind((UDP_host_IP, UDP_host_port))
-    
-    #RGB 카메라 해상도
-    RGB_Cam_Res_X = 640
-    RGB_Cam_Res_Y = 480
-
-    #RGB 카메라 화각 라디안각 변환
-    RGB_CAM_FoV = math.pi * (13.5 / 2 / 180)
-    
-    #캘리할 때 보정하기 위한 값
-    RGB_Cam_tilt = math.pi * (0 / 180)
-    RGB_Cam_tilt_offset = int(-((0 / 6.75) * 320))
-    tof_tilt = math.pi * (0 / 180)
-
-    #화면에 표시할 조준선 길이
-    aim_lenth = 10
-
-    #거리에 따른 조준선 보정 정도(픽셀 단위)
-    RGB_Cam_aim_X = 0
-    RGB_Cam_aim_Y = 0
-    
-    #RGB 카메라
-    cap1 = cv2.VideoCapture(0)
-    cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    cap1.set(cv2.CAP_PROP_FPS, 30)
-
-    #tensorflow 모델 및 함수 불러오기
-    model = hub.load('https://tfhub.dev/google/movenet/multipose/lightning/1')
-    movenet = model.signatures['serving_default']
-
-    #사람 인식 되는 부분 바운딩 박스 표시 함수
-    def draw_bounding_box(frame, keypoints, confidence_threshold):
-        y, x, c = frame.shape
-        shaped = np.squeeze(np.multiply(keypoints, [y, x, 1]))
-        valid_points = [kp for kp in shaped if kp[2] > confidence_threshold]
-        if not valid_points:
-            return None
-
-        min_x = min([kp[1] for kp in valid_points])
-        min_y = min([kp[0] for kp in valid_points])
-        max_x = max([kp[1] for kp in valid_points])
-        max_y = max([kp[0] for kp in valid_points])
-
-        cv2.rectangle(frame, (int(min_x), int(min_y)), (int(max_x), int(max_y)), (255, 0, 0), 2)
-        return (min_x, min_y, max_x, max_y)
-
-    def loop_through_people(frame, keypoints_with_scores, confidence_threshold):
-        rectangles = []
-        for person in keypoints_with_scores:
-            # 트래커가 활성화되지 않았을 때만 바운딩 박스를 그립니다.
-            if tracker is None:
-                rect = draw_bounding_box(frame, person, confidence_threshold)
-                if rect is not None:
-                    rectangles.append(rect)
-        return rectangles
-
-    # Tracker 초기화
-    tracker = None
-
-    # 멀티 프로세스에서 동작 안되는 사람 클릭하면 트래킹할 수 있게 하는 이벤트 함수
-    # C#에서 클릭하면 동작되므로 신경쓰지 않기
-    def mouse_callback(event, x, y, flags, param):
-        if event == cv2.EVENT_LBUTTONDOWN:
-            for rect in rectangles_info:
-                min_x, min_y, max_x, max_y = rect
-                if min_x <= x <= max_x and min_y <= y <= max_y:
-                    tracker = cv2.TrackerCSRT_create()
-                    bbox = (int(min_x), int(min_y), int(max_x - min_x), int(max_y - min_y))
-                    tracker.init(frame1, bbox)
-                    break
-        elif event == cv2.EVENT_RBUTTONDOWN:
-            tracker = None
-
-    #tensorflow GPU로 돌리기
-    gpus = tf.config.list_physical_devices('GPU')
-    if gpus:
-      # 텐서플로가 첫 번째 GPU만 사용하도록 제한
-      try:
-        tf.config.set_visible_devices(gpus[0], 'GPU')
-      except RuntimeError as e:
-        # 프로그램 시작시에 접근 가능한 장치가 설정되어야만 합니다
-        print(e)
-
-    #카메라 캘리브레이션 정보 저장
-    with open("RGB_calibration.pkl", "rb") as f:
-        RGB_cameraMatrix, RGB_dist = pickle.load(f)
-
-    #창 띄우기
-    cv2.namedWindow("Movenet Multipose")
-    cv2.setMouseCallback("Movenet Multipose", mouse_callback)
-
-    #카메라 연결되어 있으면 동작
-    while cap1.isOpened():
-        success1, frame1 = cap1.read()
-    
-        if success1:
-            #카메라 캘리브레이션 정보로 왜곡 펴기
-            frame1 = cv.undistort(frame1, RGB_cameraMatrix, RGB_dist, None)
-            
-            #tof 센서 데이터 쓰기 편하게 지역변수 하나 추가
-            dist = target_distance_.value
-            
-            #거리 값에 따른 조준선 정렬을 위한 계산
-            pixel_distance = math.tan(RGB_CAM_FoV) * dist
-            pixel_distance = pixel_distance / (RGB_Cam_Res_X / 2)
-            if pixel_distance != 0:
-                #최종 보정해야 할 픽셀단위 값 계산
-                RGB_Cam_aim_X = int(5.5 / pixel_distance)
-                
-            #조준선 정렬
-            cv2.line(frame1, (int(RGB_Cam_Res_X / 2) - 1 - aim_lenth + RGB_Cam_aim_X + RGB_Cam_tilt_offset, int(RGB_Cam_Res_Y / 2) - 1), (int(RGB_Cam_Res_X / 2) - 1  + aim_lenth + RGB_Cam_aim_X + RGB_Cam_tilt_offset, int(RGB_Cam_Res_Y / 2) - 1), (0, 0, 255), 2)
-            cv2.line(frame1, (int(RGB_Cam_Res_X / 2) - 1  + RGB_Cam_aim_X + RGB_Cam_tilt_offset, int(RGB_Cam_Res_Y / 2) - 1 - aim_lenth), (int(RGB_Cam_Res_X / 2) - 1 + RGB_Cam_aim_X + RGB_Cam_tilt_offset , int(RGB_Cam_Res_Y / 2) - 1 + aim_lenth), (0, 0, 255), 2)
-
-            #오른쪽 마우스 클릭 시 사람 트래킹 Release 해제
-            #밑에 C_로 시작하는 변수들은 tcp/ip 통신으로 수신 받은 데이터
-            if C_LR_.value == 2:
-                tracker = None
-                C_LR_.value = 3
-                C_X_.value = 0
-                C_Y_.value = 0
-
-            #사람 트래킹 중이 아니면 텐서플로우 동작
-            if tracker is None:
-                img = frame1.copy()
-                img = tf.image.resize_with_pad(tf.expand_dims(img, axis=0), 480, 640)
-                input_img = tf.cast(img, dtype=tf.int32)
-         
-                #사람 인식하는 함수
-                results = movenet(input_img)
-         
-                keypoints_with_scores = results['output_0'].numpy()[:,:,:51].reshape((6,17,3))
-       
-                rectangles_info = loop_through_people(frame1, keypoints_with_scores, 0.5)
-
-                #마우스 왼쪽 클릭 시 사람 트래킹 시작
-                if C_LR_.value == 1:
-                    for rect in rectangles_info:
-                        min_x, min_y, max_x, max_y = rect
-                        if min_x <= C_X_.value <= max_x and min_y <= C_Y_.value <= max_y:
-                            tracker = cv2.TrackerCSRT_create()
-                            bbox = (int(min_x), int(min_y), int(max_x - min_x), int(max_y - min_y))
-                            C_LR_.value = 3
-                            C_X_.value = 0
-                            C_Y_.value = 0
-                            success1, frame1 = cap1.read()
-                            tracker.init(frame1, bbox)
-                            break
-            #트래킹 중이면
-            elif tracker is not None:
-                #트래킹 정보 업데이트
-                ret, bbox = tracker.update(frame1)
-                if ret:
-                    x, y, w, h = [int(v) for v in bbox]
-                    cv2.rectangle(frame1, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                    #조준선과 추적 중인 사람 간의 에러값 계산
-                    if (Button_Command_.value & 0x10) == 0x10:
-                        RGB_Com_X_.value = int(((x + x + w) / 2) - (320 + RGB_Cam_aim_X))
-                        RGB_Com_Y_.value = 240 - int(((y + y + h) / 2))
-                else:
-                    # 트래킹 실패 시 트래커 리셋
-                    tracker = None
-
-            #RGB 카메라 영상 출력
-            cv2.imshow('Movenet Multipose', frame1)
-
-        ##UDP 영상 송신##
-        retval, buffer = cv2.imencode(".jpg", frame1)
-        if retval:
-            buffer = buffer.tobytes()
-            buffer_size = len(buffer)
-
-            num_of_packs = 1
-            if buffer_size > max_length:
-                num_of_packs = math.ceil(buffer_size/max_length)
-
-            frame_info = {"packs":num_of_packs}
-
-            left = 0
-            right = max_length
-
-            for i in range(num_of_packs):
-                data = buffer[left:right]
-                left = right
-                right += max_length
-                UDP.sendto(data, (UDP_Client_IP, UDP_Client_port))
-        
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cap1.release()
-    cv2.destroyAllWindows()
-################################################################################
-
-
-###############################IR 카메라 프로세스################################
-def IR_pro(IR_Com_X_, IR_Com_Y_, target_distance_, Button_Command_):
-    #캘리브레이션 정보 저장
-    with open("IR_calibration.pkl", "rb") as f:
-        IR_cameraMatrix, IR_dist = pickle.load(f)
-        
-    #IR 카메라 해상도
-    IR_Cam_Res_X = 640
-    IR_Cam_Res_Y = 480
-
-    #IR 카메라 화각 라디안 각으로 변환
-    IR_CAM_FoV = -math.pi * (64.6 / 2 / 180)
-    
-    #캘리브레이션으로 보정할 값들 변수
-    IR_Cam_tilt = math.pi * (0 / 180)
-    IR_Cam_tilt_offset = int(-((0 / 6.75) * 320))
-    tof_tilt = math.pi * (0 / 180)
-
-    #영상에 출력할 조준선 길이
-    aim_lenth = 10
-
-    #조준선 보정 값(픽셀 단위)
-    IR_Cam_aim_X = 0
-    IR_Cam_aim_Y = 0
-
-    #IR 카메라
-    cap2 = cv2.VideoCapture(2)
-    cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    cap2.set(cv2.CAP_PROP_FPS, 30)
-
-    #나중에 데모 환경에 맞춰서 변경할 수 있는 파라메타
-    #블러치리할 영역(), 나눌 숫자
-    kernel = np.ones((3, 3))/3**2
-
-    #침식 범위
-    array = np.array([[1, 1, 1, 1],[1, 1, 1, 1],[1, 1, 1, 1],[1, 1, 1, 1]])
-    #array = np.array([[1, 1, 1, 1, 1],[1, 1, 1, 1, 1],[1, 1, 1, 1, 1],[1, 1, 1, 1, 1],[1, 1, 1, 1, 1]])
-    #array = np.array([[1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1],[1, 1, 1, 1, 1, 1]])
-
-    #IR 카메라 연결 되어 있을 때
-    while cap2.isOpened():
-        success2, frame2 = cap2.read()
-        if success2:
-            #캘리브레이션으로 왜곡 펴기
-            frame2 = cv.undistort(frame2, IR_cameraMatrix, IR_dist, None)
-    
-            frame2_gray = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-
-            blured = cv2.filter2D(frame2_gray, -1, kernel) #블러처리
-
-            ret_set_binary, set_binary = cv2.threshold(blured, 200, 255, cv2.THRESH_BINARY) #이진화
-        
-            erode = cv2.erode(set_binary, array) #침식
-            dilate = cv2.dilate(erode, array) #팽창
-        
-            white_pixel_coordinates = np.column_stack(np.nonzero(dilate))
-            
-            #Tof 센서 값 지역 변수 하나 추가
-            dist = target_distance_.value
-            
-            #조준선 정렬 보정 값 계산
-            pixel_distance = math.tan(IR_CAM_FoV) * dist
-            pixel_distance = pixel_distance / (IR_Cam_Res_X / 2)
-            if pixel_distance != 0:
-                IR_Cam_aim_X = int(5 / pixel_distance)
-
-            #흰 색 부분이 있을 때
-            if len(white_pixel_coordinates) > 0:
-                center = np.mean(white_pixel_coordinates, axis=0)
-                center = tuple(map(int, center))  # 정수형으로 변환
-                #정렬된 조준선과 레이저 에러값 계산
-                if (Button_Command_.value & 0x20) == 0x20:
-                    IR_Com_Y_.value = int(240 - center[0])
-                    IR_Com_X_.value = int(center[1] - (320 + IR_Cam_aim_X))
-                    
-            dilate = cv2.cvtColor(dilate, cv2.COLOR_GRAY2BGR)
-            cv2.line(dilate, (int(IR_Cam_Res_X / 2) - 1 - aim_lenth + IR_Cam_aim_X + IR_Cam_tilt_offset, int(IR_Cam_Res_Y / 2) - 1), (int(IR_Cam_Res_X / 2) - 1  + aim_lenth + IR_Cam_aim_X + IR_Cam_tilt_offset, int(IR_Cam_Res_Y / 2) - 1), (0, 0, 255), 2)
-            cv2.line(dilate, (int(IR_Cam_Res_X / 2) - 1  + IR_Cam_aim_X + IR_Cam_tilt_offset, int(IR_Cam_Res_Y / 2) - 1 - aim_lenth), (int(IR_Cam_Res_X / 2) - 1 + IR_Cam_aim_X + IR_Cam_tilt_offset , int(IR_Cam_Res_Y / 2) - 1 + aim_lenth), (0, 0, 255), 2)
-
-            cv2.imshow('Camera Window1', dilate)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
- 
-    cap2.release()
-    cv2.destroyAllWindows()
-################################################################################
-    
-    
-################################################################################
-# 조이스틱 초기화 함수
-def init_gamepad():
-    pygame.init()
-    pygame.joystick.init()
-    joystick_count = pygame.joystick.get_count()
-    if joystick_count == 0:
-        print("게임 패드가 연결되어 있지 않습니다.")
-        return None
-
-    joystick = pygame.joystick.Joystick(0)
-    joystick.init()
-    print(f"{joystick.get_name()} 게임 패드가 연결되었습니다.")
-    return joystick
-
-#CAN_ID 3번 모터를 위한 변수들
-#시동
-start_up_3 = 0
-
-# 가속도값
-ACC3 = 210
-
-# 이전 속도 기억하기
-pre_3_Speed = 0
-
-# 방향 정보
-M3_state_dir = 0
-
-#CAN 통신으로 respond되는 데이터들
-M3_Stop = b'\x03\x03\xf6\x02\xfb'
-M3_Move = b'\x03\x03\xf6\x01\xfa'
-M3_state = b'\x03\x03\xf6\x02\xfb'
-M3_error = b'\x03\x03\xf6\x00\xf9'
-
-CRCBYTE3 = (0x3 + 0xF6 + ACC3) & 0xFF
-packet3 = [3, 5, 0xF6, 0, 0, ACC3, CRCBYTE3]
-
-
-#CAN_ID 3번 모터를 위한 변수들
-#시동
-start_up_4 = 0
-
-# 가속도값
-ACC4 = 100
-
-# 이전 속도 기억하기
-pre_4_Speed = 0
-
-# 방향 정보
-M4_state_dir = 0
-
-#CAN 통신으로 respond되는 데이터들
-M4_Stop = b'\x04\x03\xf6\x02\xfc'
-M4_Move = b'\x04\x03\xf6\x01\xfb'
-M4_state = b'\x04\x03\xf6\x02\xfc'
-M4_error = b'\x04\x03\xf6\x00\xfa'
-
-CRCBYTE4 = (0x4 + 0xF6 + ACC4) & 0xFF
-packet4 = [4, 5, 0xF6, 0, 0, ACC4, CRCBYTE4]
-
-#조이스틱 데이터 저장을 위한 클래스
-class joy_data:
-    axisX:int = 0
-    axisY:int = 0
-    axisT:int = 0
-    button:int = 0xfc000004
-joy = joy_data()
-
-# 메인 틴지 연결
-try:
-    teensy = serial.Serial('/dev/ttyACM0', 500000, timeout = 0)
-except IOError as e:
-    print(e)
-    print("Teensy 어디")
-    exit()
-    
-# CAN통신으로 엔코더 값 불러오라고 하는 명령 보내는 함수
-def read_encoder2(canid):
-    byte1 = 0x31
-    crcbyte = (canid + byte1) & 0xFF
-    packet = [canid, 2, byte1, crcbyte]
-    teensy.write(bytearray(packet))
-
-# 받은 엔코더 값을 각도로 변환, 받은 데이터, 기어비 함수 인자
-def calculate_encoder(byttee, Gear_ratio):
-    if byttee[1] == 0:
-        ee = byttee[6] + (byttee[5] << 8)+ (byttee[4] << 16)+ (byttee[3] << 24)+ (byttee[2] << 32)
-        ee = (ee * 360) / ((2 ** 14) * Gear_ratio)
-        return ee
-    elif byttee[1] == 255:
-        ee = -((255 - byttee[6]) + ((255 - byttee[5]) << 8) + ((255 - byttee[4]) << 16) + ((255 - byttee[3]) << 24) + ((255 - byttee[2]) << 32))
-        ee = (ee * 360) / ((2 ** 14) * Gear_ratio)
-        return ee
-                
-#CAN통신으로 Tof 값 불러오라고 하는 명령 보내는 함수
-def read_dist(canid):
-    CRC = (canid + 0x01 + 0x00) & 0xFF
-    ACKPACKET = [canid, 3, 0x01, 0x00, CRC]
-    teensy.write(bytearray(ACKPACKET))
-    
-#CAN_ID 3번 모터 속도 0 보내는 함수
-def Go_to_Speed_Zero_3():
-    global ACC3, CRCBYTE3, packet3
-    CRCBYTE3 = (0x3 + 0xF6 + ACC3) & 0xFF
-    packet3 = [3, 5, 0xF6, 0, 0, ACC3, CRCBYTE3]
-    
-#CAN_ID 3번 모터 지정 속도 보내는 함수
-def Go_to_target_Speed_3(Speed):
-    global ACC3, CRCBYTE3, packet3
-    if Speed > 0:
-        DIR = 0
-        upper_speed = (Speed >> 8) & 0x0F
-        lower_speed = Speed & 0xFF
-        BYTE2 = (DIR << 7) | upper_speed
-        CRCBYTE3 = (0x3 + 0xF6 + BYTE2 + lower_speed + ACC3) & 0xFF
-        packet3 = [3, 5, 0xF6, BYTE2, lower_speed, ACC3, CRCBYTE3]
-    elif Speed < 0:
-        DIR = 1
-        upper_speed = (abs(Speed) >> 8) & 0x0F
-        lower_speed = abs(Speed) & 0xFF
-        BYTE2 = (DIR << 7) | upper_speed
-        CRCBYTE3 = (0x3 + 0xF6 + BYTE2 + lower_speed + ACC3) & 0xFF
-        packet3 = [3, 5, 0xF6, BYTE2, lower_speed, ACC3, CRCBYTE3]
-
-#CAN_ID 3번 모터 가감속하기 위해 짠 함수
-def Active_Motor_3(Speed):
-    global ACC3, pre_3_Speed, M3_state_dir, M3_state, M3_Stop, M3_Move, CRCBYTE3, packet3, start_up_3
-    if Speed != pre_3_Speed or (Speed != 0 and M3_state == M3_Stop):
-        start_up_3 = 1
-        if Speed == 0:
-            Go_to_Speed_Zero_3()
-        elif Speed > 15:
-            if (M3_state == M3_Stop) or M3_state_dir == 1:
-                Go_to_target_Speed_3(Speed)
-                M3_state_dir = 1
-            elif M3_state_dir == -1:
-                Go_to_Speed_Zero_3()
-        elif Speed > 0 and Speed <= 15:
-            if (pre_3_Speed > 15) or (M3_state_dir == -1):
-                Go_to_Speed_Zero_3()
-            elif M3_state == M3_Stop:
-                Go_to_target_Speed_3(Speed)
-                M3_state_dir = 1
-        elif Speed < -15:
-            if (M3_state == M3_Stop) or M3_state_dir == -1:
-                Go_to_target_Speed_3(Speed)
-                M3_state_dir = -1
-            elif (M3_state_dir == 1):
-                Go_to_Speed_Zero_3()
-        elif Speed < 0 and Speed >= -15:
-            if (pre_3_Speed < -15) or (M3_state_dir == 1):
-                Go_to_Speed_Zero_3()
-            elif M3_state == M3_Stop:
-                Go_to_target_Speed_3(Speed)
-                M3_state_dir = -1
-        M3_state = M3_Move
-        teensy.write(bytearray(packet3))
-        pre_3_Speed = Speed
-    elif Speed == 0 and M3_state == M3_Move and start_up_3 == 1:
-        Go_to_Speed_Zero_3()
-        teensy.write(bytearray(packet3))
-        start_up_3 = 0
-            
-#CAN_ID 4번 모터 속도 0 보내는 함수
-def Go_to_Speed_Zero_4():
-    global ACC4, CRCBYTE4, packet4
-    CRCBYTE4 = (0x4 + 0xF6 + ACC4) & 0xFF
-    packet4 = [4, 5, 0xF6, 0, 0, ACC4, CRCBYTE4]
-    
-#CAN_ID 4번 모터 지정 속도 보내는 함수
-def Go_to_target_Speed_4(Speed):
-    global ACC4, CRCBYTE4, packet4
-    if Speed > 0:
-        DIR = 0
-        upper_speed = (Speed >> 8) & 0x0F
-        lower_speed = Speed & 0xFF
-        BYTE2 = (DIR << 7) | upper_speed
-        CRCBYTE4 = (0x4 + 0xF6 + BYTE2 + lower_speed + ACC4) & 0xFF
-        packet4 = [4, 5, 0xF6, BYTE2, lower_speed, ACC4, CRCBYTE4]
-    elif Speed < 0:
-        DIR = 1
-        upper_speed = (abs(Speed) >> 8) & 0x0F
-        lower_speed = abs(Speed) & 0xFF
-        BYTE2 = (DIR << 7) | upper_speed
-        CRCBYTE4 = (0x4 + 0xF6 + BYTE2 + lower_speed + ACC4) & 0xFF
-        packet4 = [4, 5, 0xF6, BYTE2, lower_speed, ACC4, CRCBYTE4]
-
-#CAN_ID 4번 모터 가감속하기 위해 짠 함수
-def Active_Motor_4(Speed):
-    global ACC4, pre_4_Speed, M4_state_dir, M4_state, M4_Stop, M4_Move, CRCBYTE4, packet4, start_up_4
-    if Speed != pre_4_Speed or (Speed != 0 and M4_state == M4_Stop):
-        start_up_4 = 1
-        if Speed == 0:
-            Go_to_Speed_Zero_4()
-        elif Speed > 15:
-            if (M4_state == M4_Stop) or (M4_state_dir == 1):
-                Go_to_target_Speed_4(Speed)
-                M4_state_dir = 1
-            elif (M4_state_dir == -1):
-                Go_to_Speed_Zero_4()
-        elif Speed > 0 and Speed <= 15:
-            if (pre_4_Speed > 15) or (M4_state_dir == -1):
-                Go_to_Speed_Zero_4()
-            elif M4_state == M4_Stop:
-                Go_to_target_Speed_4(Speed)
-                M4_state_dir = 1
-        elif Speed < -15:
-            if (M4_state == M4_Stop) or (M4_state_dir == -1):
-                Go_to_target_Speed_4(Speed)
-                M4_state_dir = -1
-            elif (M4_state_dir == 1):
-                Go_to_Speed_Zero_4()
-        elif Speed < 0 and Speed >= -15:
-            if (pre_4_Speed < -15) or (M4_state_dir == 1):
-                Go_to_Speed_Zero_4()
-            elif (M4_state == M4_Stop):
-                Go_to_target_Speed_4(Speed)
-                M4_state_dir = -1
-        M4_state = M4_Move
-        teensy.write(bytearray(packet4))
-        pre_4_Speed = Speed
-    elif Speed == 0 and M4_state == M4_Move and start_up_4 == 1:
-        Go_to_Speed_Zero_4()
-        teensy.write(bytearray(packet4))
-        start_up_4 = 0
-        
-#조이스틱 정보 처리 함수(이벤트)
-def get_gamepad_input(joystick):
-    # 이벤트 처리
-    for event in pygame.event.get():
-        if event.type == pygame.JOYAXISMOTION:
-            if event.axis == 0:
-                if (joy.button & 0x04) == 0x04:
-                    if event.value > -0.2025 and event.value < 0.2025:
-                        joy.axisX = int(0)
-                    else:
-                        if event.value >= 0.2025:
-                            joy.axisX = int(event.value * 400 - 80)
-                        elif event.value <= -0.2025:
-                            joy.axisX = int(event.value * 400 + 80)
-                elif (joy.button & 0x08) == 0x08:
-                    if event.value > -0.25 and event.value < 0.25:
-                        joy.axisX = int(0)
-                    else:
-                        if event.value >= 0.25:
-                            joy.axisX = int(event.value * 20 - 4)
-                        elif event.value <= -0.25:
-                            joy.axisX = int(event.value * 20 + 4)
-            if event.axis == 1:
-                if (joy.button & 0x04) == 0x04:
-                    if event.value > -0.22 and event.value < 0.22:
-                        joy.axisY = int(0)
-                    else:
-                        if event.value >= 0.22 :
-                            joy.axisY = int(event.value * 50 - 10)
-                        elif event.value <= -0.22 :
-                            joy.axisY = int(event.value * 50 + 10)
-                elif (joy.button & 0x08) == 0x08:
-                    if event.value > -0.3 and event.value < 0.3:
-                        joy.axisY = int(0)
-                    else:
-                        if event.value >= 0.3 :
-                            joy.axisY = int(event.value * 10 - 2)
-                        elif event.value <= -0.3 :
-                            joy.axisY = int(event.value * 10 + 2)
-        if event.type == pygame.JOYBUTTONDOWN:
-            if event.button == 0:
-                joy.button = (joy.button | 0x01)
-                print("Fire_On")
-            elif event.button == 1:
-                joy.button = (joy.button | 0x02)
-                print("Get_Target")
-            elif event.button == 2:
-                joy.button = (joy.button & ~(0x38))
-                joy.button = (joy.button | 0x04)
-                print("Fast_Manual_Activate")
-            elif event.button == 3:
-                joy.button = (joy.button & ~(0x34))
-                joy.button = (joy.button | 0x08)
-                print("Slow_Manual_Activate")
-            elif event.button == 4:
-                joy.button = (joy.button & ~(0x2c))
-                joy.button = (joy.button | 0x10)
-                print("Tracking_person")
-            elif event.button == 5:
-                joy.button = (joy.button & ~(0x1c))
-                joy.button = (joy.button | 0x20)
-                print("Tracking_lazer")
-            Button_Command.value = joy.button
-        elif event.type == pygame.JOYBUTTONUP:
-            if event.button == 0:
-                print("Fire_Off")
-            elif event.button == 1:
-                print("release_Target")
-            Button_Command.value = joy.button
-            
-
-gamepad = init_gamepad()
-################################################################################
-
-# 엔코더 값에 따른 모터 각도 저장 변수
-Optical_angle = 0
-Body_angle = 0
-
-# 엔코더 값에 따른 이전 모터 각도 저장 변수
-pre_Optical_angle = 0
-pre_Body_angle = 0
-    
-##############################TCP/IP 통신을 위한 설정, 쓰레드######################
-TCP_host_IP = "10.254.1.20"
-TCP_host_port = 7000
-
-TCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-TCP.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 0)
-
-TCP.bind((TCP_host_IP, TCP_host_port))
-
-TCP.listen(2)
-
-def Get_Joystick(client_socket, addr):
-    global joy, Button_Command
-    while 1:    
-        data = client_socket.recv(16)
-        ds = struct.unpack('3iI', data)
-        if ds[3] & 0xfc000000 == 4227858432:
-            joy.axisX = ds[0]
-            joy.axisY = ds[1]
-            joy.axisT = ds[2]
-            joy.button = ds[3]
-            Button_Command.value = joy.button
-        time.sleep(0.001)
-        
-def Get_Clickdata(client_socket, addr):
-    global Click, Optical_angle, pre_Optical_angle, Body_angle, pre_Body_angle
+#TCP/IP data
+def Get_Send_data(client_socket1, addr1):
+    global joy, Button_Command, Click, Optical_angle, pre_Optical_angle, Body_angle, pre_Body_angle
+    send_time = 0
     while 1:
-        #여기 받는 쪽에서 블로킹 됌 처리 해야됌
-        data = client_socket.recv(12)
-        ds = struct.unpack('3i', data)
-        
-        if ds[0] == 1 or ds[0] == 2:
-            C_LR.value = ds[0]
-            C_X.value = ds[1]
-            C_Y.value = ds[2]
-            
-        if pre_Optical_angle != Optical_angle or pre_Body_angle != Body_angle:
-            sd = struct.pack('3iI', int(Optical_angle), int(Body_angle), joy.axisT, Click.Left_or_right)
-            client_socket.sendall(sd)
-            pre_Optical_angle = Optical_angle
-            pre_Body_angle = Body_angle
-            
-        time.sleep(0.001)
-        
-################################################################################
+        try:
+            data = client_socket1.recv(24, socket.MSG_DONTWAIT)
+            if len(data) == 24:
+                ds = struct.unpack('2iI6h', data)
+                if ds[2] & 0xfc000000 == 4227858432:
+                    joy.axisX = ds[0]
+                    joy.axisY = ds[1]
+                    joy.button = ds[2]
+                    if (ds[2] & 0x00001000) == 0x00001000:
+                        C_LR.value = 1
+                    elif (ds[2] & 0x00002000) == 0x00002000:
+                        C_LR.value = 2
+                    C_X.value = ds[3]
+                    C_Y.value = ds[4]
+                    C_D_X_1.value = ds[5]
+                    C_D_Y_1.value = ds[6]
+                    C_D_X_2.value = ds[7]
+                    C_D_Y_2.value = ds[8]
+        except BlockingIOError:
+            p = 1
 
+        if (pre_Optical_angle != Optical_angle or pre_Body_angle != Body_angle) and (time.time() - send_time >= 0.3):
+            try:
+                sd = struct.pack('6f4B', float(round(Optical_angle, 2)), float(round(Gun_angle, 2)), float(round(Body_angle, 2)), float(round(Sentry_Azimuth.value, 2)), float(round(Sentry_Elevation.value, 2)), float(round(optical.distance, 2)), Sentry_Access, Take_Aim, gun_trig, Mode)
+                client_socket1.sendall(sd)
+                pre_Optical_angle = Optical_angle
+                pre_Body_angle = Body_angle
+            except:
+                pre_Optical_angle = Optical_angle
+                pre_Body_angle = Body_angle
 
-################################################################################
+            send_time = time.time()
+
+    joy.axisX = 0
+    joy.axisY = 0
+    joy.axisT = 0
+    joy.button = 0xfc100000
+    m3.Active_Motor_3(0)
+    m4.Active_Motor_4(0)
+    m5.Active_Motor_5_Speed(0)
+    time.sleep(1)
+    socket.close()
+
+def connect_tcp():
+    #TCP/IP 설정
+    TCP_host_IP = "192.168.0.30"
+    TCP_host_port = 7000
+
+    TCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    TCP.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 0)
+
+    TCP.bind((TCP_host_IP, TCP_host_port))
+
+    TCP.listen(1)
+    while 1:
+        client_socket1, addr1 = TCP.accept()
+        print("success1")
+
+        time.sleep(1)
     
+        if client_socket1 is not None:
+            t2= threading.Thread(target=Get_Send_data, args=(client_socket1, addr1))
+
+            t2.daemon = True
+
+            t2.start()
+        
+                     
+        
+################################################################################
+################################################################################
+#메인
 if __name__ == '__main__':
-    #프로세스 설정, 함수 이름, 공유 변수가 함수 인자
-    p1 = Process(target=RGB_pro, args=(C_LR, C_X, C_Y, RGB_Com_X, RGB_Com_Y, target_distance, Button_Command,))
-    p2 = Process(target=IR_pro, args=(IR_Com_X, IR_Com_Y, target_distance, Button_Command,))
+    #프로세스 설정
+    p1 = Process(target=RGB_pro, args=(C_LR, C_X, C_Y, RGB_Com_X, RGB_Com_Y, target_distance, Button_Command, request_access, aming_complete, person_detected, Optical_angle_, Body_angle_, Gun_angle_, Mode_, Zoom, C_D_X_1, C_D_Y_1, C_D_X_2, C_D_Y_2, ))
+    p2 = Process(target=IR_pro, args=(IR_Com_X, IR_Com_Y, target_distance, Mode_, IR_Armed, Sentry_Communication, Sentry_Azimuth, Sentry_Elevation, Optical_angle_, Body_angle_, ))
     
     #프로세스 시작
     p1.start()
     p2.start()
     
-    #엔코더값, tof 센서값 보내라는 명령어 송신 시퀀스 제어 변수
+    #엔코더, TOF 값들을 보내라는 명령을 보내는데 한 번에 받아서 데이터 꼬이지 않게 시퀀스 만들기 위한 변수
     get_data_pre_time = 0
     get_data_seq = 0
     
-    #최종 모터 동작 명령 변수(조이스틱, 사람추적, 레이저추적)
+    RF_data_pre_time = 0
+    
+    #최종적인 모터를 구동하는 명령 변수
     Active_M3_command = 0
     Active_M4_command = 0
+    Active_M5_command = 0
+
+    t1= threading.Thread(target=connect_tcp, args=())
+
+    t1.daemon = True
+
+    t1.start()
+
+    #초기에 캘리하기 위해 포토 센서로 이동
+    aming_complete.value = 2
+    #Motor_Calibrate(teensy, m3, m4, m5)
+    aming_complete.value = 0
+
     
-    #게임패드 연결 안되어 있으면 TCP/IP 통신 2개 들어올 때까지 기다림
-    #C# UI 먼저, 조이스틱 파이썬 코드 두 번째로 연결해야 함
-    if gamepad is None:
-        client_socket1, addr1 = TCP.accept()
-        print("success1")
-        client_socket2, addr2 = TCP.accept()
-        print("success2")
-    
-        #C#TCP/IP 쓰레드 시작
-        t1= threading.Thread(target=Get_Clickdata, args=(client_socket1, addr1))
+    #teensy.write(optical.UseFixedCameraTable(0))
 
-        t1.daemon = True
-
-        t1.start() 
-    
-        #파이썬 TCP/IP 쓰레드 시작(조이스틱)
-        t2 = threading.Thread(target=Get_Joystick, args=(client_socket2, addr2))
-
-        t2.daemon = True
-
-        t2.start() 
-        
     time.sleep(1)
-    #메인 Teensy 데이터 처리, 모터 동작
+    
+    #teensy.write(gun.SetGunPower(1))
+    
+    #메인 틴지 통신 처리
     while 1:
-        #특정 주기로 엔코더값, tof값 보내라는 명령 보내기
-        if time.time() - get_data_pre_time > 0.005:
+        # 엔코더값, TOF 데이터 보내라는 명령어를 꼬이지 않게 순차적, 주기적으로 보냄(4ms 주기 요청)
+        if time.time() - get_data_pre_time > 0.006 and Power_control == 0:
             if get_data_seq == 0:
-                read_encoder2(3)
+                #CAN ID 3번 모터 엔코더 값 요청
+                read_encoder2(teensy, 3)
                 get_data_seq = 1
             elif get_data_seq == 1:
-                read_encoder2(4)
+                #CAN ID 4번 모터 엔코더 값 요청
+                read_encoder2(teensy, 4)
                 get_data_seq = 2
             elif get_data_seq == 2:
+                #CAN ID 5번 모터 엔코더 값 요청
+                read_encoder2(teensy, 5)
+                get_data_seq = 3
+            elif get_data_seq == 3:
+                #라이다값 요청
                 read_dist(6)
                 get_data_seq = 0
             get_data_pre_time = time.time()
+
+        if time.time() - RF_data_pre_time > 0.1:
+            RF_data_pre_time = time.time()
             
+        #게임패드가 연결되어 있으면
         if gamepad:
             get_gamepad_input(gamepad)
-            
-        #조이스틱 변수에 따른 모드 변환
-        if (joy.button & 0x04) == 0x04 or (joy.button & 0x08) == 0x08:
+
+        #멀티 프로세스로 넘기기 위해 저장
+        Optical_angle_.value = int(Optical_angle)
+        Body_angle_.value = int(Body_angle)
+        Gun_angle_.value = int(Gun_angle)
+        Button_Command.value = joy.button
+        Mode_.value = Mode
+        Zoom.value = Zoom_Focus_Index
+
+        #사람 트래킹 명령이 있으면 트래킹 모드로 변환
+        if person_detected.value == 1:
+            Mode = 0x03
+
+        #수동모드
+        if Mode == 0x00:
+            #모터 명령을 조이스틱 값으로 저장
             Active_M3_command = joy.axisX
             Active_M4_command = joy.axisY
-        elif (joy.button & 0x10) == 0x10:
+            #RGB 카메라 기준으로 기총 목표 각도 계산
+            Gun_targ_Angle = Cal_Anlge_Aming_Target("RGB", target_distance.value, Optical_angle)
+        #오토스캔 모드
+        #한 전체적인 시퀀스 지날 때 마다 인덱스 하나씩 늘리고
+        #다 지나면 하나씩 빼고
+        #반복
+        elif Mode == 0x01:
+            #오토스캔 인덱스가 0 이상일 때
+            if auto_scan_index > 0:
+                #해당 인덱스에 저장된 Z축 각도가 오른쪽에 있을 때
+                if auto_scan_angle[auto_scan_moving_seq][0] - Body_angle > 0.1:
+                    #Z축 속도 명령 15로
+                    Active_M3_command = 15
+                #해당 인덱스에 저장된 Z축 각도가 왼쪽에 있을 때
+                elif auto_scan_angle[auto_scan_moving_seq][0] - Body_angle < -0.1:
+                    #Z축 속도 명령 -15로
+                    Active_M3_command = -15
+                #해당 인덱스에 저장된 Z축 각도와 차이가 0.1도 내에 있을 때
+                elif abs(auto_scan_angle[auto_scan_moving_seq][0] - Body_angle) <= 0.1:
+                    #정지
+                    Active_M3_command = 0
+                    #다음 시퀀스로 넘기기 위해서 플래그
+                    if auto_scan_complete_flag != 0x100:
+                        auto_scan_complete_flag = (auto_scan_complete_flag | 0x001)
+
+                #해당 인덱스에 저장된 Y축 각도가 아래에 있을 때
+                if auto_scan_angle[auto_scan_moving_seq][1] - Optical_angle > 0.1:
+                    #Y축 속도 명령 5로
+                    Active_M4_command = 5
+                #해당 인덱스에 저장된 Y축 각도가 위에 있을 때
+                elif auto_scan_angle[auto_scan_moving_seq][1] - Optical_angle < -0.1:
+                    #Y축 속도 명령 -5로
+                    Active_M4_command = -5
+                #해당 인덱스에 저장된 Y축 각도와 차이가 0.1도 내에 있을 때
+                elif abs(auto_scan_angle[auto_scan_moving_seq][1] - Optical_angle) <= 0.1:
+                    #정지
+                    Active_M4_command = 0
+                    #다음 시퀀스로 넘기기 위해서 플래그
+                    if auto_scan_complete_flag != 0x100:
+                        auto_scan_complete_flag = (auto_scan_complete_flag | 0x010)
+
+                #Z축, Y축 플래그가 모두 생기면
+                if (auto_scan_complete_flag & 0x11) == 0x11:
+                    #플래그 시작 시간 저장
+                    auto_scan_stop_time = time.time()
+                    #다음 시퀀스로 넘어가기 위해서 플래그
+                    auto_scan_complete_flag = (auto_scan_complete_flag & ~(0x011))
+                    auto_scan_complete_flag = (auto_scan_complete_flag | 0x100)
+
+                #시간 저장 후 2초 경과 후
+                if(time.time() - auto_scan_stop_time) > 2 and auto_scan_complete_flag == 0x100:
+                    #시계방향으로 가고 있고 저장된 오토스캔 좌표 개수가 현재 진행중인 인덱스보다 크면
+                    if auto_scan_index - 1 > auto_scan_moving_seq and auto_scan_dir == 0:
+                        #계속 가야되니까 다음 시퀀스 += 1
+                        auto_scan_moving_seq += 1
+                    #반시계방향으로 가고 있고 현재 진행중인 인덱스가 0보다 크면
+                    elif auto_scan_moving_seq > 0 and auto_scan_dir == 1:
+                        #계속 가야되니까 다음 시퀀스 -= 1
+                        auto_scan_moving_seq -= 1
+                    #시계 방향으로 가고 있고 저장된 오토스캔 좌표 개수랑 현재 진행중인 인덱스랑 같으면
+                    #(시계방향으로 다 돌았으면)
+                    elif auto_scan_index - 1 == auto_scan_moving_seq and auto_scan_dir == 0:
+                        #거꾸로 돌아가야되니까 방향 바꾸기
+                        auto_scan_dir = 1
+                    #시계 방향으로 가고 있고 저장된 오토스캔 좌표 개수랑 현재 진행중인 인덱스랑 같으면
+                    #(반시계방향으로 다 돌았으면)
+                    elif auto_scan_moving_seq == 0 and auto_scan_dir == 1:
+                        #거꾸로 돌아가야되니까 방향 바꾸기
+                        auto_scan_dir = 0
+                    #플래그 제거
+                    auto_scan_complete_flag = (auto_scan_complete_flag & ~(0x100))
+            #RGB 카메라 기준으로 기총 목표 각도 계산
+            Gun_targ_Angle = Cal_Anlge_Aming_Target("RGB", target_distance.value, Optical_angle)
+        #트래킹 모드
+        elif Mode == 0x03:
+            #영상처리로 나온 모터 제어 명령
             Active_M3_command = RGB_Com_X.value
             Active_M4_command = RGB_Com_Y.value
-        elif (joy.button & 0x20) == 0x20:
-            Active_M3_command = IR_Com_X.value
-            Active_M4_command = IR_Com_Y.value
-            
-        #일단 Teensy에서 두 바이트 읽고 (CAN ID, Data Length)
-        data1 = teensy.read(2)
-        if len(data1) > 0:
-            #Data Length만큼 또 읽음
-            data2 = teensy.read(data1[1])
-            ##To control Motor data##
-            #CAN ID가 3일 때
-            if data1[0] == 3:
-                #모터 동작 때문에 처리
-                if data2 == b'\xf6\x02\xfb' or data2 == b'\xf6\x00\xf9':
-                    M3_state = M3_Stop
-                    M3_state_dir = 0
-                #엔코더값 수신
-                elif data1[1] == 8:
-                    Body_angle = calculate_encoder(data2, 43.33333)
-            #CAN ID가 4일 때
-            elif data1[0] == 4:
-                #모터 동작 때문에 처리
-                if data2 == b'\xf6\x02\xfc' or data2 == b'\xf6\x00\xfa':
-                    M4_state = M4_Stop
-                    M4_state_dir = 0
-                #엔코더값 수신
-                elif data1[1] == 8:
-                    Optical_angle = calculate_encoder(data2, 10)
-            ##To get ToF##
-            #TOF 값 수신
-            elif data1[0] == 6 and data1[1] == 5:
-                target_distance.value = data2[0] + (data2[1] << 8)
+            #RGB 카메라 기준으로 기총 목표 각도 계산
+            Gun_targ_Angle = Cal_Anlge_Aming_Target("RGB", target_distance.value, Optical_angle)
+        elif Mode == 0x02:
+            #영상처리로 나온 모터 제어 명령
+            if target_distance.value >= 200:
+                Active_M3_command = IR_Com_X.value
+                Active_M4_command = IR_Com_Y.value
+            else:
+                Active_M3_command = 0
+                Active_M4_command = 0
+            #IR 카메라 기준으로 기총 목표 각도 계산
+            Gun_targ_Angle = Cal_Anlge_Aming_Target("IR", target_distance.value, Optical_angle)
+
+        #조이스틱 트리거 당겼을 때
+        #초병 권한 있고 발사 명령 있을 때
+        if (joy.button & 0x01) == 0x01 or (((Sentry_Communication.value & 0x04) == 0x04 or (Sentry_Communication.value & 0x08) == 0x08) and Mode == 0x02):
+            #발사 명령 계속 보내지 않도록 하기 위해 gun_trig == 0일 때 (발사 중이 아닐 때)
+            if gun_trig == 0:
+                #RCWS 전원 켜져있을 때만
+                if Power_control == 0:
+                    #RCWS 레이저 발사
+                    teensy.write(gun.SetGunPower(1))
+                #조준이 됐고
+                #조이스틱 조준 버튼이랑 동시에 눌렀거나
+                #초병 권한이 있고 실사격 버튼 눌렀을 때만
+                if ((joy.button & 0x02) == 0x02 or((Sentry_Communication.value & 0x08) == 0x08 and Mode == 0x02)) and Take_Aim == 0x01:
+                    #RCWS 전원 켜져있을 때만
+                    if Power_control == 0:
+                        #실사격 방아쇠 당기기
+                        teensy.write(gun.Trigger("fire"))
+                #아니면
+                else:
+                    #RCWS 전원 켜져있을 때만
+                    if Power_control == 0:
+                        #실사격 방아쇠 놓기
+                        teensy.write(gun.Trigger("ready"))
+                #사격 중
+                gun_trig = 1
+            #사격 중에
+            elif gun_trig == 1:
+                #조준이 되지 않았으면
+                if Take_Aim != 0x01:
+                    #RCWS 전원 켜져있을 때만
+                    if Power_control == 0:
+                        #실사격 방아쇠 놓기
+                        teensy.write(gun.Trigger("ready"))
+                    #방아쇠 놓은 상태
+                    gun_trig = 2
+            #조준이 다시 됐으면 방아쇠를 다시 당기든 놓든 플래그처럼 0으로 설정
+            elif gun_trig == 2 and Take_Aim == 0x01:
+                #방아쇠 놓은 상태
+                gun_trig = 0
+        #조이스틱 트리거 놓았을 때
+        elif (joy.button & 0x01) == 0x00:
+            #발사중이거나 발사하다가 트리거 놓았을 때
+            if gun_trig == 1 or gun_trig == 2:
+                #RCWS 전원 켜져있을 때만
+                if Power_control == 0:
+                    #레이저 끄고 방아쇠 놓기
+                    teensy.write(gun.SetGunPower(0))
+                    teensy.write(gun.Trigger("ready"))
+                gun_trig = 0
+
+        #수동모드 버튼 눌렀을 때
+        if (joy.button & 0x04) == 0x04 and (joy.button & 0x38) == 0x00:
+            if Mode_Change_Flag == 0:
+                #초병 권한 풀기
+                Sentry_Access = 0x00
+                #트래킹 풀기
+                person_detected.value = 0
+                #수동모드 전환
+                Mode = 0x00
+                Mode_Change_Flag = 1
+        elif (joy.button & 0x08) == 0x08 and (joy.button & 0x34) == 0x00:
+            if Mode_Change_Flag == 0:
+                #초병 권한 풀기
+                Sentry_Access = 0x00
+                #트래킹 풀기
+                person_detected.value = 0
+                #오토스캔 모드 변환
+                Mode = 0x01
+                Mode_Change_Flag = 1
+        elif (joy.button & 0x10) == 0x10 and (joy.button & 0x2c) == 0x00:
+            if Mode_Change_Flag == 0:
+                #초병 권한 풀기
+                Sentry_Access = 0x00
+                #트래킹 모드 변환
+                Mode = 0x03
+                Mode_Change_Flag = 1
+        elif (joy.button & 0x20) == 0x20 and (joy.button & 0x1c) == 0x00:
+            if Mode_Change_Flag == 0:
+                #초병 권한 설정
+                Sentry_Access = 0x02
+                #트래킹 풀기
+                person_detected.value = 0
+                #초병 권한 모드 변환
+                Mode = 0x02
+                Mode_Change_Flag = 1
+        else:
+            Mode_Change_Flag = 0
+        
+        #자동 조준 모드 설정일 때
+        if (joy.button & 0x40) == 0x40:
+            if Manual_aming == 1:
+                #수동 조준 -> 자동 조준
+                Manual_aming = 0
+        #수동 조준 모드 설정일 때
+        elif (joy.button & 0x40) == 0x00:
+            if Manual_aming == 0:
+                #RCWS 전원 켜져있을 때만
+                #자동 조준일 때 움직이던 명령이 있을 수 있어서 멈추는 명령 보내주기
+                if Power_control == 0:
+                    m5.Active_Motor_5_Speed(0)
+                #자동 조준-> 수동 조준
+                Manual_aming = 1
+
+        #캘리브레이션 버튼 눌렀을 때
+        if (joy.button & 0x80) == 0x80:
+            aming_complete.value = 2
+            #RCWS 전원 켜져있을 때만
+            if Power_control == 0:
+                #캘리브레이션 진행
+                Motor_Calibrate(teensy, m3, m4, m5)
+            aming_complete.value = 0
+
+
+        #오토스캔 좌표 저장 버튼
+        if (joy.button & 0x400) == 0x400:
+            #플래그
+            if auto_scan_seq == 0:
+                #오토스캔 좌표 저장 변수에 리스트로 저장 [0]->Z축 좌표, [1]->Y축 좌표
+                auto_scan_angle.append([])
+                auto_scan_angle[auto_scan_index].append(Body_angle)
+                auto_scan_angle[auto_scan_index].append(Optical_angle)
+                #인덱스 크기 저장 변수 += 1
+                auto_scan_index += 1
+                #플래그
+                auto_scan_seq = 1
+        elif (joy.button & 0x400) == 0x000:
+            #플래그
+            auto_scan_seq = 0
+
+        #오토스캔 좌표 초기화 버튼
+        if (joy.button & 0x800) == 0x800:
+            #오토스캔 좌표가 저장된게 있을 때 다 초기화
+            if auto_scan_index > 0:
+                auto_scan_angle = []
+                auto_scan_index = 0
+                auto_scan_moving_seq = 0
+                auto_scan_complete_flag = 0x000
+                Active_M3_command = 0
+                Active_M4_command = 0
+
+        #줌 인 버튼
+        if (joy.button & 0x40000) == 0x40000 and Zoom_flag == 0:
+            #최대 줌 인 인덱스보다 더 줌 인 할 수 있으면
+            if Zoom_Focus_Index + 1 <= 4:
+                #줌 인
+                Zoom_Focus_Index += 1
+                if Power_control == 0:
+                    teensy.write(optical.UseFixedCameraTable(Zoom_Focus_Index))
+                Zoom_flag = 1
+        #줌 아웃 버튼
+        elif (joy.button & 0x20000) == 0x20000 and Zoom_flag == 0:
+            #최대 줌 아웃 인덱스보다 더 줌 아웃 할 수 있으면
+            if Zoom_Focus_Index - 1 >= 0:
+                #줌 아웃
+                Zoom_Focus_Index -= 1
+                if Power_control == 0:
+                    teensy.write(optical.UseFixedCameraTable(Zoom_Focus_Index))
+                Zoom_flag = 1
+        elif (joy.button & 0x60000) == 0x00000:
+            Zoom_flag = 0
+
+        #RCWS 전원 키라는 명령
+        if (joy.button & 0x100000) == 0x100000:
+            #RCWS 전원 꺼져있을 때
+            if Power_control == 1:
+                #기총, 카메라 줌, 초점 초기 설정
+                gun_trig = 0
+                teensy.write(gun.SetGunPower(0))
+                teensy.write(gun.Trigger("ready"))
+                time.sleep(1)
                 
-        #Z축 제한각도 -55 ~ 55, 가속도 때문에 정확히 거기서 멈추는거 아님
-        if Body_angle < -55 and Active_M3_command > 0:
-            Active_Motor_3(0)
-        elif Body_angle > 55 and Active_M3_command < 0:
-            Active_Motor_3(0)
-        else:
-            Active_Motor_3(Active_M3_command)
+                optical = Optical()
+                optical.CameraTableSetup(teensy)
+                time.sleep(1)
+                Zoom_Focus_Index = 0
+                teensy.write(optical.UseFixedCameraTable(0))
+                time.sleep(3)
+                
+                #키라는 명령
+                packet = [1, 1, 1]
+                teensy.write(bytearray(packet))
+                Power_control = 0
+        #RCWS 전원 끄라는 명령
+        elif (joy.button & 0x100000) == 0x000000:
+            #RCWs 전원 켜져 있을 때
+            if Power_control == 0:
+                #기총, 카메라 줌, 초점 초기 설정
+                gun_trig = 0
+                teensy.write(gun.SetGunPower(0))
+                teensy.write(gun.Trigger("ready"))
+                time.sleep(1)
+                
+                optical = Optical()
+                optical.CameraTableSetup(teensy)
+                time.sleep(1)
+                Zoom_Focus_Index = 0
+                teensy.write(optical.UseFixedCameraTable(0))
+                time.sleep(3)
+
+                #끄라는 명령
+                packet = [1, 1, 0]
+                teensy.write(bytearray(packet))
+                Power_control = 1
+
+        #목표 기총 각도, 현재 기총 각도 차이가 0.03도보다 작을 때
+        if abs(Gun_targ_Angle - Gun_angle) < 0.03 and aming_complete.value != 2:
+            #조준 완료
+            aming_complete.value = 1
+            Take_Aim = 0x01
+        #목표 기총 각도, 현재 기총 각도 차이가 0.03도보다 클 때
+        elif abs(Gun_targ_Angle - Gun_angle) >= 0.03 and aming_complete.value != 2:
+            #조준 미완료
+            aming_complete.value = 0
+            if Manual_aming == 1:
+                Take_Aim = 0x02
+            elif Manual_aming == 0:
+                Take_Aim = 0x00
             
-        #광학 제한각도 -30 ~ 30, 가속도 때문에 정확히 거기서 멈추는거 아님
-        if Optical_angle < -30 and Active_M4_command > 0:
-            Active_Motor_4(0)
-        elif Optical_angle > 30 and Active_M4_command < 0:
-            Active_Motor_4(0)
-        else:
-            Active_Motor_4(Active_M4_command)
+        #일단 2바이트 수신(CAN_ID, Length)
+        data1 = teensy.read(2)
+        if len(data1) == 2:
+            #data length만큼 데이터 더 수신
+            data2 = teensy.read(data1[1])
+            ##To control Motor data
+            #ID 3번
+            if len(data2) == int(data1[1]):
+                if data1[0] == 2:
+                    #print(data2)
+                    rf.CheckPacket(data2)
+                    if len(data2) == 8:
+                        ds_rf = struct.unpack('2h2H', data2)
+                        #초병 Y,Z축 각도 저장
+                        RF_R.Azimuth_Y = -ds_rf[0]
+                        RF_R.Azimuth_Z = -ds_rf[1]
+                        RF_R.dead = ds_rf[2]
+                        RF_R.S_Check = ds_rf[3]
+
+                        #멀티 프로세스에 초병 각도 넘겨주기 위해 저장
+                        Sentry_Azimuth.value = RF_R.Azimuth_Z
+                        Sentry_Elevation.value = RF_R.Azimuth_Y
+
+                        #초병 상호작용 데이터 멀티 프로세스에 넘기기 위해 저장
+                        Sentry_Communication.value = RF_R.S_Check
+
+                        #초병 권한 요청할 때
+                        if (RF_R.S_Check & 0x0002) == 0x0002:
+                            #초병 권한 요청 변수에 저장
+                            request_access.value = 1
+                            Sentry_Access = 0x01
+                        #초병 권한 요청 풀었을 때
+                        elif (RF_R.S_Check & 0x0002) == 0x0000:
+                            #초병 권한 요청 변수에 저장
+                            request_access.value = 0
+                            if Mode != 0x02:
+                                Sentry_Access = 0x00
+                            elif Mode == 0x02:
+                                Sentry_Access = 0x02
+
+                    #초병 권한이 아닐 때
+                    if Mode != 0x02:
+                        #홀로그램에 초병 권한 아니라는 데이터 넘겨주기 위해 RF 통신으로 권한이 없다는 것을 송신
+                        RF_S_D = (RF_S_D & ~(0x01))
+                    #초병 권한일 때
+                    elif Mode == 0x02:
+                        #홀로그램에 초병 권한이라는 데이터 넘겨주기 위해 RF 통신으로 권한이 있다는 것을 송신
+                        RF_S_D = RF_S_D | 0x01
+
+                    #기총 발사중일 때
+                    if gun_trig == 1:
+                        #홀로그램에 발사 중이라는 데이터 넘겨주기 위해 RF 통신으로 발사 중이라는 것을 송신
+                        RF_S_D = RF_S_D | 0x02
+                    #기총 발사중 아닐 때
+                    elif gun_trig != 1:
+                        #홀로그램에 발사 중 아니라는 데이터 넘겨주기 위해 RF 통신으로 발사 중 아니라는 것을 송신
+                        RF_S_D = (RF_S_D & ~(0x02))
+
+                    #기총 조준 완료 됐을 때
+                    if IR_Armed.value == 1 and Take_Aim == 0x01:
+                        #홀로그램에 기총 조준 완료됐다는 데이터 넘겨주기 위해 RF 통신으로 기총 조준 완료됐다는 것을 송신
+                        RF_S_D = RF_S_D | 0x04
+                    #기총 조준 미완료일 때
+                    elif IR_Armed.value == 0:
+                        #홀로그램에 기총 조준 미완료됐다는 데이터 넘겨주기 위해 RF 통신으로 기총 조준 미완료됐다는 것을 송신
+                        RF_S_D = (RF_S_D & ~(0x04))
+
+                    #명령 송신
+                    sd_rf = struct.pack('6B', 2, 4, 0, 0, 0, RF_S_D)
+                    teensy.write(bytearray(sd_rf))
+                #ID 3번
+                elif data1[0] == 3:
+                    #모터 구동을 위한 데이터 처리
+                    if data2 == b'\xf6\x02\xfb' or data2 == b'\xf6\x00\xf9':
+                        m3.M3_state = m3.M3_Stop
+                        m3.M3_state_dir = 0
+                    #엔코더 데이터 처리
+                    elif data1[1] == 8:
+                        if calculate_encoder(data2, 40) is not None:
+                            Body_angle = -calculate_encoder(data2, 40)
+                #ID 4번
+                elif data1[0] == 4:
+                    #모터 구동을 위한 데이터 처리
+                    if data2 == b'\xf6\x02\xfc' or data2 == b'\xf6\x00\xfa':
+                        m4.M4_state = m4.M4_Stop
+                        m4.M4_state_dir = 0
+                    #엔코더 데이터 처리
+                    elif data1[1] == 8:
+                        if calculate_encoder(data2, 10) is not None:
+                            Optical_angle = -calculate_encoder(data2, 10)
+                #ID 5번
+                elif data1[0] == 5:
+                    #엔코더 데이터 처리
+                    if data2 == b'\xf6\x02\xfd' or data2 == b'\xf6\x00\xfb':
+                        m5.M5_state = m5.M5_Stop
+                        m5.M5_state_dir = 0
+                    if data1[1] == 8:
+                        if calculate_encoder(data2, 20) is not None:
+                            Gun_angle = calculate_encoder(data2, 20)
+                ##To get ToF##
+                #ID 6번
+                elif data1[0] == 6:
+                    optical.CheckPacket(data2)
+                    if optical.distance >= 150 and optical.distance < 4500:
+                        target_distance.value = optical.distance
+        elif len(data1) != 2 and len(data1) != 0:
+            print(data1)
+                
+        #RCWS 전원 On 일 때
+        if Power_control == 0:
+            #Z축 각도 제한 벗어나면 멈추기 시작
+            if Body_angle < -55 and Active_M3_command < 0:
+                m3.Active_Motor_3(0)
+            elif Body_angle > 30 and Active_M3_command > 0:
+                m3.Active_Motor_3(0)
+            #안벗어 났으면 명령대로 모터 구동
+            else:
+                m3.Active_Motor_3(Active_M3_command)
             
-    
-device.close() 
+            #광학부 각도 제한 벗어나면 멈추기 시작
+            if Optical_angle < -2 and Active_M4_command < 0:
+                m4.Active_Motor_4(0)
+            elif Optical_angle > 30 and Active_M4_command > 0:
+                m4.Active_Motor_4(0)
+            #안벗어 났으면 명령대로 모터 구동
+            else:
+                m4.Active_Motor_4(Active_M4_command)
+
+            #수동 조준 모드 아닐 때, 목표 거리가 100cm 이상일 때
+            if Manual_aming == 0 and target_distance.value >= 100:
+                #기총 모터 게인
+                ga = -35
+                #자료형 때문에 오류 방지
+                if Gun_angle is not None:
+                    #목표 기총 각도가 현재 각도보다 클 때
+                    if float(Gun_targ_Angle) >= float(Gun_angle):
+                        Active_M5_command = ga * (float(Gun_targ_Angle) - float(Gun_angle))
+                    #목표 기총 각도가 현재 각도보다 작을 때
+                    elif float(Gun_targ_Angle) < float(Gun_angle):
+                        Active_M5_command = ga * (float(Gun_targ_Angle) - float(Gun_angle))
+
+                    #목표 각도랑 차이가 0.03도 보다 작고 0.001도 보다 클 때
+                    #게인 값이 크면 동작이 안돼서
+                    #정밀제어하기 위해 최소 속도값으로 구동
+                    if float(Gun_targ_Angle) - float(Gun_angle) <= 0.03 and float(Gun_targ_Angle) - float(Gun_angle) > 0.001:
+                        Active_M5_command = -1
+                    elif float(Gun_targ_Angle) - float(Gun_angle) >= -0.03 and float(Gun_targ_Angle) - float(Gun_angle) < -0.001:
+                        Active_M5_command = 1
+
+                    #최대, 최소 속도 제한
+                    if Active_M5_command > 100:
+                        Active_M5_command = 100
+                    elif Active_M5_command < -100:
+                        Active_M5_command = -100
+
+                    #기총 각도 제한
+                    if Gun_angle < -20 and Active_M5_command > 0:
+                        m5.Active_Motor_5_Speed(0)
+                    elif Gun_angle > 30 and Active_M5_command < 0:
+                        m5.Active_Motor_5_Speed(0)
+                    #안벗어 났으면 명령대로 모터 구동
+                    else:
+                        m5.Active_Motor_5_Speed(int(Active_M5_command))
+                else:
+                    m5.Active_Motor_5_Speed(0)
+            #수동 조준 모드이고, 목표 거리가 100cm 이상일 때
+            elif Manual_aming == 1 and target_distance.value >= 100:
+                #자료형 때문에 오류 방지
+                if Gun_angle is not None:
+                    #조이스틱 조준 버튼 눌렀을 때
+                    if (joy.button & 0x02) == 0x02 and aming_seq == 0:
+                        #계산한 각도만큼 펄스 계산해서 구동 명령
+                        m5.Active_Motor_5(teensy, Gun_angle, Gun_targ_Angle)
+                        aming_seq = 1
+                    elif (joy.button & 0x02) == 0x00 and aming_seq == 1:
+                        aming_seq = 0
+                else:
+                    m5.Active_Motor_5_Speed(0)
+            
+socket.close()
+# device.close() 
