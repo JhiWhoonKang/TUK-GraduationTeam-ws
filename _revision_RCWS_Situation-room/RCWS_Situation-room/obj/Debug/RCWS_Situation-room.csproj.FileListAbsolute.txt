@@ -129,7 +129,6 @@ C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.pdb
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.xml
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.AssemblyReference.cache
-C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Form1.resources
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormDataSetting.resources
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorDataSetting.resources
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorSetting.resources
@@ -138,9 +137,7 @@ C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormReticleSetting.resources
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponDataSetting.resources
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponSetting.resources
-C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.GUI.resources
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Properties.Resources.resources
-C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Setting.resources
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.GenerateResource.cache
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CoreCompileInputs.cache
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CopyComplete
@@ -180,3 +177,7 @@ C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCW
 C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMain.resources
 C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormSettingMain.resources
 C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormManual.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormLogin.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormManual.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMain.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormSettingMain.resources

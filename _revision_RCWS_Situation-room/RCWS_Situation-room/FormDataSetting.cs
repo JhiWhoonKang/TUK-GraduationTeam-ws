@@ -88,7 +88,7 @@ namespace RCWS_Situation_room
                 currentTime = DateTime.Now.ToString("HH:mm:ss");
 
                 ListViewItem item = new ListViewItem(sendData.BODY_PAN.ToString());
-                item.SubItems.Add(sendData.WEAPON_TILT.ToString());
+                item.SubItems.Add(sendData.OPTICAL_TILT.ToString());
                 item.SubItems.Add(sendData.Button.ToString());
                 item.SubItems.Add(sendData.C_X1.ToString());
                 item.SubItems.Add(sendData.C_Y1.ToString());

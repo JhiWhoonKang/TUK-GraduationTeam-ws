@@ -36,7 +36,7 @@ namespace RCWS_Situation_room
 
         /* motion control */
         private HashSet<Keys> PRESSEDKEYS = new HashSet<Keys>();
-        int PAN_SPEED;
+        int ROTATION_SPEED;
         /* */
 
         /* Packet */
@@ -68,7 +68,8 @@ namespace RCWS_Situation_room
         /* */
 
         private bool pwr_flag = false;
-        double HSB_VEL_VALUE;
+        double HSB_BODY_VEL_VALUE;
+        double HSB_OPTICAL_VEL_VALUE;
 
         Point startPoint = Point.Empty;
         Point endPoint = Point.Empty;
@@ -152,17 +153,20 @@ namespace RCWS_Situation_room
             KeyDown += new KeyEventHandler(GUI_KeyDown);
             KeyUp += new KeyEventHandler(GUI_KeyUp);
 
-            HSB_VEL_VALUE = 1.0;
+            HSB_BODY_VEL_VALUE = 1.0;
+            HSB_OPTICAL_VEL_VALUE = 1.0;
+
+            RTB_RECEIVED_DISPLAY.Visible = false;
+            RTB_SEND_DISPLAY.Visible = false;
+
+            TB_MAGNIFICATION.Text = "4.5배율";
 
             this.Focus();
         }
 
         private void GUI_Load(object sender, EventArgs e)
         {
-            TIM_ALARM.Interval = 500;
-            //TIM_ALARM.Tick
-
-
+            BTN_SETTING.Visible = false;
         }
 
         #region Joystick
@@ -200,11 +204,13 @@ namespace RCWS_Situation_room
             catch (Exception ex)
             {
                 ErrorHandleDisplay("Joy Error" + ex.Message + "\r\n");
-                //RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.AppendText("Joy Error" + ex.Message + "\r\n"); });
             }
         }
 
         float ax_X;
+        sbyte optical_magnification = 1;
+        bool optical_magnification_flag_zi = false;
+        bool optical_magnification_flag_zo = false;
         private void Joy_Run()
         {
             var joystick = new Joystick(DIRECT_INPUT, JOYSTICK_GUID);
@@ -214,7 +220,7 @@ namespace RCWS_Situation_room
             SEND_DATA.Button = 0xfc100000;
 
             int pre_1 = SEND_DATA.BODY_PAN;
-            int pre_2 = SEND_DATA.WEAPON_TILT;
+            int pre_2 = SEND_DATA.OPTICAL_TILT;
             uint pre_3 = SEND_DATA.Button;
 
             while (true)
@@ -233,31 +239,31 @@ namespace RCWS_Situation_room
                     if (ax_X >= 0.2025)
                     {
                         //SEND_DATA.BodyPan = (int)(ax_X * 400 - 80);
-                        SEND_DATA.BODY_PAN = (int)((ax_X * 400 - 80) * HSB_VEL_VALUE);
+                        SEND_DATA.BODY_PAN = (int)((ax_X * 400 - 80) * HSB_BODY_VEL_VALUE);
                     }
                     else if (ax_X <= -0.2025)
                     {
                         //SEND_DATA.BodyPan = (int)(ax_X * 400 + 80);
-                        SEND_DATA.BODY_PAN = (int)((ax_X * 400 + 80) * HSB_VEL_VALUE);
+                        SEND_DATA.BODY_PAN = (int)((ax_X * 400 + 80) * HSB_BODY_VEL_VALUE);
                     }
                 }
 
                 float ax_Y = ((float)(state.Y - 32511) / (float)(33024));
                 if (ax_Y < 0.22 && ax_Y > -0.22)
                 {
-                    SEND_DATA.WEAPON_TILT = 0;
+                    SEND_DATA.OPTICAL_TILT = 0;
                 }
                 else
                 {
                     if (ax_Y >= 0.22)
                     {
                         //SEND_DATA.BodyTilt = (int)(ax_Y * 100 - 20);
-                        SEND_DATA.WEAPON_TILT = (int)((ax_Y * 100 - 20) * HSB_VEL_VALUE);
+                        SEND_DATA.OPTICAL_TILT = (int)((ax_Y * 100 - 20) * HSB_OPTICAL_VEL_VALUE);
                     }
                     else if (ax_Y <= -0.22)
                     {
                         //SEND_DATA.BodyTilt = (int)(ax_Y * 100 + 20);
-                        SEND_DATA.WEAPON_TILT = (int)((ax_Y * 100 + 20) * HSB_VEL_VALUE);
+                        SEND_DATA.OPTICAL_TILT = (int)((ax_Y * 100 + 20) * HSB_OPTICAL_VEL_VALUE);
                     }
                 }
 
@@ -315,31 +321,87 @@ namespace RCWS_Situation_room
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000020));
                 }
 
-                if (buttons[6] == true)
+                if (buttons[6] == true && !optical_magnification_flag_zo) // 축소
                 {
                     SEND_DATA.Button = SEND_DATA.Button | 0x20000;
+                    
+                    optical_magnification_flag_zo = true;
+
+                    if (optical_magnification <= define.MIN_MAGNIFICATION)
+                    {
+                        optical_magnification = define.MIN_MAGNIFICATION;
+                    }
+
+                    else
+                    {
+                        optical_magnification -= 1;
+                    }
+
+                    if(optical_magnification ==1 || optical_magnification==2)
+                    {
+                        UpdateUI(() => ReceiveDisplay(TB_MAGNIFICATION.Text="4.5배율"));
+                    }
+
+                    else if(optical_magnification==3)
+                    {
+                        UpdateUI(() => ReceiveDisplay(TB_MAGNIFICATION.Text = "5.7배율"));
+                    }
+
+                    else
+                    {
+                        UpdateUI(() => ReceiveDisplay(TB_MAGNIFICATION.Text = "8.2배율"));
+                    }
                 }
                 else if (buttons[6] == false)
                 {
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00020000));
+                    optical_magnification_flag_zo = false;
                 }
 
                 if (buttons[7] == true)
                 {
-                    SEND_DATA.Button = SEND_DATA.Button | 0x80;
+                    SEND_DATA.Button = SEND_DATA.Button | 0x80;                    
                 }
                 else if (buttons[7] == false)
                 {
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000080));
                 }
 
-                if (buttons[8] == true)
+                if (buttons[8] == true && !optical_magnification_flag_zi) // 확대
                 {
                     SEND_DATA.Button = SEND_DATA.Button | 0x40000;
+                    
+                    optical_magnification_flag_zi = true;
+
+                    if (optical_magnification >= define.MAX_MAGNIFICATION)
+                    {
+                        optical_magnification = define.MAX_MAGNIFICATION;
+                    }
+
+                    else
+                    {
+                        optical_magnification += 1;
+                    }
+
+                    if (optical_magnification == 1 || optical_magnification == 2)
+                    {
+                        UpdateUI(() => ReceiveDisplay(TB_MAGNIFICATION.Text = "4.5배율"));
+                    }
+
+                    else if (optical_magnification == 3)
+                    {
+                        UpdateUI(() => ReceiveDisplay(TB_MAGNIFICATION.Text = "5.7배율"));
+                    }
+
+                    else
+                    {
+                        UpdateUI(() => ReceiveDisplay(TB_MAGNIFICATION.Text = "8.2배율"));
+                    }
                 }
                 else if (buttons[8] == false)
                 {
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00040000));
+                    optical_magnification_flag_zi = false;
                 }
 
                 if (buttons[9] == true)
@@ -375,14 +437,14 @@ namespace RCWS_Situation_room
                     SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00000800));
                 }
 
-                if (pre_1 != SEND_DATA.BODY_PAN || pre_2 != SEND_DATA.WEAPON_TILT || pre_3 != SEND_DATA.Button)
+                if (pre_1 != SEND_DATA.BODY_PAN || pre_2 != SEND_DATA.OPTICAL_TILT || pre_3 != SEND_DATA.Button)
                 {
                     byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
                     STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
                     STREAM_WRITER.BaseStream.FlushAsync();
 
                     pre_1 = SEND_DATA.BODY_PAN;
-                    pre_2 = SEND_DATA.WEAPON_TILT;
+                    pre_2 = SEND_DATA.OPTICAL_TILT;
                     pre_3 = SEND_DATA.Button;
                 }
 
@@ -465,67 +527,146 @@ namespace RCWS_Situation_room
         #endregion
 
         #region Motion Control
+
+        private HashSet<Keys> pressedKeys = new HashSet<Keys>();
+        private readonly SemaphoreSlim keySemaphore = new SemaphoreSlim(1, 1);
+        int panSpeed = 50;
+        int tiltSpeed = 10;
+        int stop_panSpeed = 0;
+        int stop_tiltSpeed = 0;
+        bool control_flag = false;
+
         private async void GUI_KeyDown(object sender, KeyEventArgs e)
         {
-            if (PRESSEDKEYS.Add(e.KeyCode))
+            await keySemaphore.WaitAsync();
+
+            try
             {
-                await SendCommandStructure();
+                if (pressedKeys.Add(e.KeyCode))
+                {
+                    await HandleKeyPress(e.KeyCode, true);
+                }
+            }
+            finally
+            {
+                keySemaphore.Release();
             }
         }
 
         private async void GUI_KeyUp(object sender, KeyEventArgs e)
         {
-            if (PRESSEDKEYS.Remove(e.KeyCode))
+            await keySemaphore.WaitAsync();
+
+            try
             {
-                await SendCommandStructure();
+                if (pressedKeys.Remove(e.KeyCode))
+                {
+                    await HandleKeyPress(e.KeyCode, false);
+                }
+            }
+            finally
+            {
+                keySemaphore.Release();
             }
         }
-        
-        private async Task SendCommandStructure()
+
+        private async Task HandleKeyPress(Keys keyCode, bool isKeyDown)
         {
-            RECEIVED_DATA.BODY_PAN = 0;
-            RECEIVED_DATA.WEAPON_TILT = 0;
-            RECEIVED_DATA.FIRE = 0;
-            RECEIVED_DATA.TAKE_AIM = 0;
+            if (RCWS_CONNECT_FLAG)
+            {
+                if (isKeyDown)
+                {
+                    if (keyCode == Keys.A || keyCode == Keys.Left)
+                    {
+                        panSpeed = -Math.Abs(panSpeed);
+                        SEND_DATA.BODY_PAN = panSpeed;
+                    }
+                    if (keyCode == Keys.D || keyCode == Keys.Right)
+                    {
+                        panSpeed = Math.Abs(panSpeed);
+                        SEND_DATA.BODY_PAN = panSpeed;
+                    }
+                    if (keyCode == Keys.W || keyCode == Keys.Up)
+                    {
+                        tiltSpeed = Math.Abs(tiltSpeed);
+                        SEND_DATA.OPTICAL_TILT = tiltSpeed;
+                    }
+                    if (keyCode == Keys.S || keyCode == Keys.Down)
+                    {
+                        tiltSpeed = -Math.Abs(tiltSpeed);
+                        SEND_DATA.OPTICAL_TILT = tiltSpeed;
+                    }
+                    if (keyCode == Keys.Z)
+                    {
+                        tiltSpeed = Math.Abs(tiltSpeed) - 1;
+                        panSpeed = Math.Abs(panSpeed) - 1;
+                        if (tiltSpeed <= 1)
+                        {
+                            tiltSpeed = 1;
+                        }
+                        if (panSpeed <= 1)
+                        {
+                            panSpeed = 1;
+                        }
+                    }
+                    if (keyCode == Keys.X)
+                    {
+                        tiltSpeed = Math.Abs(tiltSpeed) + 1;
+                        panSpeed = Math.Abs(panSpeed) + 1;
+                    }
 
-            /* motion data */
-            if (PRESSEDKEYS.Contains(Keys.A))
-            {
-                PAN_SPEED = - 100;
-                SEND_DATA.BODY_PAN = (PAN_SPEED);
-            }
-                
+                    if (keyCode == Keys.D1)
+                    {
+                        panSpeed = 5;
+                        tiltSpeed = 2;                        
+                    }
 
-            if (PRESSEDKEYS.Contains(Keys.D))
-            {
-                PAN_SPEED = 100;
-                SEND_DATA.BODY_PAN = (PAN_SPEED);
-            }
+                    if (keyCode == Keys.D2)
+                    {
+                        panSpeed = 50;
+                        tiltSpeed = 20;
+                    }
 
-            if (PRESSEDKEYS.Contains(Keys.Z))
-            {
-                PAN_SPEED = Math.Max(PAN_SPEED - 10, 1);
-                SEND_DATA.BODY_PAN = (PAN_SPEED);
-            }
+                    if (keyCode == Keys.D3)
+                    {
+                        panSpeed = 100;
+                        tiltSpeed = 30;
+                    }
 
-            if (PRESSEDKEYS.Contains(Keys.X))
-            {
-                PAN_SPEED = Math.Min(PAN_SPEED + 10, 1000);
-                SEND_DATA.BODY_PAN = (PAN_SPEED);
-            }
-            /* */
+                    if (keyCode == Keys.D4)
+                    {
+                        panSpeed = 200;
+                        tiltSpeed = 40;
+                    }
 
-            /* 이외 키 무효화 */
-            else
-            {
-                return;
-            }
-            /* */
-            if(RCWS_CONNECT_FLAG)
-            {
-                byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-                await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-                await STREAM_WRITER.BaseStream.FlushAsync();
+                    if (keyCode == Keys.D5)
+                    {
+                        panSpeed = 50;
+                        tiltSpeed = 10;
+                    }
+                    LB_BODY_ROTATION_VEL.Text = panSpeed.ToString();
+                    LB_OPTICAL_ROTATION_VEL.Text = tiltSpeed.ToString();
+
+                    byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                    await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                    await STREAM_WRITER.BaseStream.FlushAsync();
+                }
+
+                else
+                {
+                    if (keyCode == Keys.A || keyCode == Keys.D)
+                    {
+                        SEND_DATA.BODY_PAN = stop_panSpeed;
+                    }
+                    if (keyCode == Keys.W || keyCode == Keys.S)
+                    {
+                        SEND_DATA.OPTICAL_TILT = stop_tiltSpeed;
+                    }
+
+                    byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                    await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                    await STREAM_WRITER.BaseStream.FlushAsync();
+                }                               
             }            
         }
         #endregion
@@ -615,262 +756,57 @@ namespace RCWS_Situation_room
         
         private void UpdateParam(Packet.RECEIVED_PACKET receivedData)
         {
-            LB_VEL.Text = SEND_DATA.BODY_PAN.ToString();
-
-            if (pp_del_flag)
+            UpdateUI(() =>
             {
-                DRAW.DeleteAllPinPoints();
-                pp_del_flag = false;
-            }
-
-            if (pp_flag)
-            {
-                float centerX = PB_AZIMUTH.Width / 2;
-                float centerY = PB_AZIMUTH.Height / 3 * 2;
-                float radians = -receivedData.BODY_PAN * (float)(Math.PI / 180) + (float)(Math.PI / 2);
-                float x = centerX + receivedData.DISTANCE / 5 * (float)Math.Cos(radians);
-                float y = centerY - receivedData.DISTANCE / 5 * (float)Math.Sin(radians);
-                float radius = 10;
-
-                DRAW.AddPinPoint(new Point((int)x, (int)y), radius);
-                pp_flag = false;
-            }
-
-            PB_AZIMUTH.Invalidate();
-            PB_AZIMUTH.Refresh();
-
-            TB_RCWS_AZIMUTH.Text = receivedData.BODY_PAN.ToString();
-            TB_WEAPON_ELEVATION.Text = receivedData.WEAPON_TILT.ToString();
-            TB_OPTICAL_ELEVATION.Text = receivedData.OPTICAL_TILT.ToString();
-            TB_SENTRY_AZIMUTH.Text = receivedData.SENTRY_AZIMUTH.ToString();
-            TB_SENTRY_ELEVATION.Text = receivedData.SENTRY_ELEVATION.ToString();
-            TB_DISTANCE.Text = receivedData.DISTANCE.ToString();
-
-            // PERMISSION | 0: 상황실 1: 요청 2: 초소
-            // MODE | 0: 수동 1: auto scan 2: 레이저 트래킹 3: 사람 추적
-            if (RECEIVED_DATA.PERMISSION == 0)
-            {
-                BTN_PERMISSION.ForeColor = Color.White;
-                BTN_PERMISSION.BackColor = Color.Green;
-
-                if (RECEIVED_DATA.MODE == 0)
+                if (pp_del_flag)
                 {
-                    BTN_PERMISSION.Text = "Controlable";
+                    DRAW.DeleteAllPinPoints();
+                    pp_del_flag = false;
                 }
 
-                else if (RECEIVED_DATA.MODE == 1)
+                if (pp_flag)
                 {
-                    BTN_PERMISSION.Text = "Auto Scan Mode";
+                    float centerX = PB_AZIMUTH.Width / 2;
+                    float centerY = PB_AZIMUTH.Height / 3 * 2;
+                    float radians = -receivedData.BODY_PAN * (float)(Math.PI / 180) + (float)(Math.PI / 2);
+                    float x = centerX + receivedData.DISTANCE / 10 * (float)Math.Cos(radians);
+                    float y = centerY - receivedData.DISTANCE / 10 * (float)Math.Sin(radians);
+                    float radius = 10;
+
+                    DRAW.AddPinPoint(new Point((int)x, (int)y), radius);
+                    pp_flag = false;
                 }
 
-                else if (RECEIVED_DATA.MODE == 3)
+                PB_AZIMUTH.Invalidate();
+                PB_AZIMUTH.Refresh();
+
+                TB_RCWS_AZIMUTH.Text = receivedData.BODY_PAN.ToString();
+                TB_WEAPON_ELEVATION.Text = receivedData.WEAPON_TILT.ToString();
+                TB_OPTICAL_ELEVATION.Text = receivedData.OPTICAL_TILT.ToString();
+                TB_SENTRY_AZIMUTH.Text = receivedData.SENTRY_AZIMUTH.ToString();
+                TB_SENTRY_ELEVATION.Text = receivedData.SENTRY_ELEVATION.ToString();
+                TB_DISTANCE.Text = receivedData.DISTANCE.ToString();
+
+                // PERMISSION | 0: 상황실 1: 요청 2: 초소
+                // MODE | 0: 수동 1: auto scan 2: 레이저 트래킹 3: 사람 추적
+                if (RECEIVED_DATA.PERMISSION == 0)
                 {
-                    BTN_PERMISSION.Text = "Human Tracking Mode";
-                }
+                    BTN_PERMISSION.ForeColor = Color.White;
+                    BTN_PERMISSION.BackColor = Color.Green;
 
-                else
-                {
-                    BTN_PERMISSION.ForeColor = Color.Black;
-                    BTN_PERMISSION.BackColor = Color.White;
-                    BTN_PERMISSION.Text = "Err";
-                }
-            }
-
-            else if (RECEIVED_DATA.PERMISSION == 1)
-            {
-                BTN_PERMISSION.ForeColor = Color.White;
-                BTN_PERMISSION.BackColor = Color.Yellow;
-                BTN_PERMISSION.Text = "Requesting...";
-            }
-
-            else if (RECEIVED_DATA.PERMISSION == 2)
-            {
-                BTN_PERMISSION.ForeColor = Color.White;
-                BTN_PERMISSION.BackColor = Color.Blue;
-
-                if (RECEIVED_DATA.MODE == 2)
-                {
-                    BTN_PERMISSION.Text = "Laser Tracking Mode";
-                }
-            }
-
-            else
-            {
-                BTN_PERMISSION.ForeColor = Color.Black;
-                BTN_PERMISSION.BackColor = Color.White;
-                BTN_PERMISSION.Text = "Err";
-            }
-
-            TB_DISTANCE.Text = RECEIVED_DATA.DISTANCE.ToString();
-
-            // TAKE_AIM | 0: 초록, 수동 1: 조준중 2: 초록, 오토
-            if (RECEIVED_DATA.TAKE_AIM == 0)
-            {
-                BTN_TAKE_AIM.ForeColor = Color.White;
-                BTN_TAKE_AIM.BackColor = Color.Green;
-                BTN_TAKE_AIM.Text = "Manual Aiming";
-            }
-
-            else if (RECEIVED_DATA.TAKE_AIM == 1)
-            {
-                BTN_TAKE_AIM.ForeColor = Color.White;
-                BTN_TAKE_AIM.BackColor = Color.Red;
-                BTN_TAKE_AIM.Text = "Aiming Complete";
-            }
-
-            else if (RECEIVED_DATA.TAKE_AIM == 2)
-            {
-                BTN_TAKE_AIM.ForeColor = Color.White;
-                BTN_TAKE_AIM.BackColor = Color.Green;
-                BTN_TAKE_AIM.Text = "Automatic Aiming";
-            }
-
-            else
-            {
-                BTN_TAKE_AIM.ForeColor = Color.Black;
-                BTN_TAKE_AIM.BackColor = Color.White;
-                BTN_TAKE_AIM.Text = "Err";
-            }
-
-            // FIRE | 
-            if (RECEIVED_DATA.FIRE == 0 || RECEIVED_DATA.FIRE == 2)
-            {
-                BTN_FIRE.ForeColor = Color.White;
-                BTN_FIRE.BackColor = Color.Green;
-                BTN_FIRE.Text = "Not Fired";
-            }
-
-            else if (RECEIVED_DATA.FIRE == 1)
-            {
-                BTN_FIRE.ForeColor = Color.White;
-                BTN_FIRE.BackColor = Color.Red;
-                BTN_FIRE.Text = "Fire";
-            }
-
-            else
-            {
-                BTN_FIRE.ForeColor = Color.Black;
-                BTN_FIRE.BackColor = Color.White;
-                BTN_FIRE.Text = "Err";
-            }
-        }
-
-        private async Task TcpConnectAsync()
-        {
-            TcpClient tcpClient = new TcpClient();
-
-            try
-            {
-                SendDisplay("Connecting...");
-                tcpClient.Connect(define.SERVER_IP, define.TCPPORT);
-
-                NETWORK_STREAM = tcpClient.GetStream();
-                STREAM_READER = new StreamReader(NETWORK_STREAM);
-                STREAM_WRITER = new StreamWriter(NETWORK_STREAM);
-                STREAM_WRITER.AutoFlush = true;
-                InitializeJoystick();
-            }
-            catch (Exception ex)
-            {
-                ReceiveDisplay("Connect ERROR: " + ex.Message);
-                return;
-            }
-
-            ReceiveDisplay("Server Connected");
-            BTN_RCWS_CONNECT.BackColor = Color.Green;
-            BTN_RCWS_CONNECT.ForeColor = Color.White;
-
-            try
-            {
-                while (true)
-                {
-                    byte[] receivedData = new byte[Marshal.SizeOf(typeof(Packet.RECEIVED_PACKET))];
-                    await NETWORK_STREAM.ReadAsync(receivedData, 0, receivedData.Length);
-                    RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.AppendText(receivedData + "\r\n"); });
-
-                    RECEIVED_DATA = TcpReturn.BytesToStruct<Packet.RECEIVED_PACKET>(receivedData);
-
-                    ReceiveDisplay($"OpticalTilt: {RECEIVED_DATA.OPTICAL_TILT}, BodyTilt: {RECEIVED_DATA.WEAPON_TILT}" +
-                        $", BodyPan: {RECEIVED_DATA.BODY_PAN}, Sentry Azimuth: {RECEIVED_DATA.SENTRY_AZIMUTH}, Sentry Elevation: {RECEIVED_DATA.SENTRY_ELEVATION}"+
-                        $", Permission: {RECEIVED_DATA.PERMISSION}, Take Aim: {RECEIVED_DATA.TAKE_AIM}, Fire: {RECEIVED_DATA.FIRE}, Mode: {RECEIVED_DATA.MODE}");
-
-                    if(pp_del_flag == true)
+                    if (RECEIVED_DATA.MODE == 0)
                     {
-                        DRAW.DeleteAllPinPoints();
-
-                        pp_del_flag = false;
+                        BTN_PERMISSION.Text = "Controlable";
                     }
 
-                    if(pp_flag == true)
+                    else if (RECEIVED_DATA.MODE == 1)
                     {
-                        float centerX = PB_AZIMUTH.Width / 2;
-                        float centerY = PB_AZIMUTH.Height / 3 * 2;
-                        float radians = -RECEIVED_DATA.BODY_PAN * (float)(Math.PI / 180) + (float)(Math.PI / 2);
-                        float x = centerX + RECEIVED_DATA.DISTANCE / 5 * (float)Math.Cos(radians);
-                        float y = centerY - RECEIVED_DATA.DISTANCE / 5 * (float)Math.Sin(radians);
-                        float radius = 10;
-                                                                         
-                        DRAW.AddPinPoint(new Point((int)x, (int)y), radius);
-                                              
-                        pp_flag = false;
+                        BTN_PERMISSION.Text = "Auto Scan Mode";
                     }
 
-                    PB_AZIMUTH.Invalidate();
-                    PB_AZIMUTH.Refresh();
-
-                    TB_RCWS_AZIMUTH.Text = RECEIVED_DATA.BODY_PAN.ToString();
-                    TB_WEAPON_ELEVATION.Text = RECEIVED_DATA.WEAPON_TILT.ToString();
-                    TB_OPTICAL_ELEVATION.Text = RECEIVED_DATA.OPTICAL_TILT.ToString();
-                    TB_SENTRY_AZIMUTH.Text = RECEIVED_DATA.SENTRY_AZIMUTH.ToString();
-                    TB_SENTRY_ELEVATION.Text = RECEIVED_DATA.SENTRY_ELEVATION.ToString();
-
-
-                    // PERMISSION | 0: 상황실 1: 요청 2: 초소
-                    // MODE | 0: 수동 1: auto scan 2: 레이저 트래킹 3: 사람 추적
-                    if (RECEIVED_DATA.PERMISSION == 0)
+                    else if (RECEIVED_DATA.MODE == 3)
                     {
-                        BTN_PERMISSION.ForeColor = Color.White;
-                        BTN_PERMISSION.BackColor = Color.Green;                        
-                        
-                        if(RECEIVED_DATA.MODE == 0)
-                        {
-                            BTN_PERMISSION.Text = "Controlable";
-                        }
-
-                        else if (RECEIVED_DATA.MODE == 1)
-                        {
-                            BTN_PERMISSION.Text = "Auto Scan Mode";
-                        }
-
-                        else if (RECEIVED_DATA.MODE == 3)
-                        {
-                            BTN_PERMISSION.Text = "Human Tracking Mode";
-                        }
-
-                        else
-                        {
-                            BTN_PERMISSION.ForeColor = Color.Black;
-                            BTN_PERMISSION.BackColor = Color.White;
-                            BTN_PERMISSION.Text = "Err";
-                        }
-                    }
-
-                    else if (RECEIVED_DATA.PERMISSION == 1)
-                    {
-                        BTN_PERMISSION.ForeColor = Color.White;
-                        BTN_PERMISSION.BackColor = Color.Yellow;
-                        BTN_PERMISSION.Text = "Requesting...";
-                    }
-
-                    else if (RECEIVED_DATA.PERMISSION == 2)
-                    {
-                        BTN_PERMISSION.ForeColor = Color.White;
-                        BTN_PERMISSION.BackColor = Color.Blue;
-
-                        if (RECEIVED_DATA.MODE == 2)
-                        {
-                            BTN_PERMISSION.Text = "Laser Tracking Mode";
-                        }                        
+                        BTN_PERMISSION.Text = "Tracking Mode";
                     }
 
                     else
@@ -879,96 +815,89 @@ namespace RCWS_Situation_room
                         BTN_PERMISSION.BackColor = Color.White;
                         BTN_PERMISSION.Text = "Err";
                     }
-
-                    TB_DISTANCE.Text = RECEIVED_DATA.DISTANCE.ToString();
-
-                    // TAKE_AIM | 0: 초록, 수동 1: 조준중 2: 초록, 오토
-                    if (RECEIVED_DATA.TAKE_AIM == 0)
-                    {
-                        BTN_TAKE_AIM.ForeColor = Color.White;
-                        BTN_TAKE_AIM.BackColor = Color.Green;
-                        BTN_TAKE_AIM.Text = "Manual Aiming";
-                    }
-
-                    else if (RECEIVED_DATA.TAKE_AIM == 1)
-                    {
-                        BTN_TAKE_AIM.ForeColor = Color.White;
-                        BTN_TAKE_AIM.BackColor = Color.Red;
-                        BTN_TAKE_AIM.Text = "Aiming Complete";
-                    }
-
-                    else if (RECEIVED_DATA.TAKE_AIM == 2)
-                    {
-                        BTN_TAKE_AIM.ForeColor = Color.White;
-                        BTN_TAKE_AIM.BackColor = Color.Green;
-                        BTN_TAKE_AIM.Text = "Automatic Aiming";
-                    }
-
-                    else
-                    {
-                        BTN_TAKE_AIM.ForeColor = Color.Black;
-                        BTN_TAKE_AIM.BackColor = Color.White;
-                        BTN_TAKE_AIM.Text = "Err";
-                    }
-
-                    // FIRE | 
-                    if (RECEIVED_DATA.FIRE == 0 || RECEIVED_DATA.FIRE == 2)
-                    {
-                        BTN_FIRE.ForeColor = Color.White;
-                        BTN_FIRE.BackColor = Color.Green;
-                        BTN_FIRE.Text = "Not Fired";
-                    }
-
-                    else if (RECEIVED_DATA.FIRE == 1)
-                    {
-                        BTN_FIRE.ForeColor = Color.White;
-                        BTN_FIRE.BackColor = Color.Red;
-                        BTN_FIRE.Text = "Fire";
-                    }
-
-                    else
-                    {
-                        BTN_FIRE.ForeColor = Color.Black;
-                        BTN_FIRE.BackColor = Color.White;
-                        BTN_FIRE.Text = "Err";
-                    }
-
-                    /*
-                    string dataToShow = $"OpticalTilt: {receivedStruct.OpticalTilt}, OpticalPan: {receivedStruct.OpticalPan}, BodyTilt: {receivedStruct.BodyTilt}" +
-                        $", BodyPan: {receivedStruct.BodyPan}";                    
-                    */
                 }
-            }
 
-            catch (Exception ex)
-            {
-                ReceiveDisplay("Connect ERROR: " + ex.Message);
-                return;
-            }
-        }
-
-        private void ReceiveData()
-        {
-            try
-            {
-                while (true)
+                else if (RECEIVED_DATA.PERMISSION == 1)
                 {
-                    byte[] receivedData = new byte[Marshal.SizeOf(typeof(Packet.RECEIVED_PACKET))];
-                    NETWORK_STREAM.ReadAsync(receivedData, 0, receivedData.Length);
-                    RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.AppendText(receivedData + "\r\n"); });
-
-                    RECEIVED_DATA = TcpReturn.BytesToStruct<Packet.RECEIVED_PACKET>(receivedData);
-
-                    ProcessReceivedData(RECEIVED_DATA);
+                    BTN_PERMISSION.ForeColor = Color.White;
+                    BTN_PERMISSION.BackColor = Color.Yellow;
+                    BTN_PERMISSION.Text = "Requesting...";
                 }
-            }
-            catch (Exception ex)
-            {
-                ReceiveDisplay("Connect ERROR: " + ex.Message);
-            }
+
+                else if (RECEIVED_DATA.PERMISSION == 2)
+                {
+                    BTN_PERMISSION.ForeColor = Color.White;
+                    BTN_PERMISSION.BackColor = Color.Blue;
+
+                    if (RECEIVED_DATA.MODE == 2)
+                    {
+                        BTN_PERMISSION.Text = "Laser Tracking Mode";
+                    }
+                }
+
+                else
+                {
+                    BTN_PERMISSION.ForeColor = Color.Black;
+                    BTN_PERMISSION.BackColor = Color.White;
+                    BTN_PERMISSION.Text = "Err";
+                }
+
+                TB_DISTANCE.Text = RECEIVED_DATA.DISTANCE.ToString();
+
+                // TAKE_AIM | 0: 초록, 수동 1: 조준중 2: 초록, 오토
+                if (RECEIVED_DATA.TAKE_AIM == 0)
+                {
+                    BTN_TAKE_AIM.ForeColor = Color.White;
+                    BTN_TAKE_AIM.BackColor = Color.Green;
+                    BTN_TAKE_AIM.Text = "Manual Aiming";
+                }
+
+                else if (RECEIVED_DATA.TAKE_AIM == 1)
+                {
+                    BTN_TAKE_AIM.ForeColor = Color.White;
+                    BTN_TAKE_AIM.BackColor = Color.Red;
+                    BTN_TAKE_AIM.Text = "Aiming Complete";
+                }
+
+                else if (RECEIVED_DATA.TAKE_AIM == 2)
+                {
+                    BTN_TAKE_AIM.ForeColor = Color.White;
+                    BTN_TAKE_AIM.BackColor = Color.Green;
+                    BTN_TAKE_AIM.Text = "Automatic Aiming";
+                }
+
+                else
+                {
+                    BTN_TAKE_AIM.ForeColor = Color.Black;
+                    BTN_TAKE_AIM.BackColor = Color.White;
+                    BTN_TAKE_AIM.Text = "Err";
+                }
+
+                // FIRE | 
+                if (RECEIVED_DATA.FIRE == 0 || RECEIVED_DATA.FIRE == 2)
+                {
+                    BTN_FIRE.ForeColor = Color.White;
+                    BTN_FIRE.BackColor = Color.Green;
+                    BTN_FIRE.Text = "Not Fired";
+                }
+
+                else if (RECEIVED_DATA.FIRE == 1)
+                {
+                    BTN_FIRE.ForeColor = Color.White;
+                    BTN_FIRE.BackColor = Color.Red;
+                    BTN_FIRE.Text = "Fire";
+                }
+
+                else
+                {
+                    BTN_FIRE.ForeColor = Color.Black;
+                    BTN_FIRE.BackColor = Color.White;
+                    BTN_FIRE.Text = "Err";
+                }
+            }            
+            );            
         }
-
-
+        
         private void CB_AUTO_AIM_ENABLED_CheckedChanged(object sender, EventArgs e)
         {
             if (CB_AUTO_AIM_ENABLED.Checked)
@@ -1001,68 +930,84 @@ namespace RCWS_Situation_room
             }
         }
 
-        private void HSB_Vel_Scroll(object sender, ScrollEventArgs e)
+        private void HSB_BODY_VEL_Scroll(object sender, ScrollEventArgs e)
         {
-            HSB_VEL_VALUE = HSB_Vel.Value / 1000.0;
-        }        
+            HSB_BODY_VEL_VALUE = HSB_BODY_VEL.Value / 1000.0;
+            LB_BODY_ROTATION_VEL.Text = HSB_BODY_VEL_VALUE.ToString();
+        }
+
+        private void HSB_OPTICAL_VEL_Scroll(object sender, ScrollEventArgs e)
+        {
+            HSB_OPTICAL_VEL_VALUE= HSB_OPTICAL_VEL.Value / 50.0;
+            LB_OPTICAL_ROTATION_VEL.Text = HSB_OPTICAL_VEL_VALUE.ToString();
+        }
 
         private void PBL_VIDEO_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if(RCWS_CONNECT_FLAG)
             {
-                IS_DRAGGING = true;
-                startPoint = e.Location;
-                SEND_DATA.D_X1 = (short)(e.X);
-                SEND_DATA.D_Y1 = (short)(e.Y);
-            }
+                if (e.Button == MouseButtons.Left)
+                {
+                    IS_DRAGGING = true;
+                    startPoint = e.Location;
+                    SEND_DATA.D_X1 = (short)(e.X);
+                    SEND_DATA.D_Y1 = (short)(e.Y);
+                }
+            }            
         }
 
         private async void PBL_VIDEO_MouseUp(object sender, MouseEventArgs e)
         {
             try
             {
-                if (e.Button == MouseButtons.Left)
+                if(RCWS_CONNECT_FLAG)
                 {
-                    if (IS_DRAGGING)
+                    if (e.Button == MouseButtons.Left)
                     {
-                        endPoint = e.Location;
-                        SEND_DATA.D_X2 = (short)(e.X);
-                        SEND_DATA.D_Y2 = (short)(e.Y);
+                        if (IS_DRAGGING)
+                        {
+                            endPoint = e.Location;
+                            SEND_DATA.D_X2 = (short)(e.X);
+                            SEND_DATA.D_Y2 = (short)(e.Y);
 
-                        SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
-                        SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
-                        byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-                        await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-                        await STREAM_WRITER.BaseStream.FlushAsync();
-                        SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
+                            SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
+                            SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
+                            byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                            await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                            await STREAM_WRITER.BaseStream.FlushAsync();
+                            SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
 
-                        IS_DRAGGING = false;
-                        startPoint = Point.Empty;
-                        endPoint = Point.Empty;
-                        PBL_VIDEO.Invalidate(); // 사각형 지우기 위해 화면 갱신
+                            IS_DRAGGING = false;
+                            startPoint = Point.Empty;
+                            endPoint = Point.Empty;
+                            PBL_VIDEO.Invalidate();
+                        }
                     }
                 }
             }
 
             catch (Exception ex)
             {
-                MessageBox.Show("Error in Video Pictureu Box: " + ex.Message);
+                MessageBox.Show("Error in Video Picture Box: " + ex.Message);
             }
         }
 
         private void PBL_VIDEO_MouseMove(object sender, MouseEventArgs e)
         {
-            if (IS_DRAGGING)
+            if(RCWS_CONNECT_FLAG)
             {
-                endPoint = e.Location;
-                PBL_VIDEO.Invalidate(); // 화면 갱신
-            }
+                if (IS_DRAGGING)
+                {
+                    endPoint = e.Location;
+                    PBL_VIDEO.Invalidate();
+                }
+            }            
         }        
         #endregion
 
         #region UDP, Video
 
-        private void btn_Camera_Connect_Click(object sender, EventArgs e)
+        private void BTN_CAMERA_CONNECT_Click(object sender, EventArgs e)
         {            
             Task.Run(() => UdpConnect());
         }
@@ -1075,15 +1020,26 @@ namespace RCWS_Situation_room
             {
                 StartReceiving(define.SERVER_IP, define.UDPPORT);
 
-                BTN_CAMERA_CONNECT.ForeColor = Color.White;
-                BTN_CAMERA_CONNECT.BackColor = Color.Green;
+                this.Invoke((MethodInvoker)delegate
+                {
+                    BTN_CAMERA_CONNECT.ForeColor = Color.White;
+                    BTN_CAMERA_CONNECT.BackColor = Color.Green;
+                });
             }
+
             catch (Exception ex)
             {
-                BTN_CAMERA_CONNECT.BackColor = Color.Red;
-                BTN_CAMERA_CONNECT.ForeColor = Color.White;
+                this.Invoke((MethodInvoker)delegate
+                {
+                    BTN_CAMERA_CONNECT.BackColor = Color.Red;
+                    BTN_CAMERA_CONNECT.ForeColor = Color.White;
+                });
 
                 ErrorHandleDisplay(ex.Message);
+            }
+            finally
+            {
+                ms.Dispose();
             }
         }
 
@@ -1104,7 +1060,20 @@ namespace RCWS_Situation_room
                     using (var ms = new MemoryStream(Data_))
                     {
                         var receivedImage = System.Drawing.Image.FromStream(ms);
-                        PBL_VIDEO.Image = receivedImage;
+
+                        int newWidth = (int)(receivedImage.Width * define.VIDEO_SCALE);
+                        int newHeight = (int)(receivedImage.Height * define.VIDEO_SCALE);
+
+                        using (var resizedImage = new Bitmap(newWidth, newHeight))
+                        {
+                            using (var graphics = Graphics.FromImage(resizedImage))
+                            {
+                                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                                graphics.DrawImage(receivedImage, 0, 0, newWidth, newHeight);
+                            }
+
+                            PBL_VIDEO.Image = (Image)resizedImage.Clone();
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -1116,52 +1085,70 @@ namespace RCWS_Situation_room
 
         private void ReceiveCallback(IAsyncResult ar)
         {
-            byte[] receivedData = UDP_CLIENT.EndReceive(ar, ref ENDPOINT);
+            try
+            {
+                byte[] receivedData = UDP_CLIENT.EndReceive(ar, ref ENDPOINT);
 
-            if (receivedData.Length < 65000)
-            {
-                Showvideo(receivedData);
-            }
-            else
-            {
-                byte[] dgram = UDP_CLIENT.Receive(ref ENDPOINT);
-                if (dgram.Length < 65000)
+                if (receivedData.Length < 65000)
                 {
-                    Showvideo(receivedData.Concat(dgram).ToArray());
+                    Showvideo(receivedData);
                 }
                 else
                 {
-                    byte[] dgram_ = receivedData.Concat(dgram).ToArray();
-                    byte[] dgram__ = UDP_CLIENT.Receive(ref ENDPOINT);
-                    Showvideo(dgram_.Concat(dgram__).ToArray());
+                    byte[] dgram = UDP_CLIENT.Receive(ref ENDPOINT);
+                    if (dgram.Length < 65000)
+                    {
+                        Showvideo(receivedData.Concat(dgram).ToArray());
+                    }
+                    else
+                    {
+                        byte[] dgram_ = receivedData.Concat(dgram).ToArray();
+                        byte[] dgram__ = UDP_CLIENT.Receive(ref ENDPOINT);
+                        Showvideo(dgram_.Concat(dgram__).ToArray());
+                    }
                 }
             }
-            UDP_CLIENT.BeginReceive(new AsyncCallback(ReceiveCallback), null);
+
+            catch (Exception ex)
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    ErrorHandleDisplay(ex.Message);
+                });
+            }
+
+            finally
+            {
+                UDP_CLIENT.BeginReceive(new AsyncCallback(ReceiveCallback), null);
+            }
         }
 
         private async void PBI_Video_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if(RCWS_CONNECT_FLAG)
             {
-                SEND_DATA.C_X1 = (short)(e.X);
-                SEND_DATA.C_Y1 = (short)(e.Y);
-                SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
-                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
-                byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-                await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-                await STREAM_WRITER.BaseStream.FlushAsync();
-                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
-            }
+                if (e.Button == MouseButtons.Left)
+                {
+                    SEND_DATA.C_X1 = (short)(e.X);
+                    SEND_DATA.C_Y1 = (short)(e.Y);
+                    SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
+                    byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                    await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                    await STREAM_WRITER.BaseStream.FlushAsync();
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
+                }
 
-            if (e.Button == MouseButtons.Right)
-            {
-                SEND_DATA.Button = (SEND_DATA.Button | 0x00002000);
-                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00001000));
-                byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-                await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-                await STREAM_WRITER.BaseStream.FlushAsync();
-                SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
-            }
+                if (e.Button == MouseButtons.Right)
+                {
+                    SEND_DATA.Button = (SEND_DATA.Button | 0x00002000);
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00001000));
+                    byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                    await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                    await STREAM_WRITER.BaseStream.FlushAsync();
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
+                }
+            }            
         }
 
         private void PBI_VIDEO_Paint(object sender, PaintEventArgs e)
@@ -1405,8 +1392,9 @@ namespace RCWS_Situation_room
         private void BTN_DISCONNECT_Click(object sender, EventArgs e)
         {
             CleanupResources();
+            SEND_DATA.Button = SEND_DATA.Button | 0x04;
             Application.Exit();
-            THREAD.Join();
+            //THREAD.Join();
         }        
 
         private void Setting_Click(object sender, EventArgs e)
@@ -1429,13 +1417,7 @@ namespace RCWS_Situation_room
                 SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00100000));                
             }
         }
-        #endregion
-
-        int CNT = 0;
-        private void ALARM_Tick(object sender, EventArgs e)
-        {
-
-        }
+        #endregion        
 
         private void ErrorHandleDisplay(string message)
         {
@@ -1454,11 +1436,5 @@ namespace RCWS_Situation_room
             RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.ScrollToCaret(); });
         }
 
-        private void BTN_HOME_Click(object sender, EventArgs e)
-        {
-            byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-            STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-            STREAM_WRITER.BaseStream.FlushAsync();
-        }
     }
 }

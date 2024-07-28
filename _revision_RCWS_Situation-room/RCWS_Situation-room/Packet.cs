@@ -11,7 +11,7 @@ namespace RCWS_Situation_room
         public struct SEND_PACKET
         {
             public int BODY_PAN;
-            public int WEAPON_TILT;
+            public int OPTICAL_TILT;
             public uint Button;
             public short C_X1;
             public short C_Y1;
