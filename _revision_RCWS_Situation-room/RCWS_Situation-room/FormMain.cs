@@ -819,7 +819,7 @@ namespace RCWS_Situation_room
 
                 else if (RECEIVED_DATA.PERMISSION == 1)
                 {
-                    BTN_PERMISSION.ForeColor = Color.White;
+                    BTN_PERMISSION.ForeColor = Color.Black;
                     BTN_PERMISSION.BackColor = Color.Yellow;
                     BTN_PERMISSION.Text = "Requesting...";
                 }
