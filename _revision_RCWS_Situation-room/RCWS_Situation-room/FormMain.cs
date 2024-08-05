@@ -1278,6 +1278,8 @@ namespace RCWS_Situation_room
 
         #region AZEL GUI
 
+        List<Point> endPoints = new List<Point>();
+
         private void pictureBox_azimuth_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
@@ -1285,7 +1287,7 @@ namespace RCWS_Situation_room
             int centerX = PB_AZIMUTH.Width / 2;
             int centerY = PB_AZIMUTH.Height / 3 * 2;
 
-            /* */
+            /* X 모양 */
             Pen redPen = new Pen(Color.Red, 8);
             g.DrawLine(redPen, new Point(centerX - 10, centerY - 10), new Point(centerX + 10, centerY + 10));
             g.DrawLine(redPen, new Point(centerX + 10, centerY - 10), new Point(centerX - 10, centerY + 10));
@@ -1293,15 +1295,23 @@ namespace RCWS_Situation_room
             /* */
 
             /* */
-            int lineLength = centerX * 2;
+            float lineLength = RECEIVED_DATA.DISTANCE;
             /* */
 
-            /* Body Pan */
+            /* Body Pan 막대기 */
             double radianAngleRCWS = RECEIVED_DATA.BODY_PAN * Math.PI / 180.0;
             int endXRCWS = centerX + (int)(lineLength * Math.Sin(radianAngleRCWS));
             int endYRCWS = centerY - (int)(lineLength * Math.Cos(radianAngleRCWS));
             g.DrawLine(Pens.Red, new Point(centerX, centerY), new Point(endXRCWS, endYRCWS));
             /* */
+
+            endPoints.Add(new Point(endXRCWS, endYRCWS));
+
+            foreach (var point in endPoints)
+            {
+                g.DrawLine(Pens.Red, new Point(centerX, centerY), point);
+            }
+
 
             DRAW.Drawing(e.Graphics);
 
