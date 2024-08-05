@@ -236,15 +236,15 @@ namespace RCWS_Situation_room
                 }
                 else
                 {
-                    if (ax_X >= 0.2025)
+                    if (ax_X >= 0.2)
                     {
                         //SEND_DATA.BodyPan = (int)(ax_X * 400 - 80);
-                        SEND_DATA.BODY_PAN = (int)((ax_X * 400 - 80) * HSB_BODY_VEL_VALUE);
+                        SEND_DATA.BODY_PAN = (int)((ax_X * 625 - 125) * HSB_BODY_VEL_VALUE);
                     }
-                    else if (ax_X <= -0.2025)
+                    else if (ax_X <= -0.2)
                     {
                         //SEND_DATA.BodyPan = (int)(ax_X * 400 + 80);
-                        SEND_DATA.BODY_PAN = (int)((ax_X * 400 + 80) * HSB_BODY_VEL_VALUE);
+                        SEND_DATA.BODY_PAN = (int)((ax_X * 625 + 125) * HSB_BODY_VEL_VALUE);
                     }
                 }
 
@@ -1295,7 +1295,7 @@ namespace RCWS_Situation_room
             /* */
 
             /* */
-            float lineLength = RECEIVED_DATA.DISTANCE;
+            float lineLength = RECEIVED_DATA.DISTANCE/3;
             /* */
 
             /* Body Pan 막대기 */
@@ -1307,10 +1307,10 @@ namespace RCWS_Situation_room
 
             endPoints.Add(new Point(endXRCWS, endYRCWS));
 
-            foreach (var point in endPoints)
-            {
-                g.DrawLine(Pens.Red, new Point(centerX, centerY), point);
-            }
+            //foreach (var point in endPoints)
+            //{
+            //    g.DrawLine(Pens.Red, new Point(endXRCWS, endYRCWS), point);
+            //}
 
 
             DRAW.Drawing(e.Graphics);
