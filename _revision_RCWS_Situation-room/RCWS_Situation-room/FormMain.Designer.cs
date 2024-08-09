@@ -312,7 +312,7 @@
             this.GB_CONNECTION.Size = new System.Drawing.Size(211, 222);
             this.GB_CONNECTION.TabIndex = 18;
             this.GB_CONNECTION.TabStop = false;
-            this.GB_CONNECTION.Text = "Range Founder";
+            this.GB_CONNECTION.Text = "Button";
             // 
             // BTN_POWER
             // 
