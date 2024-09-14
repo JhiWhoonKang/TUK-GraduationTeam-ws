@@ -159,7 +159,7 @@ namespace RCWS_Situation_room
             RTB_RECEIVED_DISPLAY.Visible = false;
             RTB_SEND_DISPLAY.Visible = false;
 
-            TB_MAGNIFICATION.Text = "4.5배율";
+            TB_MAGNIFICATION.Text = "No Data";
 
             this.Focus();
         }
@@ -239,12 +239,14 @@ namespace RCWS_Situation_room
                     if (ax_X >= 0.2)
                     {
                         //SEND_DATA.BodyPan = (int)(ax_X * 400 - 80);
-                        SEND_DATA.BODY_PAN = (int)((ax_X * 625 - 125) * HSB_BODY_VEL_VALUE);
+                        //SEND_DATA.BODY_PAN = (int)((ax_X * 625 - 125) * HSB_BODY_VEL_VALUE);
+                        SEND_DATA.BODY_PAN = (int)((ax_X * 625 - 125) * panSpeed);
                     }
                     else if (ax_X <= -0.2)
                     {
                         //SEND_DATA.BodyPan = (int)(ax_X * 400 + 80);
-                        SEND_DATA.BODY_PAN = (int)((ax_X * 625 + 125) * HSB_BODY_VEL_VALUE);
+                        //SEND_DATA.BODY_PAN = (int)((ax_X * 625 + 125) * HSB_BODY_VEL_VALUE);
+                        SEND_DATA.BODY_PAN = (int)((ax_X * 625 + 125) * panSpeed);
                     }
                 }
 
@@ -258,12 +260,14 @@ namespace RCWS_Situation_room
                     if (ax_Y >= 0.22)
                     {
                         //SEND_DATA.BodyTilt = (int)(ax_Y * 100 - 20);
-                        SEND_DATA.OPTICAL_TILT = (int)((ax_Y * 100 - 20) * HSB_OPTICAL_VEL_VALUE);
+                        //SEND_DATA.OPTICAL_TILT = (int)((ax_Y * 100 - 20) * HSB_OPTICAL_VEL_VALUE);
+                        SEND_DATA.OPTICAL_TILT = (int)((ax_Y * 100 - 20) * tiltSpeed);
                     }
                     else if (ax_Y <= -0.22)
                     {
                         //SEND_DATA.BodyTilt = (int)(ax_Y * 100 + 20);
-                        SEND_DATA.OPTICAL_TILT = (int)((ax_Y * 100 + 20) * HSB_OPTICAL_VEL_VALUE);
+                        //SEND_DATA.OPTICAL_TILT = (int)((ax_Y * 100 + 20) * HSB_OPTICAL_VEL_VALUE);
+                        SEND_DATA.OPTICAL_TILT = (int)((ax_Y * 100 + 20) * tiltSpeed);
                     }
                 }
 
@@ -530,8 +534,10 @@ namespace RCWS_Situation_room
 
         private HashSet<Keys> pressedKeys = new HashSet<Keys>();
         private readonly SemaphoreSlim keySemaphore = new SemaphoreSlim(1, 1);
-        int panSpeed = 50;
-        int tiltSpeed = 10;
+        double panSpeed = 1;
+        double tiltSpeed = 1;
+        double real_panSpeed = 0.0;
+        double real_tiltSpeed = 0.0;
         int stop_panSpeed = 0;
         int stop_tiltSpeed = 0;
         bool control_flag = false;
@@ -578,74 +584,84 @@ namespace RCWS_Situation_room
                 {
                     if (keyCode == Keys.A || keyCode == Keys.Left)
                     {
-                        panSpeed = -Math.Abs(panSpeed);
-                        SEND_DATA.BODY_PAN = panSpeed;
+                        real_panSpeed = -Math.Abs(panSpeed * 500);
+                        SEND_DATA.BODY_PAN = (int)(real_panSpeed);
                     }
                     if (keyCode == Keys.D || keyCode == Keys.Right)
                     {
-                        panSpeed = Math.Abs(panSpeed);
-                        SEND_DATA.BODY_PAN = panSpeed;
+                        real_panSpeed = Math.Abs(panSpeed * 500);
+                        SEND_DATA.BODY_PAN = (int)(real_panSpeed);
                     }
                     if (keyCode == Keys.W || keyCode == Keys.Up)
                     {
-                        tiltSpeed = Math.Abs(tiltSpeed);
-                        SEND_DATA.OPTICAL_TILT = tiltSpeed;
+                        real_tiltSpeed = Math.Abs(tiltSpeed * 80);
+                        SEND_DATA.OPTICAL_TILT = (int)(real_tiltSpeed);
                     }
                     if (keyCode == Keys.S || keyCode == Keys.Down)
                     {
-                        tiltSpeed = -Math.Abs(tiltSpeed);
-                        SEND_DATA.OPTICAL_TILT = tiltSpeed;
+                        real_tiltSpeed = -Math.Abs(tiltSpeed * 80);
+                        SEND_DATA.OPTICAL_TILT = (int)(real_tiltSpeed);
                     }
                     if (keyCode == Keys.Z)
                     {
-                        tiltSpeed = Math.Abs(tiltSpeed) - 1;
-                        panSpeed = Math.Abs(panSpeed) - 1;
-                        if (tiltSpeed <= 1)
+                        real_tiltSpeed = Math.Abs(tiltSpeed) - 0.1;
+                        real_panSpeed = Math.Abs(panSpeed) - 0.1;
+                        if (tiltSpeed <= 0.1)
                         {
-                            tiltSpeed = 1;
+                            tiltSpeed = 0.1;
                         }
-                        if (panSpeed <= 1)
+                        if (panSpeed <= 0.1)
                         {
-                            panSpeed = 1;
+                            panSpeed = 0.1;
                         }
                     }
                     if (keyCode == Keys.X)
                     {
-                        tiltSpeed = Math.Abs(tiltSpeed) + 1;
-                        panSpeed = Math.Abs(panSpeed) + 1;
+                        real_tiltSpeed = Math.Abs(tiltSpeed) + 0.1;
+                        real_panSpeed = Math.Abs(panSpeed) + 0.1;
                     }
 
                     if (keyCode == Keys.D1)
                     {
-                        panSpeed = 5;
-                        tiltSpeed = 2;                        
+                        //HSB_BODY_VEL_VALUE = 5;
+                        //HSB_OPTICAL_VEL_VALUE = 2;
+                        panSpeed = 0.04;
+                        tiltSpeed = 0.1;                        
                     }
 
                     if (keyCode == Keys.D2)
                     {
-                        panSpeed = 50;
-                        tiltSpeed = 20;
+                        //HSB_BODY_VEL_VALUE = 50;
+                        //HSB_OPTICAL_VEL_VALUE = 20;
+                        panSpeed = 0.3;
+                        tiltSpeed = 0.3;
                     }
 
                     if (keyCode == Keys.D3)
                     {
-                        panSpeed = 100;
-                        tiltSpeed = 30;
+                        //HSB_BODY_VEL_VALUE = 100;
+                        //HSB_OPTICAL_VEL_VALUE = 30;
+                        panSpeed = 0.5;
+                        tiltSpeed = 0.5;
                     }
 
                     if (keyCode == Keys.D4)
                     {
-                        panSpeed = 200;
-                        tiltSpeed = 40;
+                        //HSB_BODY_VEL_VALUE = 200;
+                        //HSB_OPTICAL_VEL_VALUE = 40;
+                        panSpeed = 1;
+                        tiltSpeed = 1;
                     }
 
                     if (keyCode == Keys.D5)
                     {
-                        panSpeed = 50;
-                        tiltSpeed = 10;
+                        //HSB_BODY_VEL_VALUE = 50;
+                        //HSB_OPTICAL_VEL_VALUE = 10;
+                        panSpeed = 0.5;
+                        tiltSpeed = 0.3;
                     }
-                    LB_BODY_ROTATION_VEL.Text = panSpeed.ToString();
-                    LB_OPTICAL_ROTATION_VEL.Text = tiltSpeed.ToString();
+                    //LB_BODY_ROTATION_VEL.Text = panSpeed.ToString();
+                    //LB_OPTICAL_ROTATION_VEL.Text = tiltSpeed.ToString();                    
 
                     byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
                     await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
@@ -704,6 +720,7 @@ namespace RCWS_Situation_room
             UpdateUI(() =>
             {
                 ReceiveDisplay("Server Connected");
+                TB_MAGNIFICATION.Text = "4.5배율";
                 BTN_RCWS_CONNECT.BackColor = Color.Green;
                 BTN_RCWS_CONNECT.ForeColor = Color.White;
             });
@@ -769,8 +786,8 @@ namespace RCWS_Situation_room
                     float centerX = PB_AZIMUTH.Width / 2;
                     float centerY = PB_AZIMUTH.Height / 3 * 2;
                     float radians = -receivedData.BODY_PAN * (float)(Math.PI / 180) + (float)(Math.PI / 2);
-                    float x = centerX + receivedData.DISTANCE / 10 * (float)Math.Cos(radians);
-                    float y = centerY - receivedData.DISTANCE / 10 * (float)Math.Sin(radians);
+                    float x = centerX + receivedData.DISTANCE / define.LENGTH_SCALE * (float)Math.Cos(radians);
+                    float y = centerY - receivedData.DISTANCE / define.LENGTH_SCALE * (float)Math.Sin(radians);
                     float radius = 10;
 
                     DRAW.AddPinPoint(new Point((int)x, (int)y), radius);
@@ -780,12 +797,15 @@ namespace RCWS_Situation_room
                 PB_AZIMUTH.Invalidate();
                 PB_AZIMUTH.Refresh();
 
-                TB_RCWS_AZIMUTH.Text = receivedData.BODY_PAN.ToString();
+                TB_RCWS_AZIMUTH.Text = receivedData.BODY_PAN.ToString();                
                 TB_WEAPON_ELEVATION.Text = receivedData.WEAPON_TILT.ToString();
                 TB_OPTICAL_ELEVATION.Text = receivedData.OPTICAL_TILT.ToString();
                 TB_SENTRY_AZIMUTH.Text = receivedData.SENTRY_AZIMUTH.ToString();
                 TB_SENTRY_ELEVATION.Text = receivedData.SENTRY_ELEVATION.ToString();
                 TB_DISTANCE.Text = receivedData.DISTANCE.ToString();
+
+                LB_BODY_ROTATION_VEL.Text = SEND_DATA.BODY_PAN.ToString();
+                LB_OPTICAL_ROTATION_VEL.Text = SEND_DATA.OPTICAL_TILT.ToString();
 
                 // PERMISSION | 0: 상황실 1: 요청 2: 초소
                 // MODE | 0: 수동 1: auto scan 2: 레이저 트래킹 3: 사람 추적
@@ -932,14 +952,18 @@ namespace RCWS_Situation_room
 
         private void HSB_BODY_VEL_Scroll(object sender, ScrollEventArgs e)
         {
-            HSB_BODY_VEL_VALUE = HSB_BODY_VEL.Value / 1000.0;
-            LB_BODY_ROTATION_VEL.Text = HSB_BODY_VEL_VALUE.ToString();
+            //HSB_BODY_VEL_VALUE = HSB_BODY_VEL.Value / 1000.0;
+            //LB_BODY_ROTATION_VEL.Text = HSB_BODY_VEL_VALUE.ToString();
+            panSpeed = HSB_BODY_VEL.Value / 1000.0;
+            //LB_BODY_ROTATION_VEL.Text = HSB_BODY_VEL_VALUE.ToString();
         }
 
         private void HSB_OPTICAL_VEL_Scroll(object sender, ScrollEventArgs e)
         {
-            HSB_OPTICAL_VEL_VALUE= HSB_OPTICAL_VEL.Value / 50.0;
-            LB_OPTICAL_ROTATION_VEL.Text = HSB_OPTICAL_VEL_VALUE.ToString();
+            //HSB_OPTICAL_VEL_VALUE= HSB_OPTICAL_VEL.Value / 50.0;
+            //LB_OPTICAL_ROTATION_VEL.Text = HSB_OPTICAL_VEL_VALUE.ToString();
+            tiltSpeed = HSB_OPTICAL_VEL.Value / 50.0;
+            //LB_OPTICAL_ROTATION_VEL.Text = HSB_OPTICAL_VEL_VALUE.ToString();
         }
 
         private void PBL_VIDEO_MouseDown(object sender, MouseEventArgs e)
@@ -1155,6 +1179,8 @@ namespace RCWS_Situation_room
         {
             var g = e.Graphics;
             Pen redPen = new Pen(Color.Red, 3);
+            Font font = new Font("Arial", 12);
+            Brush brush = Brushes.Red;
 
             /* 삼각형 */
             float At1_X = define.VIDEO_WIDTH / 2;
@@ -1170,6 +1196,7 @@ namespace RCWS_Situation_room
             g.DrawLine(redPen, At2_X, At2_Y, At3_X, At3_Y);
             g.DrawLine(redPen, At3_X, At3_Y, At1_X, At1_Y);
 
+            // 기총
             int Et1_X = define.VIDEO_WIDTH / 24 * 21 - 10;
             int Et1_Y = define.VIDEO_HEIGHT / 2;
 
@@ -1182,6 +1209,20 @@ namespace RCWS_Situation_room
             g.DrawLine(redPen, new Point(Et1_X, Et1_Y), new Point(Et2_X, Et2_Y));
             g.DrawLine(redPen, new Point(Et2_X, Et2_Y), new Point(Et3_X, Et3_Y));
             g.DrawLine(redPen, new Point(Et3_X, Et3_Y), new Point(Et1_X, Et1_Y));
+
+            // 광학
+            int O_Et1_X = define.VIDEO_WIDTH / 24 * 3 + 10;
+            int O_Et1_Y = define.VIDEO_HEIGHT / 2;
+
+            int O_Et2_X = define.VIDEO_WIDTH / 24 * 3 + 20;
+            int O_Et2_Y = define.VIDEO_HEIGHT / 2 + 10;
+
+            int O_Et3_X = define.VIDEO_WIDTH / 24 * 3 + 20;
+            int O_Et3_Y = define.VIDEO_HEIGHT / 2 - 10;
+
+            g.DrawLine(redPen, new Point(O_Et1_X, O_Et1_Y), new Point(O_Et2_X, O_Et2_Y));
+            g.DrawLine(redPen, new Point(O_Et2_X, O_Et2_Y), new Point(O_Et3_X, O_Et3_Y));
+            g.DrawLine(redPen, new Point(O_Et3_X, O_Et3_Y), new Point(O_Et1_X, O_Et1_Y));
             /* */
 
             /* 방위각 */
@@ -1192,41 +1233,59 @@ namespace RCWS_Situation_room
             int spacingA = 10;
             int lineLength = 20;
 
-            for (int i = -20; i <= 20; i++)
+            for (int i = -36; i <= 36; i++)
             {
                 float line_X = lineA_X + (i * spacingA) + (-RECEIVED_DATA.BODY_PAN) * 2;
                 //g.DrawLine(redPen, new Point(line_X, lineA_Y), new Point(line_X, lineA_Y + lineLength));          
                 g.DrawLine(redPen, line_X, lineA_Y, line_X, lineA_Y + lineLength);
-            }
+            }            
 
-            // # 숫자
-            Font font = new Font("Arial", 12);
-            Brush brush = Brushes.Red;
-
+            // # 숫자            
             float A_Y = lineA_Y - 20;
-            float A_100X = lineA_X - 200 - 20 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            
+            float A_180X = lineA_X - 385 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_160X = lineA_X - 345 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_140X = lineA_X - 305 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_120X = lineA_X - 265 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_100X = lineA_X - 225 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
             float A_80X = lineA_X - 180 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
             float A_60X = lineA_X - 140 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
             float A_40X = lineA_X - 100 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
             float A_20X = lineA_X - 60 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+
             float A_0X = lineA_X - 7 + (-RECEIVED_DATA.BODY_PAN) * 2;
+
             float A20X = lineA_X + 40 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
             float A40X = lineA_X + 80 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
             float A60X = lineA_X + 120 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
             float A80X = lineA_X + 160 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
             float A100X = lineA_X + 200 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A120X = lineA_X + 240 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A140X = lineA_X + 280 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A160X = lineA_X + 320 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A180X = lineA_X + 360 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
 
+            g.DrawString((-180).ToString(), font, brush, A_180X, A_Y);
+            g.DrawString((-160).ToString(), font, brush, A_160X, A_Y);
+            g.DrawString((-140).ToString(), font, brush, A_140X, A_Y);
+            g.DrawString((-120).ToString(), font, brush, A_120X, A_Y); //
             g.DrawString((-100).ToString(), font, brush, A_100X, A_Y);
             g.DrawString((-80).ToString(), font, brush, A_80X, A_Y);
             g.DrawString((-60).ToString(), font, brush, A_60X, A_Y);
             g.DrawString((-40).ToString(), font, brush, A_40X, A_Y);
             g.DrawString((-20).ToString(), font, brush, A_20X, A_Y);
+
             g.DrawString((0).ToString(), font, brush, A_0X, A_Y);
+            
             g.DrawString((20).ToString(), font, brush, A20X, A_Y);
             g.DrawString((40).ToString(), font, brush, A40X, A_Y);
             g.DrawString((60).ToString(), font, brush, A60X, A_Y);
             g.DrawString((80).ToString(), font, brush, A80X, A_Y);
             g.DrawString((100).ToString(), font, brush, A100X, A_Y);
+            g.DrawString((120).ToString(), font, brush, A120X, A_Y); //
+            g.DrawString((140).ToString(), font, brush, A140X, A_Y);
+            g.DrawString((160).ToString(), font, brush, A160X, A_Y);
+            g.DrawString((180).ToString(), font, brush, A180X, A_Y);
 
             /* 고각 */
             // # 막대기
@@ -1246,7 +1305,9 @@ namespace RCWS_Situation_room
             float E_30Y = lineE_Y + 30 + 20 + (RECEIVED_DATA.WEAPON_TILT) * 2;
             float E_20Y = lineE_Y + 20 + 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
             float E_10Y = lineE_Y + 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+
             float E_0Y = lineE_Y - 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+
             float E10Y = lineE_Y - 10 - 20 + (RECEIVED_DATA.WEAPON_TILT) * 2;
             float E20Y = lineE_Y - 20 - 30 + (RECEIVED_DATA.WEAPON_TILT) * 2;
             float E30Y = lineE_Y - 30 - 40 + (RECEIVED_DATA.WEAPON_TILT) * 2;
@@ -1254,7 +1315,9 @@ namespace RCWS_Situation_room
             g.DrawString((-30).ToString(), font, brush, E_X, E_30Y);
             g.DrawString((-20).ToString(), font, brush, E_X, E_20Y);
             g.DrawString((-10).ToString(), font, brush, E_X, E_10Y);
+
             g.DrawString((0).ToString(), font, brush, E_X, E_0Y);
+
             g.DrawString((10).ToString(), font, brush, E_X, E10Y);
             g.DrawString((20).ToString(), font, brush, E_X, E20Y);
             g.DrawString((30).ToString(), font, brush, E_X, E30Y);
@@ -1269,6 +1332,115 @@ namespace RCWS_Situation_room
                     Math.Abs(startPoint.Y - endPoint.Y));
 
                 e.Graphics.DrawRectangle(Pens.Red, rect);
+            }
+
+            /* 광학 고각 */
+            // # 막대기
+            float O_lineE_X = define.VIDEO_WIDTH / 24 * 3 - 20;
+            float O_lineE_Y = define.VIDEO_HEIGHT / 2;
+
+            int O_spacingE = 10;
+
+            for (int i = -6; i <= 6; i++)
+            {
+                float line_Y = O_lineE_Y + (i * O_spacingE) + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+                g.DrawLine(redPen, O_lineE_X, line_Y, O_lineE_X + lineLength, line_Y);
+            }
+
+            // # 숫자
+            float O_E_X = O_lineE_X - 30;
+            float O_E_30Y = O_lineE_Y + 30 + 20 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+            float O_E_20Y = O_lineE_Y + 20 + 10 + (RECEIVED_DATA.OPTICAL_TILT) * 2;5    e                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+            float O_E_10Y = O_lineE_Y + 10 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+
+            float O_E_0Y = O_lineE_Y - 10 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+
+            float O_E10Y = O_lineE_Y - 10 - 20 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+            float O_E20Y = O_lineE_Y - 20 - 30 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+            float O_E30Y = O_lineE_Y - 30 - 40 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+
+            g.DrawString((-30).ToString(), font, brush, O_E_X, O_E_30Y);
+            g.DrawString((-20).ToString(), font, brush, O_E_X, O_E_20Y);
+            g.DrawString((-10).ToString(), font, brush, O_E_X, O_E_10Y);
+
+            g.DrawString((0).ToString(), font, brush, O_E_X, O_E_0Y);
+
+            g.DrawString((10).ToString(), font, brush, O_E_X, O_E10Y);
+            g.DrawString((20).ToString(), font, brush, O_E_X, O_E20Y);
+            g.DrawString((30).ToString(), font, brush, O_E_X, O_E30Y);
+
+
+            // #####
+            if (RECEIVED_DATA.BODY_PAN >= 10)
+            {
+                if (RECEIVED_DATA.BODY_PAN >= 15)
+                {
+                    g.DrawString(("! Max Azimuth !\nTurn Left").ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 5);
+                }
+                else
+                {
+                    g.DrawString(("! Azimuth Warning !\nTurn Left").ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 5);
+                }
+            }
+
+            if (RECEIVED_DATA.BODY_PAN <= -175)
+            {
+                if (RECEIVED_DATA.BODY_PAN <= -180)
+                {
+                    g.DrawString((("! Max Azimuth !\nTurn Right")).ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 5);
+                }
+                else
+                {
+                    g.DrawString((("! Azimuth Warning !\nTurn Right")).ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 5);
+                }
+            }
+            // #####
+            if (RECEIVED_DATA.OPTICAL_TILT >= 25)
+            {
+                if (RECEIVED_DATA.OPTICAL_TILT >= 30)
+                {
+                    g.DrawString(("! Max Optical Elevation !\nGo Down").ToString(), font, brush, PBL_VIDEO.Width / 11 * 1, PBL_VIDEO.Height / 12 * 5);
+                }
+                else
+                {
+                    g.DrawString(("! Optical Elevation Warning !\nGo Down").ToString(), font, brush, PBL_VIDEO.Width / 11 * 1, PBL_VIDEO.Height / 12 * 5);
+                }
+            }
+
+            if (RECEIVED_DATA.OPTICAL_TILT <= -5)
+            {
+                if (RECEIVED_DATA.OPTICAL_TILT <= -10)
+                {
+                    g.DrawString((("! Max Optical Elevation !\nGo Up")).ToString(), font, brush, PBL_VIDEO.Width / 11 * 1, PBL_VIDEO.Height / 12 * 7);
+                }
+                else
+                {
+                    g.DrawString((("! Optical Elevation Warning !\nGo Up")).ToString(), font, brush, PBL_VIDEO.Width / 11 * 1, PBL_VIDEO.Height / 12 * 7);
+                }
+            }
+            // #####
+            if (RECEIVED_DATA.WEAPON_TILT >= 25)
+            {
+                if (RECEIVED_DATA.WEAPON_TILT >= 30)
+                {
+                    g.DrawString(("! Max Weapon Elevation !\nGo Down").ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 12 * 5);
+                }
+                else
+                {
+                    g.DrawString(("! Weapon Elevation Warning !\nGo Down").ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 12 * 5);
+                }
+            }
+
+            if (RECEIVED_DATA.WEAPON_TILT <= -15)
+            {
+                if (RECEIVED_DATA.WEAPON_TILT <= -20)
+                {
+                    g.DrawString((("! Max Weapon Elevation !\nGo Up")).ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 12 * 7);
+                }
+                else
+                {
+                    g.DrawString((("! Weapon Elevation Warning !\nGo Up")).ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 12 * 7);
+                }
             }
 
             redPen.Dispose();
@@ -1295,7 +1467,7 @@ namespace RCWS_Situation_room
             /* */
 
             /* */
-            float lineLength = RECEIVED_DATA.DISTANCE/3;
+            float lineLength = RECEIVED_DATA.DISTANCE / define.LENGTH_SCALE;
             /* */
 
             /* Body Pan 막대기 */
@@ -1303,7 +1475,7 @@ namespace RCWS_Situation_room
             int endXRCWS = centerX + (int)(lineLength * Math.Sin(radianAngleRCWS));
             int endYRCWS = centerY - (int)(lineLength * Math.Cos(radianAngleRCWS));
             g.DrawLine(Pens.Red, new Point(centerX, centerY), new Point(endXRCWS, endYRCWS));
-            /* */
+            /* */            
 
             endPoints.Add(new Point(endXRCWS, endYRCWS));
 
@@ -1318,6 +1490,9 @@ namespace RCWS_Situation_room
             /* Pin Point */
 
             /* */
+            Font font = new Font("Arial", 12);
+            Brush brush = Brushes.Red;
+            g.DrawString(RECEIVED_DATA.DISTANCE.ToString()+"cm", font, brush, endXRCWS + 5, endYRCWS);
         }
 
         private void pictureBox_azimuth_MouseDown(object sender, MouseEventArgs e)

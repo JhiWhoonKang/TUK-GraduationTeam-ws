@@ -27,6 +27,10 @@ namespace RCWS_Situation_room
 
         private void btn_login_Click(object sender, EventArgs e)
         {
+            //this.Visible = false;
+            //FormMain gui = new FormMain(streamWriter, formDataSetting);
+            //gui.Show();
+
             if (TB_ID.Text == "까불면 메카 약이다" && TB_PW.Text == "mecha")
             {
                 MessageBox.Show("Successfully Login");
@@ -72,6 +76,12 @@ namespace RCWS_Situation_room
                 FormMain gui = new FormMain(streamWriter, formDataSetting);
                 gui.Show();
             }
+        }
+
+        private void FormLogin_Load(object sender, EventArgs e)
+        {
+            TB_ID.Text = "까불면 메카 약이다";
+            TB_PW.Text = "mecha";
         }
     }
 }

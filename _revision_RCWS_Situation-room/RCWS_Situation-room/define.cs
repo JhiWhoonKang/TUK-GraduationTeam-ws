@@ -27,5 +27,7 @@ namespace RCWS_Situation_room
         public const int MAX_MAGNIFICATION = 5;
 
         public const double VIDEO_SCALE = 1.8;
+
+        public const int LENGTH_SCALE = 18;
     }
 }
