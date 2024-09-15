@@ -1,0 +1,217 @@
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe.config
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\Guna.UI2.dll
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.AssemblyReference.cache
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.SuggestedBindingRedirects.cache
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Form1.resources
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Properties.Resources.resources
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.GenerateResource.cache
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CoreCompileInputs.cache
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CopyComplete
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\2023 Hanium\_demo\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.GUI.resources
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe.config
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.AssemblyReference.cache
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.SuggestedBindingRedirects.cache
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Form1.resources
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.GUI.resources
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Properties.Resources.resources
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.GenerateResource.cache
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CoreCompileInputs.cache
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\github_ws\RCWS-GUI\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe.config
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.AssemblyReference.cache
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Form1.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.GUI.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Properties.Resources.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.GenerateResource.cache
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CoreCompileInputs.cache
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.xml
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.dll.config
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.xml
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.dll.config
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.xml
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.dll.config
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Extensions.xml
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CopyComplete
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Setting.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalSetting.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormDataSetting.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorDataSetting.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorSetting.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalDataSetting.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormReticleSetting.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponDataSetting.resources
+C:\JHIWHOON_ws\github_ws\Graduation-Project\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponSetting.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe.config
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.pdb
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.xml
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.dll.config
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.xml
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.dll.config
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.xml
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.dll.config
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Extensions.xml
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.AssemblyReference.cache
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Form1.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormDataSetting.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorDataSetting.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorSetting.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalDataSetting.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalSetting.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormReticleSetting.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponDataSetting.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponSetting.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.GUI.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Properties.Resources.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Setting.resources
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.GenerateResource.cache
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CoreCompileInputs.cache
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CopyComplete
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.exe
+E:\종합설계 3차 발표\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe.config
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.xml
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.dll.config
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.xml
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.dll.config
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.xml
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.dll.config
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Extensions.xml
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.AssemblyReference.cache
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Form1.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormDataSetting.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorDataSetting.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorSetting.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalDataSetting.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalSetting.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormReticleSetting.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponDataSetting.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponSetting.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.GUI.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Properties.Resources.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Setting.resources
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.GenerateResource.cache
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CoreCompileInputs.cache
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CopyComplete
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.dll
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.dll
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.pdb
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.pdb
+C:\JHIWHOON_ws\github_ws\RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.xml
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe.config
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.dll
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.dll
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.xml
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.dll.config
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.xml
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.dll.config
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.xml
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.dll.config
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Extensions.xml
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.pdb
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.pdb
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.xml
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.AssemblyReference.cache
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormDataSetting.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorDataSetting.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorSetting.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalDataSetting.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalSetting.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormReticleSetting.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponDataSetting.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponSetting.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Properties.Resources.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.GenerateResource.cache
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CoreCompileInputs.cache
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CopyComplete
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe.config
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.dll
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.dll
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.xml
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.dll.config
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.xml
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.dll.config
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.xml
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.dll.config
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Extensions.xml
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.pdb
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.pdb
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.xml
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.AssemblyReference.cache
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormDataSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorDataSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalDataSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormReticleSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponDataSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Properties.Resources.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.GenerateResource.cache
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CoreCompileInputs.cache
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CopyComplete
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormLogin.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMain.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormSettingMain.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormManual.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormLogin.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormManual.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMain.resources
+C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormSettingMain.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe.config
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.pdb
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.dll
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.dll
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.xml
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.dll.config
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.xml
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.dll.config
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.xml
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.dll.config
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Extensions.xml
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.pdb
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.pdb
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.xml
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.AssemblyReference.cache
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormLogin.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormDataSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormManual.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorDataSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalDataSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormReticleSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponDataSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponSetting.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMain.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Properties.Resources.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormSettingMain.resources
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.GenerateResource.cache
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CoreCompileInputs.cache
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Sit.2236C9E6.Up2Date
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.exe
+C:\JHIWHOON_ws\github_ws\TUK-GraduationTeam-ws\video_error\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.pdb
