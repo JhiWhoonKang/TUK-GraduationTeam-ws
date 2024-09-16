@@ -82,7 +82,7 @@ namespace RCWS_Situation_room
         {
             InitializeComponent();
 
-            _UDPCmd = new UDPCmd();
+            _UDPCmd = new UDPCmd(this);
             _UDPCmd.VideoReceived += OnVideoReceived;
 
             RTB_RECEIVED_DISPLAY.ReadOnly = true;
@@ -159,8 +159,8 @@ namespace RCWS_Situation_room
             HSB_BODY_VEL_VALUE = 1.0;
             HSB_OPTICAL_VEL_VALUE = 1.0;
 
-            RTB_RECEIVED_DISPLAY.Visible = false;
-            RTB_SEND_DISPLAY.Visible = false;
+            RTB_RECEIVED_DISPLAY.Visible = true;
+            RTB_SEND_DISPLAY.Visible = true;
 
             TB_MAGNIFICATION.Text = "No Data";
 
@@ -731,7 +731,7 @@ namespace RCWS_Situation_room
             await ReceiveDataAsync();
         }
 
-        private void UpdateUI(Action action)
+        public void UpdateUI(Action action)
         {
             if (InvokeRequired)
             {
@@ -1568,7 +1568,7 @@ namespace RCWS_Situation_room
             UpdateUI(() => ReceiveDisplay("Connect ERROR: " + message));
         }
 
-        private void SendDisplay(string str)
+        public void SendDisplay(string str)
         {            
             RTB_SEND_DISPLAY.Invoke((MethodInvoker)delegate { RTB_SEND_DISPLAY.AppendText(str + "\r\n"); });
             RTB_SEND_DISPLAY.Invoke((MethodInvoker)delegate { RTB_SEND_DISPLAY.ScrollToCaret(); });

@@ -130,7 +130,7 @@
             // 
             // RTB_SEND_DISPLAY
             // 
-            this.RTB_SEND_DISPLAY.Location = new System.Drawing.Point(13, 987);
+            this.RTB_SEND_DISPLAY.Location = new System.Drawing.Point(13, 1084);
             this.RTB_SEND_DISPLAY.Name = "RTB_SEND_DISPLAY";
             this.RTB_SEND_DISPLAY.Size = new System.Drawing.Size(310, 80);
             this.RTB_SEND_DISPLAY.TabIndex = 3;
@@ -138,7 +138,7 @@
             // 
             // RTB_RECEIVED_DISPLAY
             // 
-            this.RTB_RECEIVED_DISPLAY.Location = new System.Drawing.Point(343, 987);
+            this.RTB_RECEIVED_DISPLAY.Location = new System.Drawing.Point(343, 1084);
             this.RTB_RECEIVED_DISPLAY.Name = "RTB_RECEIVED_DISPLAY";
             this.RTB_RECEIVED_DISPLAY.Size = new System.Drawing.Size(310, 80);
             this.RTB_RECEIVED_DISPLAY.TabIndex = 4;
@@ -743,7 +743,7 @@
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(1920, 1080);
+            this.ClientSize = new System.Drawing.Size(1920, 1209);
             this.Controls.Add(this.BTN_SETTING);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.lb_yy);
