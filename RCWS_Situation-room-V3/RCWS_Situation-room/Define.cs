@@ -4,8 +4,8 @@ namespace RCWS_Situation_room
 {
     internal class Define
     {
-        //public const string SERVER_IP = "192.168.0.30";
-        public const string SERVER_IP = "127.0.0.1";
+        public const string SERVER_IP = "192.168.0.30";
+        //public const string SERVER_IP = "127.0.0.1";
 
         public UdpClient udpClient;
 
