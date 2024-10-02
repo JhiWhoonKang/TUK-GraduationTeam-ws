@@ -5,7 +5,7 @@ import math
 
 # UDP 클라이언트 설정
 UDP_IP = "127.0.0.1"  # 서버 IP 주소 (수신 측)
-UDP_PORT = 12345
+UDP_PORT = 8000
 MAX_LENGTH = 65000  # 최대 패킷 크기 설정
 
 # 카메라 열기

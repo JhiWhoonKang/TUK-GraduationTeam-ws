@@ -3,52 +3,28 @@
   "WorkspaceRootPath": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\rcws_situation-room\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|c:\\jhiwhoon_ws\\github_ws\\tuk-graduationteam-ws\\rcws_situation-room-v3\\rcws_situation-room\\udpcmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\udpcmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|c:\\jhiwhoon_ws\\github_ws\\tuk-graduationteam-ws\\rcws_situation-room-v3\\rcws_situation-room\\formmain.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\formmain.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|c:\\jhiwhoon_ws\\github_ws\\tuk-graduationteam-ws\\rcws_situation-room-v3\\rcws_situation-room\\formlogin.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\formlogin.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|c:\\jhiwhoon_ws\\github_ws\\tuk-graduationteam-ws\\rcws_situation-room-v3\\rcws_situation-room\\formdatasetting.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\formdatasetting.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|c:\\jhiwhoon_ws\\github_ws\\tuk-graduationteam-ws\\rcws_situation-room-v3\\rcws_situation-room\\formdatasetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\formdatasetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|c:\\jhiwhoon_ws\\github_ws\\tuk-graduationteam-ws\\rcws_situation-room-v3\\rcws_situation-room\\formlogin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\formlogin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|c:\\jhiwhoon_ws\\github_ws\\tuk-graduationteam-ws\\rcws_situation-room-v3\\rcws_situation-room\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\rcws_situation-room\\define.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\define.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\rcws_situation-room\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\rcws_situation-room\\packet.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\packet.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|c:\\jhiwhoon_ws\\github_ws\\tuk-graduationteam-ws\\rcws_situation-room-v3\\rcws_situation-room\\tcpcmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\tcpcmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|c:\\jhiwhoon_ws\\github_ws\\tuk-graduationteam-ws\\rcws_situation-room-v3\\rcws_situation-room\\define.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\define.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\rcws_situation-room\\draw.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\draw.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\rcws_situation-room\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\rcws_situation-room\\tcpcmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A036735C-BBAC-4078-88A6-F5F72EE38FB3}|RCWS_Situation-room\\RCWS_Situation-room.csproj|solutionrelative:rcws_situation-room\\tcpcmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -58,76 +34,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 725,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "FormMain.Designer.cs",
-              "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormMain.Designer.cs",
-              "RelativeDocumentMoniker": "RCWS_Situation-room\\FormMain.Designer.cs",
-              "ToolTip": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormMain.Designer.cs",
-              "RelativeToolTip": "RCWS_Situation-room\\FormMain.Designer.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAuwAIAAAAEAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-15T08:50:03.307Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "FormLogin.Designer.cs",
-              "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormLogin.Designer.cs",
-              "RelativeDocumentMoniker": "RCWS_Situation-room\\FormLogin.Designer.cs",
-              "ToolTip": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormLogin.Designer.cs",
-              "RelativeToolTip": "RCWS_Situation-room\\FormLogin.Designer.cs",
-              "ViewState": "AQIAAAIAAAAAAAAAAAAuwAIAAAALAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-15T08:50:02.243Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "FormDataSetting.Designer.cs",
-              "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormDataSetting.Designer.cs",
-              "RelativeDocumentMoniker": "RCWS_Situation-room\\FormDataSetting.Designer.cs",
-              "ToolTip": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormDataSetting.Designer.cs",
-              "RelativeToolTip": "RCWS_Situation-room\\FormDataSetting.Designer.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAALAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-15T08:49:57.149Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "FormDataSetting.cs",
-              "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormDataSetting.cs",
-              "RelativeDocumentMoniker": "RCWS_Situation-room\\FormDataSetting.cs",
-              "ToolTip": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormDataSetting.cs",
-              "RelativeToolTip": "RCWS_Situation-room\\FormDataSetting.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAASAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-15T08:49:46.554Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "FormLogin.cs",
-              "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormLogin.cs",
-              "RelativeDocumentMoniker": "RCWS_Situation-room\\FormLogin.cs",
-              "ToolTip": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormLogin.cs",
-              "RelativeToolTip": "RCWS_Situation-room\\FormLogin.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAASAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-15T08:46:59.469Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
               "Title": "FormMain.cs [\uB514\uC790\uC778]",
               "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormMain.cs",
               "RelativeDocumentMoniker": "RCWS_Situation-room\\FormMain.cs",
@@ -139,20 +50,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "FormMain.cs",
               "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormMain.cs",
               "RelativeDocumentMoniker": "RCWS_Situation-room\\FormMain.cs",
               "ToolTip": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\FormMain.cs",
               "RelativeToolTip": "RCWS_Situation-room\\FormMain.cs",
-              "ViewState": "AQIAAFQEAAAAAAAAAAA1wFYEAAAhAAAA",
+              "ViewState": "AQIAAKkAAAAAAAAAAAAAAAsEAABJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-14T10:45:40.084Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 2,
               "Title": "Packet.cs",
               "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\Packet.cs",
               "RelativeDocumentMoniker": "RCWS_Situation-room\\Packet.cs",
@@ -165,28 +76,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 3,
               "Title": "Define.cs",
               "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\Define.cs",
               "RelativeDocumentMoniker": "RCWS_Situation-room\\Define.cs",
               "ToolTip": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\Define.cs",
               "RelativeToolTip": "RCWS_Situation-room\\Define.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAjAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAoAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-14T10:45:40.154Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Draw.cs",
-              "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\Draw.cs",
-              "RelativeDocumentMoniker": "RCWS_Situation-room\\Draw.cs",
-              "ToolTip": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\Draw.cs",
-              "RelativeToolTip": "RCWS_Situation-room\\Draw.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACoAAAAbAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-14T10:45:40.155Z",
               "EditorCaption": ""
             }
           ]
@@ -197,20 +95,20 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "UDPCmd.cs",
               "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\UDPCmd.cs",
               "RelativeDocumentMoniker": "RCWS_Situation-room\\UDPCmd.cs",
               "ToolTip": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\UDPCmd.cs",
               "RelativeToolTip": "RCWS_Situation-room\\UDPCmd.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAAAwCoAAAA1AAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAgAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-15T06:28:59.786Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 5,
               "Title": "TCPCmd.cs",
               "DocumentMoniker": "C:\\JHIWHOON_ws\\github_ws\\TUK-GraduationTeam-ws\\RCWS_Situation-room-V3\\RCWS_Situation-room\\TCPCmd.cs",
               "RelativeDocumentMoniker": "RCWS_Situation-room\\TCPCmd.cs",
@@ -218,8 +116,7 @@
               "RelativeToolTip": "RCWS_Situation-room\\TCPCmd.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABwAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-15T06:13:55.39Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-15T06:13:55.39Z"
             }
           ]
         }
