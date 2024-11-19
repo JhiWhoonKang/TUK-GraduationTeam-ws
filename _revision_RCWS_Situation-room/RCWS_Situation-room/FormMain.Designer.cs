@@ -85,12 +85,12 @@
             this.suspectedEnemyActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enemyMovementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enemyConcentrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.PBL_VIDEO = new OpenCvSharp.UserInterface.PictureBoxIpl();
             this.lb_xx = new System.Windows.Forms.Label();
             this.lb_yy = new System.Windows.Forms.Label();
             this.addPinPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deletePinPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BTN_SETTING = new System.Windows.Forms.Button();
+            this.PB_VIDEO = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.PB_MAP)).BeginInit();
             this.PNL_MAP_CONTAINER.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PB_AZIMUTH)).BeginInit();
@@ -107,7 +107,7 @@
             this.groupBox9.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PBL_VIDEO)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PB_VIDEO)).BeginInit();
             this.SuspendLayout();
             // 
             // PB_MAP
@@ -684,19 +684,6 @@
             this.enemyConcentrationToolStripMenuItem.Text = "Enemy Concentration";
             this.enemyConcentrationToolStripMenuItem.Click += new System.EventHandler(this.enemyConcentrationToolStripMenuItem_Click);
             // 
-            // PBL_VIDEO
-            // 
-            this.PBL_VIDEO.Location = new System.Drawing.Point(13, 164);
-            this.PBL_VIDEO.Name = "PBL_VIDEO";
-            this.PBL_VIDEO.Size = new System.Drawing.Size(1152, 864);
-            this.PBL_VIDEO.TabIndex = 21;
-            this.PBL_VIDEO.TabStop = false;
-            this.PBL_VIDEO.Paint += new System.Windows.Forms.PaintEventHandler(this.PBI_VIDEO_Paint);
-            this.PBL_VIDEO.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PBI_Video_MouseClick);
-            this.PBL_VIDEO.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PBL_VIDEO_MouseDown);
-            this.PBL_VIDEO.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PBL_VIDEO_MouseMove);
-            this.PBL_VIDEO.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PBL_VIDEO_MouseUp);
-            // 
             // lb_xx
             // 
             this.lb_xx.AutoSize = true;
@@ -740,15 +727,23 @@
             this.BTN_SETTING.UseVisualStyleBackColor = true;
             this.BTN_SETTING.Click += new System.EventHandler(this.Setting_Click);
             // 
+            // PB_VIDEO
+            // 
+            this.PB_VIDEO.Location = new System.Drawing.Point(13, 164);
+            this.PB_VIDEO.Name = "PB_VIDEO";
+            this.PB_VIDEO.Size = new System.Drawing.Size(1152, 864);
+            this.PB_VIDEO.TabIndex = 27;
+            this.PB_VIDEO.TabStop = false;
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1920, 1080);
+            this.Controls.Add(this.PB_VIDEO);
             this.Controls.Add(this.BTN_SETTING);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.lb_yy);
             this.Controls.Add(this.lb_xx);
-            this.Controls.Add(this.PBL_VIDEO);
             this.Controls.Add(this.PB_AZIMUTH);
             this.Controls.Add(this.RTB_RECEIVED_DISPLAY);
             this.Controls.Add(this.RTB_SEND_DISPLAY);
@@ -787,7 +782,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.PBL_VIDEO)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PB_VIDEO)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -832,7 +827,6 @@
         private System.Windows.Forms.Button BTN_FIRE;
         private System.Windows.Forms.Button BTN_TAKE_AIM;
         private System.Windows.Forms.Button BTN_CAMERA_CONNECT;
-        private OpenCvSharp.UserInterface.PictureBoxIpl PBL_VIDEO;
         private System.Windows.Forms.Label lb_xx;
         private System.Windows.Forms.Label lb_yy;
         private System.Windows.Forms.ToolStripMenuItem addPinPointToolStripMenuItem;
@@ -862,5 +856,6 @@
         private System.Windows.Forms.HScrollBar HSB_OPTICAL_VEL;
         private System.Windows.Forms.Label LB_BODY_ROTATION_VEL;
         private System.Windows.Forms.Label LB_OPTICAL_ROTATION_VEL;
+        private System.Windows.Forms.PictureBox PB_VIDEO;
     }
 }

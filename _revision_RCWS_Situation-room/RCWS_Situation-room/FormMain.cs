@@ -32,6 +32,9 @@ namespace RCWS_Situation_room
         private StreamReader STREAM_READER;
         private NetworkStream NETWORK_STREAM;
         //private Thread receiveThread;
+
+        private readonly Network_TCP_UDP udpReceiver;
+        private readonly Frame_Processing frameProcessor;
         /* */
 
         /* motion control */
@@ -81,6 +84,10 @@ namespace RCWS_Situation_room
         public FormMain(StreamWriter streamWriter, FormDataSetting formDataSetting)
         {
             InitializeComponent();
+
+            udpReceiver = new Network_TCP_UDP("192.168.0.30", 8000);
+            frameProcessor = new Frame_Processing();
+            udpReceiver.DataReceived += OnDataReceived;
 
             RTB_RECEIVED_DISPLAY.ReadOnly = true;
             RTB_SEND_DISPLAY.ReadOnly = true;
