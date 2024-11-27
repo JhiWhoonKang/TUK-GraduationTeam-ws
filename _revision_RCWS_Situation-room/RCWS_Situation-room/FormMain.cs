@@ -81,12 +81,14 @@ namespace RCWS_Situation_room
         private bool CAMERA_CONNECT_FLAG = false;
         #endregion
 
+
         public FormMain(StreamWriter streamWriter, FormDataSetting formDataSetting)
         {
             InitializeComponent();
 
             udpReceiver = new Network_TCP_UDP("192.168.0.30", 8000);
             frameProcessor = new Frame_Processing();
+
             udpReceiver.DataReceived += OnDataReceived;
 
             RTB_RECEIVED_DISPLAY.ReadOnly = true;
@@ -170,6 +172,8 @@ namespace RCWS_Situation_room
 
             this.Focus();
         }
+
+        
 
         private void GUI_Load(object sender, EventArgs e)
         {
@@ -973,74 +977,90 @@ namespace RCWS_Situation_room
             //LB_OPTICAL_ROTATION_VEL.Text = HSB_OPTICAL_VEL_VALUE.ToString();
         }
 
-        private void PBL_VIDEO_MouseDown(object sender, MouseEventArgs e)
-        {
-            if(RCWS_CONNECT_FLAG)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    IS_DRAGGING = true;
-                    startPoint = e.Location;
-                    SEND_DATA.D_X1 = (short)(e.X);
-                    SEND_DATA.D_Y1 = (short)(e.Y);
-                }
-            }            
-        }
-
-        private async void PBL_VIDEO_MouseUp(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                if(RCWS_CONNECT_FLAG)
-                {
-                    if (e.Button == MouseButtons.Left)
-                    {
-                        if (IS_DRAGGING)
-                        {
-                            endPoint = e.Location;
-                            SEND_DATA.D_X2 = (short)(e.X);
-                            SEND_DATA.D_Y2 = (short)(e.Y);
-
-                            SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
-                            SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
-                            byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
-                            await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
-                            await STREAM_WRITER.BaseStream.FlushAsync();
-                            SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
-
-                            IS_DRAGGING = false;
-                            startPoint = Point.Empty;
-                            endPoint = Point.Empty;
-                            PBL_VIDEO.Invalidate();
-                        }
-                    }
-                }
-            }
-
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error in Video Picture Box: " + ex.Message);
-            }
-        }
-
-        private void PBL_VIDEO_MouseMove(object sender, MouseEventArgs e)
-        {
-            if(RCWS_CONNECT_FLAG)
-            {
-                if (IS_DRAGGING)
-                {
-                    endPoint = e.Location;
-                    PBL_VIDEO.Invalidate();
-                }
-            }            
-        }        
+        
         #endregion
 
         #region UDP, Video
 
-        private void BTN_CAMERA_CONNECT_Click(object sender, EventArgs e)
-        {            
-            Task.Run(() => UdpConnect());
+        //private void BTN_CAMERA_CONNECT_Click(object sender, EventArgs e)
+        //{            
+        //    Task.Run(() => UdpConnect());
+        //}
+
+        public void BTN_CAMERA_CONNECT_Click(object sender, EventArgs e)
+        {
+            UpdateUI(() =>
+            {
+                BTN_CAMERA_CONNECT.ForeColor = Color.White;
+                BTN_CAMERA_CONNECT.BackColor = Color.Green;
+            });
+            Task.Run(() => udpReceiver.Begin_Receive());
+        }
+        //gg
+        private async void OnDataReceived(byte[] data)
+        {
+            try
+            {
+                var frame = frameProcessor.DecodeFrame(data);
+                DisplayFrame(frame);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("프레임 처리 오류: " + ex.Message);
+            }
+        }
+
+        private void DisplayFrame(Bitmap frame)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() =>
+                {
+                    try
+                    {
+                        int newWidth = (int)(frame.Width * define.VIDEO_SCALE);
+                        int newHeight = (int)(frame.Height * define.VIDEO_SCALE);
+
+                        using (var resizedImage = new Bitmap(newWidth, newHeight))
+                        {
+                            using (var graphics = Graphics.FromImage(resizedImage))
+                            {
+                                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                                graphics.DrawImage(frame, 0, 0, newWidth, newHeight);
+                            }
+
+                            PB_VIDEO.Image = (Image)resizedImage.Clone();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorHandleDisplay(ex.Message);
+                    }
+                }));
+            }
+            else
+            {
+                try
+                {
+                    int newWidth = (int)(frame.Width * define.VIDEO_SCALE);
+                    int newHeight = (int)(frame.Height * define.VIDEO_SCALE);
+
+                    using (var resizedImage = new Bitmap(newWidth, newHeight))
+                    {
+                        using (var graphics = Graphics.FromImage(resizedImage))
+                        {
+                            graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                            graphics.DrawImage(frame, 0, 0, newWidth, newHeight);
+                        }
+
+                        PB_VIDEO.Image = (Image)resizedImage.Clone();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorHandleDisplay(ex.Message);
+                }
+            }
         }
 
         private void UdpConnect()
@@ -1103,7 +1123,7 @@ namespace RCWS_Situation_room
                                 graphics.DrawImage(receivedImage, 0, 0, newWidth, newHeight);
                             }
 
-                            PBL_VIDEO.Image = (Image)resizedImage.Clone();
+                            PB_VIDEO.Image = (Image)resizedImage.Clone();
                         }
                     }
                 }
@@ -1382,11 +1402,11 @@ namespace RCWS_Situation_room
             {
                 if (RECEIVED_DATA.BODY_PAN >= 15)
                 {
-                    g.DrawString(("! Max Azimuth !\nTurn Left").ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 5);
+                    g.DrawString(("! Max Azimuth !\nTurn Left").ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 5);
                 }
                 else
                 {
-                    g.DrawString(("! Azimuth Warning !\nTurn Left").ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 5);
+                    g.DrawString(("! Azimuth Warning !\nTurn Left").ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 5);
                 }
             }
 
@@ -1394,11 +1414,11 @@ namespace RCWS_Situation_room
             {
                 if (RECEIVED_DATA.BODY_PAN <= -180)
                 {
-                    g.DrawString((("! Max Azimuth !\nTurn Right")).ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 5);
+                    g.DrawString((("! Max Azimuth !\nTurn Right")).ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 5);
                 }
                 else
                 {
-                    g.DrawString((("! Azimuth Warning !\nTurn Right")).ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 5);
+                    g.DrawString((("! Azimuth Warning !\nTurn Right")).ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 5);
                 }
             }
             // #####
@@ -1406,11 +1426,11 @@ namespace RCWS_Situation_room
             {
                 if (RECEIVED_DATA.OPTICAL_TILT >= 30)
                 {
-                    g.DrawString(("! Max Optical Elevation !\nGo Down").ToString(), font, brush, PBL_VIDEO.Width / 11 * 1, PBL_VIDEO.Height / 12 * 5);
+                    g.DrawString(("! Max Optical Elevation !\nGo Down").ToString(), font, brush, PB_VIDEO.Width / 11 * 1, PB_VIDEO.Height / 12 * 5);
                 }
                 else
                 {
-                    g.DrawString(("! Optical Elevation Warning !\nGo Down").ToString(), font, brush, PBL_VIDEO.Width / 11 * 1, PBL_VIDEO.Height / 12 * 5);
+                    g.DrawString(("! Optical Elevation Warning !\nGo Down").ToString(), font, brush, PB_VIDEO.Width / 11 * 1, PB_VIDEO.Height / 12 * 5);
                 }
             }
 
@@ -1418,11 +1438,11 @@ namespace RCWS_Situation_room
             {
                 if (RECEIVED_DATA.OPTICAL_TILT <= -10)
                 {
-                    g.DrawString((("! Max Optical Elevation !\nGo Up")).ToString(), font, brush, PBL_VIDEO.Width / 11 * 1, PBL_VIDEO.Height / 12 * 7);
+                    g.DrawString((("! Max Optical Elevation !\nGo Up")).ToString(), font, brush, PB_VIDEO.Width / 11 * 1, PB_VIDEO.Height / 12 * 7);
                 }
                 else
                 {
-                    g.DrawString((("! Optical Elevation Warning !\nGo Up")).ToString(), font, brush, PBL_VIDEO.Width / 11 * 1, PBL_VIDEO.Height / 12 * 7);
+                    g.DrawString((("! Optical Elevation Warning !\nGo Up")).ToString(), font, brush, PB_VIDEO.Width / 11 * 1, PB_VIDEO.Height / 12 * 7);
                 }
             }
             // #####
@@ -1430,11 +1450,11 @@ namespace RCWS_Situation_room
             {
                 if (RECEIVED_DATA.WEAPON_TILT >= 30)
                 {
-                    g.DrawString(("! Max Weapon Elevation !\nGo Down").ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 12 * 5);
+                    g.DrawString(("! Max Weapon Elevation !\nGo Down").ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 12 * 5);
                 }
                 else
                 {
-                    g.DrawString(("! Weapon Elevation Warning !\nGo Down").ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 12 * 5);
+                    g.DrawString(("! Weapon Elevation Warning !\nGo Down").ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 12 * 5);
                 }
             }
 
@@ -1442,11 +1462,11 @@ namespace RCWS_Situation_room
             {
                 if (RECEIVED_DATA.WEAPON_TILT <= -20)
                 {
-                    g.DrawString((("! Max Weapon Elevation !\nGo Up")).ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 12 * 7);
+                    g.DrawString((("! Max Weapon Elevation !\nGo Up")).ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 12 * 7);
                 }
                 else
                 {
-                    g.DrawString((("! Weapon Elevation Warning !\nGo Up")).ToString(), font, brush, PBL_VIDEO.Width / 5 * 4, PBL_VIDEO.Height / 12 * 7);
+                    g.DrawString((("! Weapon Elevation Warning !\nGo Up")).ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 12 * 7);
                 }
             }
 
@@ -1628,5 +1648,366 @@ namespace RCWS_Situation_room
             RTB_RECEIVED_DISPLAY.Invoke((MethodInvoker)delegate { RTB_RECEIVED_DISPLAY.ScrollToCaret(); });
         }
 
+        private void PB_VIDEO_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (RCWS_CONNECT_FLAG)
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    IS_DRAGGING = true;
+                    startPoint = e.Location;
+                    SEND_DATA.D_X1 = (short)(e.X);
+                    SEND_DATA.D_Y1 = (short)(e.Y);
+                }
+            }
+        }
+
+        private void PB_VIDEO_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (RCWS_CONNECT_FLAG)
+            {
+                if (IS_DRAGGING)
+                {
+                    endPoint = e.Location;
+                    PB_VIDEO.Invalidate();
+                }
+            }
+        }
+
+        private async void PB_VIDEO_MouseUp(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                if (RCWS_CONNECT_FLAG)
+                {
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        if (IS_DRAGGING)
+                        {
+                            endPoint = e.Location;
+                            SEND_DATA.D_X2 = (short)(e.X);
+                            SEND_DATA.D_Y2 = (short)(e.Y);
+
+                            SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
+                            SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
+                            byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                            await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                            await STREAM_WRITER.BaseStream.FlushAsync();
+                            SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
+
+                            IS_DRAGGING = false;
+                            startPoint = Point.Empty;
+                            endPoint = Point.Empty;
+                            PB_VIDEO.Invalidate();
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error in Video Picture Box: " + ex.Message);
+            }
+        }
+
+        private void PB_VIDEO_Paint(object sender, PaintEventArgs e)
+        {
+            var g = e.Graphics;
+            Pen redPen = new Pen(Color.Red, 3);
+            Font font = new Font("Arial", 12);
+            Brush brush = Brushes.Red;
+
+            /* 삼각형 */
+            float At1_X = define.VIDEO_WIDTH / 2;
+            float At1_Y = define.VIDEO_HEIGHT / 12 + 40;
+
+            float At2_X = define.VIDEO_WIDTH / 2 - 10;
+            float At2_Y = define.VIDEO_HEIGHT / 12 + 50;
+
+            float At3_X = define.VIDEO_WIDTH / 2 + 10;
+            float At3_Y = define.VIDEO_HEIGHT / 12 + 50;
+
+            g.DrawLine(redPen, At1_X, At1_Y, At2_X, At2_Y);
+            g.DrawLine(redPen, At2_X, At2_Y, At3_X, At3_Y);
+            g.DrawLine(redPen, At3_X, At3_Y, At1_X, At1_Y);
+
+            // 기총
+            int Et1_X = define.VIDEO_WIDTH / 24 * 21 - 10;
+            int Et1_Y = define.VIDEO_HEIGHT / 2;
+
+            int Et2_X = define.VIDEO_WIDTH / 24 * 21 - 20;
+            int Et2_Y = define.VIDEO_HEIGHT / 2 + 10;
+
+            int Et3_X = define.VIDEO_WIDTH / 24 * 21 - 20;
+            int Et3_Y = define.VIDEO_HEIGHT / 2 - 10;
+
+            g.DrawLine(redPen, new Point(Et1_X, Et1_Y), new Point(Et2_X, Et2_Y));
+            g.DrawLine(redPen, new Point(Et2_X, Et2_Y), new Point(Et3_X, Et3_Y));
+            g.DrawLine(redPen, new Point(Et3_X, Et3_Y), new Point(Et1_X, Et1_Y));
+
+            // 광학
+            int O_Et1_X = define.VIDEO_WIDTH / 24 * 3 + 10;
+            int O_Et1_Y = define.VIDEO_HEIGHT / 2;
+
+            int O_Et2_X = define.VIDEO_WIDTH / 24 * 3 + 20;
+            int O_Et2_Y = define.VIDEO_HEIGHT / 2 + 10;
+
+            int O_Et3_X = define.VIDEO_WIDTH / 24 * 3 + 20;
+            int O_Et3_Y = define.VIDEO_HEIGHT / 2 - 10;
+
+            g.DrawLine(redPen, new Point(O_Et1_X, O_Et1_Y), new Point(O_Et2_X, O_Et2_Y));
+            g.DrawLine(redPen, new Point(O_Et2_X, O_Et2_Y), new Point(O_Et3_X, O_Et3_Y));
+            g.DrawLine(redPen, new Point(O_Et3_X, O_Et3_Y), new Point(O_Et1_X, O_Et1_Y));
+            /* */
+
+            /* 방위각 */
+            // # 막대기
+            float lineA_X = define.VIDEO_WIDTH / 2;
+            float lineA_Y = define.VIDEO_HEIGHT / 12 + 15;
+
+            int spacingA = 10;
+            int lineLength = 20;
+
+            for (int i = -36; i <= 36; i++)
+            {
+                float line_X = lineA_X + (i * spacingA) + (-RECEIVED_DATA.BODY_PAN) * 2;
+                //g.DrawLine(redPen, new Point(line_X, lineA_Y), new Point(line_X, lineA_Y + lineLength));          
+                g.DrawLine(redPen, line_X, lineA_Y, line_X, lineA_Y + lineLength);
+            }
+
+            // # 숫자            
+            float A_Y = lineA_Y - 20;
+
+            float A_180X = lineA_X - 385 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_160X = lineA_X - 345 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_140X = lineA_X - 305 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_120X = lineA_X - 265 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_100X = lineA_X - 225 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_80X = lineA_X - 180 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_60X = lineA_X - 140 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_40X = lineA_X - 100 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A_20X = lineA_X - 60 + 5 + (-RECEIVED_DATA.BODY_PAN) * 2;
+
+            float A_0X = lineA_X - 7 + (-RECEIVED_DATA.BODY_PAN) * 2;
+
+            float A20X = lineA_X + 40 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A40X = lineA_X + 80 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A60X = lineA_X + 120 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A80X = lineA_X + 160 - 10 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A100X = lineA_X + 200 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A120X = lineA_X + 240 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A140X = lineA_X + 280 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A160X = lineA_X + 320 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
+            float A180X = lineA_X + 360 - 15 + (-RECEIVED_DATA.BODY_PAN) * 2;
+
+            g.DrawString((-180).ToString(), font, brush, A_180X, A_Y);
+            g.DrawString((-160).ToString(), font, brush, A_160X, A_Y);
+            g.DrawString((-140).ToString(), font, brush, A_140X, A_Y);
+            g.DrawString((-120).ToString(), font, brush, A_120X, A_Y); //
+            g.DrawString((-100).ToString(), font, brush, A_100X, A_Y);
+            g.DrawString((-80).ToString(), font, brush, A_80X, A_Y);
+            g.DrawString((-60).ToString(), font, brush, A_60X, A_Y);
+            g.DrawString((-40).ToString(), font, brush, A_40X, A_Y);
+            g.DrawString((-20).ToString(), font, brush, A_20X, A_Y);
+
+            g.DrawString((0).ToString(), font, brush, A_0X, A_Y);
+
+            g.DrawString((20).ToString(), font, brush, A20X, A_Y);
+            g.DrawString((40).ToString(), font, brush, A40X, A_Y);
+            g.DrawString((60).ToString(), font, brush, A60X, A_Y);
+            g.DrawString((80).ToString(), font, brush, A80X, A_Y);
+            g.DrawString((100).ToString(), font, brush, A100X, A_Y);
+            g.DrawString((120).ToString(), font, brush, A120X, A_Y); //
+            g.DrawString((140).ToString(), font, brush, A140X, A_Y);
+            g.DrawString((160).ToString(), font, brush, A160X, A_Y);
+            g.DrawString((180).ToString(), font, brush, A180X, A_Y);
+
+            /* 고각 */
+            // # 막대기
+            float lineE_X = define.VIDEO_WIDTH / 24 * 21;
+            float lineE_Y = define.VIDEO_HEIGHT / 2;
+
+            int spacingE = 10;
+
+            for (int i = -6; i <= 6; i++)
+            {
+                float line_Y = lineE_Y + (i * spacingE) + (RECEIVED_DATA.WEAPON_TILT) * 2;
+                g.DrawLine(redPen, lineE_X, line_Y, lineE_X + lineLength, line_Y);
+            }
+
+            // # 숫자
+            float E_X = lineE_X + 20;
+            float E_30Y = lineE_Y + 30 + 20 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+            float E_20Y = lineE_Y + 20 + 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+            float E_10Y = lineE_Y + 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+
+            float E_0Y = lineE_Y - 10 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+
+            float E10Y = lineE_Y - 10 - 20 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+            float E20Y = lineE_Y - 20 - 30 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+            float E30Y = lineE_Y - 30 - 40 + (RECEIVED_DATA.WEAPON_TILT) * 2;
+
+            g.DrawString((-30).ToString(), font, brush, E_X, E_30Y);
+            g.DrawString((-20).ToString(), font, brush, E_X, E_20Y);
+            g.DrawString((-10).ToString(), font, brush, E_X, E_10Y);
+
+            g.DrawString((0).ToString(), font, brush, E_X, E_0Y);
+
+            g.DrawString((10).ToString(), font, brush, E_X, E10Y);
+            g.DrawString((20).ToString(), font, brush, E_X, E20Y);
+            g.DrawString((30).ToString(), font, brush, E_X, E30Y);
+
+            /* 영역 사각형 */
+            if (IS_DRAGGING && startPoint != Point.Empty && endPoint != Point.Empty)
+            {
+                Rectangle rect = new Rectangle(
+                    Math.Min(startPoint.X, endPoint.X),
+                    Math.Min(startPoint.Y, endPoint.Y),
+                    Math.Abs(startPoint.X - endPoint.X),
+                    Math.Abs(startPoint.Y - endPoint.Y));
+
+                e.Graphics.DrawRectangle(Pens.Red, rect);
+            }
+
+            /* 광학 고각 */
+            // # 막대기
+            float O_lineE_X = define.VIDEO_WIDTH / 24 * 3 - 20;
+            float O_lineE_Y = define.VIDEO_HEIGHT / 2;
+
+            int O_spacingE = 10;
+
+            for (int i = -6; i <= 6; i++)
+            {
+                float line_Y = O_lineE_Y + (i * O_spacingE) + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+                g.DrawLine(redPen, O_lineE_X, line_Y, O_lineE_X + lineLength, line_Y);
+            }
+
+            // # 숫자
+            float O_E_X = O_lineE_X - 30;
+            float O_E_30Y = O_lineE_Y + 30 + 20 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+            float O_E_20Y = O_lineE_Y + 20 + 10 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+            float O_E_10Y = O_lineE_Y + 10 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+
+            float O_E_0Y = O_lineE_Y - 10 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+
+            float O_E10Y = O_lineE_Y - 10 - 20 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+            float O_E20Y = O_lineE_Y - 20 - 30 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+            float O_E30Y = O_lineE_Y - 30 - 40 + (RECEIVED_DATA.OPTICAL_TILT) * 2;
+
+            g.DrawString((-30).ToString(), font, brush, O_E_X, O_E_30Y);
+            g.DrawString((-20).ToString(), font, brush, O_E_X, O_E_20Y);
+            g.DrawString((-10).ToString(), font, brush, O_E_X, O_E_10Y);
+
+            g.DrawString((0).ToString(), font, brush, O_E_X, O_E_0Y);
+
+            g.DrawString((10).ToString(), font, brush, O_E_X, O_E10Y);
+            g.DrawString((20).ToString(), font, brush, O_E_X, O_E20Y);
+            g.DrawString((30).ToString(), font, brush, O_E_X, O_E30Y);
+
+
+            // #####
+            if (RECEIVED_DATA.BODY_PAN >= 10)
+            {
+                if (RECEIVED_DATA.BODY_PAN >= 15)
+                {
+                    g.DrawString(("! Max Azimuth !\nTurn Left").ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 5);
+                }
+                else
+                {
+                    g.DrawString(("! Azimuth Warning !\nTurn Left").ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 5);
+                }
+            }
+
+            if (RECEIVED_DATA.BODY_PAN <= -175)
+            {
+                if (RECEIVED_DATA.BODY_PAN <= -180)
+                {
+                    g.DrawString((("! Max Azimuth !\nTurn Right")).ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 5);
+                }
+                else
+                {
+                    g.DrawString((("! Azimuth Warning !\nTurn Right")).ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 5);
+                }
+            }
+            // #####
+            if (RECEIVED_DATA.OPTICAL_TILT >= 25)
+            {
+                if (RECEIVED_DATA.OPTICAL_TILT >= 30)
+                {
+                    g.DrawString(("! Max Optical Elevation !\nGo Down").ToString(), font, brush, PB_VIDEO.Width / 11 * 1, PB_VIDEO.Height / 12 * 5);
+                }
+                else
+                {
+                    g.DrawString(("! Optical Elevation Warning !\nGo Down").ToString(), font, brush, PB_VIDEO.Width / 11 * 1, PB_VIDEO.Height / 12 * 5);
+                }
+            }
+
+            if (RECEIVED_DATA.OPTICAL_TILT <= -5)
+            {
+                if (RECEIVED_DATA.OPTICAL_TILT <= -10)
+                {
+                    g.DrawString((("! Max Optical Elevation !\nGo Up")).ToString(), font, brush, PB_VIDEO.Width / 11 * 1, PB_VIDEO.Height / 12 * 7);
+                }
+                else
+                {
+                    g.DrawString((("! Optical Elevation Warning !\nGo Up")).ToString(), font, brush, PB_VIDEO.Width / 11 * 1, PB_VIDEO.Height / 12 * 7);
+                }
+            }
+            // #####
+            if (RECEIVED_DATA.WEAPON_TILT >= 25)
+            {
+                if (RECEIVED_DATA.WEAPON_TILT >= 30)
+                {
+                    g.DrawString(("! Max Weapon Elevation !\nGo Down").ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 12 * 5);
+                }
+                else
+                {
+                    g.DrawString(("! Weapon Elevation Warning !\nGo Down").ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 12 * 5);
+                }
+            }
+
+            if (RECEIVED_DATA.WEAPON_TILT <= -15)
+            {
+                if (RECEIVED_DATA.WEAPON_TILT <= -20)
+                {
+                    g.DrawString((("! Max Weapon Elevation !\nGo Up")).ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 12 * 7);
+                }
+                else
+                {
+                    g.DrawString((("! Weapon Elevation Warning !\nGo Up")).ToString(), font, brush, PB_VIDEO.Width / 5 * 4, PB_VIDEO.Height / 12 * 7);
+                }
+            }
+
+            redPen.Dispose();
+            font.Dispose();
+        }
+
+        private async void PB_VIDEO_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (RCWS_CONNECT_FLAG)
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    SEND_DATA.C_X1 = (short)(e.X);
+                    SEND_DATA.C_Y1 = (short)(e.Y);
+                    SEND_DATA.Button = (SEND_DATA.Button | 0x00001000);
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00002000));
+                    byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                    await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                    await STREAM_WRITER.BaseStream.FlushAsync();
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
+                }
+
+                if (e.Button == MouseButtons.Right)
+                {
+                    SEND_DATA.Button = (SEND_DATA.Button | 0x00002000);
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00001000));
+                    byte[] commandBytes = TcpReturn.StructToBytes(SEND_DATA);
+                    await STREAM_WRITER.BaseStream.WriteAsync(commandBytes, 0, commandBytes.Length);
+                    await STREAM_WRITER.BaseStream.FlushAsync();
+                    SEND_DATA.Button = (uint)(SEND_DATA.Button & ~(0x00003000));
+                }
+            }
+        }
     }
 }

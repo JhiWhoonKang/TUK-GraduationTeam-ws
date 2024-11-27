@@ -734,6 +734,11 @@
             this.PB_VIDEO.Size = new System.Drawing.Size(1152, 864);
             this.PB_VIDEO.TabIndex = 27;
             this.PB_VIDEO.TabStop = false;
+            this.PB_VIDEO.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_VIDEO_Paint);
+            this.PB_VIDEO.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PB_VIDEO_MouseClick);
+            this.PB_VIDEO.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PB_VIDEO_MouseDown);
+            this.PB_VIDEO.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PB_VIDEO_MouseMove);
+            this.PB_VIDEO.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PB_VIDEO_MouseUp);
             // 
             // FormMain
             // 
