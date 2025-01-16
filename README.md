@@ -1,5 +1,5 @@
 # TUK-GraduationTeam-ws
-'까불면 메카 약이다'팀 협업 공간입니다.
+'까불면 메카 약이다'팀 협업 공간입니다.https://github.com/JhiWhoonKang/TUK-GraduationTeam-ws/blob/main/README.md
 <br/>
 <h1 align="center"> TUK 메카트로닉스공학과 2025 졸업 작품 </h1>
 <h2 align="center"> 초소 유무인 복합 무기 조종 시스템 🪖  </h2>
