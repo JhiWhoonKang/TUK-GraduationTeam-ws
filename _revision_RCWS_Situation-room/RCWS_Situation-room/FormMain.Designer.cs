@@ -831,7 +831,7 @@
         private System.Windows.Forms.ToolStripMenuItem enemyConcentrationToolStripMenuItem;
         private System.Windows.Forms.Button BTN_FIRE;
         private System.Windows.Forms.Button BTN_TAKE_AIM;
-        private System.Windows.Forms.Button BTN_CAMERA_CONNECT;
+        public System.Windows.Forms.Button BTN_CAMERA_CONNECT;
         private System.Windows.Forms.Label lb_xx;
         private System.Windows.Forms.Label lb_yy;
         private System.Windows.Forms.ToolStripMenuItem addPinPointToolStripMenuItem;
