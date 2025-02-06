@@ -181,3 +181,37 @@ C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormManual.resources
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMain.resources
 C:\JHIWHOON\한국공학대학교\github_ws\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormSettingMain.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormLogin.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormDataSetting.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormManual.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorDataSetting.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMotorSetting.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalDataSetting.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormOpticalSetting.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormReticleSetting.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponDataSetting.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormWeaponSetting.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormMain.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.Properties.Resources.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation_room.FormSettingMain.resources
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.GenerateResource.cache
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.exe
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Situation-room.pdb
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe.config
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.exe
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\RCWS_Situation-room.pdb
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.dll
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.dll
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.xml
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.dll.config
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.xml
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Blob.dll.config
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.xml
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.CPlusPlus.dll.config
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\OpenCvSharp.Extensions.xml
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.pdb
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.pdb
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\bin\Debug\SharpDX.DirectInput.xml
+C:\Users\user\Desktop\강의자료 모음\githubRepo\TUK-GraduationTeam-ws\_revision_RCWS_Situation-room\RCWS_Situation-room\obj\Debug\RCWS_Sit.2236C9E6.Up2Date

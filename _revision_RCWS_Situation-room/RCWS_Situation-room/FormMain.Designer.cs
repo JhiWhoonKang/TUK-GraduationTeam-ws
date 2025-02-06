@@ -743,6 +743,7 @@
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(1920, 1080);
             this.Controls.Add(this.PB_VIDEO);
             this.Controls.Add(this.BTN_SETTING);

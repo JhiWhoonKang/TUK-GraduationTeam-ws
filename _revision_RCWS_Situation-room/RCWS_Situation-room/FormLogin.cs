@@ -35,7 +35,7 @@ namespace RCWS_Situation_room
             {
                 MessageBox.Show("Successfully Login");
                 this.Visible = false;
-                FormMain gui = new FormMain(streamWriter, formDataSetting);
+                FormMain gui = new FormMain();
                 gui.Show();
             }
 
@@ -73,7 +73,7 @@ namespace RCWS_Situation_room
             {
                 MessageBox.Show("Successfully Login");
                 this.Visible = false;
-                FormMain gui = new FormMain(streamWriter, formDataSetting);
+                FormMain gui = new FormMain();
                 gui.Show();
             }
         }
