@@ -19,6 +19,7 @@ namespace RCWS_Situation_Room_GUI
         public MainWindow()
         {
             InitializeComponent();
+            DataContext=new ViewModel.RCWSMainGUIViewModel();
         }
     }
 }
