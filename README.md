@@ -61,66 +61,8 @@
 > |------|------|------|------|
 > | **ICROS(제어로봇시스템학회) 학부생 논문 경진대회** | **ICROS** | **2024-07-24** | **학부생 논문상** |
 > | **한국공학대전** | **한국공학대학교** | **2024-09-25** | **한국산업기술평가관리원장상** |
-> | **2024 창의적 종합설계 경진대회** | **한양대학교 공학교육혁신센터** | **2024-11-05** | **우수상** |
-> | **2024 창의적 종합설계 경진대회** | **한국연구재단** | **2024-11-20** | **최우수상(한국연구재단 이사장상)** |
+> | **2024 창의적 종합설계 경진대회** | **한양대학교 공학교육혁신센터** | **2024-11-12** | **우수상((한국산업기술진흥원장상))** |
 > | **2024 로봇 제작 경진대회 SHARE Challenge** | **한국연구재단** | **2024-11-20** | **최우수상(한국연구재단 이사장상)** |
-
->  - 우수상(한국산업기술진흥원장상)
-> 2024 창의적 종합설계 경진대회 - 한국공과대학장협의회장상
+> | **2024 창의적 종합설계 경진대회** | **-** | **2024-11-22** | **수상(한국공과대학장협의회장)** |
 > ## 기대효과
 
-
-
-
-
-
-
-
-
-
-
-## 시작하기
-
-이 섹션에서는 프로젝트를 로컬 컴퓨터에서 실행하기 위한 사전 준비사항과 설치 방법을 안내합니다.
-
-### 전제 조건
-
-프로젝트를 시작하기 전에 아래의 환경이 준비되어 있어야 합니다.
-
-- Ubuntu 20.04
-- Python, C#, C/C++
-- Arduino IDE, VSCode, Visual Studio C# .NET Windows Form
-- SolidWorks (설계 도구)
-
-### 설치
-
-프로젝트를 시작하기 위해 필요한 라이브러리를 설치하려면 아래의 명령어를 실행하세요.
-
-```bash
-pip install pyserial
-```
-
-
-# TUK-GraduationTeam-ws
-
-This project aims to develop software and hardware for remotely controlling weapon stations.
-
-## Getting Started
-
-This section guides you through getting the project up and running on your local machine for development and testing purposes.
-
-### Prerequisites
-
-Before you start, ensure you have the following environment set up:
-
-- Ubuntu 20.04
-- Python, C#, C/C++
-- Arduino IDE, VSCode, Visual Studio C# .NET Windows Form
-- SolidWorks (for design purposes)
-
-### Installation
-
-To install the necessary libraries for the project, run the following command:
-
-```bash
-pip install pyserial
