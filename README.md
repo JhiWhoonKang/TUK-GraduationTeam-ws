@@ -21,6 +21,10 @@
   <img src="https://github.com/user-attachments/assets/48018438-730f-449a-9d98-8f38eca0ba8f" align="center" width="70%">
 </p>
 
+## 목표 성능
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/33665e67-eeb5-4c4e-986c-90536709740f" align="center" width="70%">
+</p>
 
 # 개발 기간 <!-- omit in toc -->
 > 2023.09. ~ 2024.12.
@@ -63,6 +67,17 @@
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7b6b431e-4309-421b-8af6-d16728745a09" align="center" width="70%">
 </p>
+
+### Auto Scan 모드
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f31b6b19-47b5-4214-bb36-a3f3b0b832f3" align="center" width="70%">
+</p>
+
+### Laser Tracking 모드
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8cbf6755-3a44-454b-9615-677a08c018ba" align="center" width="70%">
+</p>
+
 
 
 
