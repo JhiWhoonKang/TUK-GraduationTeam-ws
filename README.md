@@ -5,21 +5,22 @@
 <h2 align="center"> 초소 유무인 복합 무기 조종 시스템 🪖  </h2>
 <p align="right"> 정지우(팀장), 강지훈 고경륜 박성(팀원)</p>
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/697dbc8a-16ee-4fe4-9807-8552916daa5d" align="center" width="32%">
+  <img src="https://github.com/user-attachments/assets/68bc6fe8-99f7-4a75-ad98-d8c524e3b616" align="center" width="32%">
+</p>
+
 # 개발 목표 <!-- omit in toc -->
 ![IMPORTANT](https://img.shields.io/badge/SUMMARY-ffcc00?style=for-the-badge&logoColor=black)
+> 초소 유무인 복합 무기 조종 시스템이란 **기존 유인 초소 시스템에서 RCWS를 적용한 유무인 복합 무기 조종 시스템**을 의미합니다.
 > 본 프로젝트는 원격에서 초소에 배치된 무기 시스템을 제어하기 위한 소프트웨어 및 하드웨어 개발을 목표로 합니다.
 
 ![IMPORTANT](https://img.shields.io/badge/DETAILS-00CC66?style=for-the-badge&logoColor=black)
-> ## 필요성
-> 초소 유무인 복합 무기 조종 시스템이란 **기존 유인 초소 시스템에서 RCWS를 적용한 유무인 복합 무기 조종 시스템**을 의미합니다.
-> #### 1. 방어 무기 수요 증가
-> 전세계적으로 신냉전 시대에 접어들면서 전쟁이 빈번히 발생하고 있습니다. 이로 인해 방어 무기의 수요가 증가하고 있습니다.
-> #### 2. 대한민국의 급격한 저출산
-> 저출산에 따른 군병력 감소로 인해 군단 및 사단이 통폐합이 진행되고 있으며 이로 인해 소초당 책임지는 작전 반경 범위가 증가하였습니다.
-> #### 3. 유·무인 복합전투체계 단계별 전환
-> 과학기술 발전으로 전쟁 양상이 변화하는 현 시점에서 이에 대한 중요성을 인지하고 전투 효율성 향상을 목표로 합니다.
-> #### 4. 장단점 보완
-> 기존 유인 초소 시스템 및 무인 초소 시스템 각각의 단점을 보완하고 장점을 극대화합니다.
+## 필요성
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/48018438-730f-449a-9d98-8f38eca0ba8f" align="center" width="70%">
+</p>
+
 
 # 개발 기간 <!-- omit in toc -->
 > 2023.09. ~ 2024.12.
@@ -36,8 +37,40 @@
 > ToF 센서를 통해 목표 지점까지의 거리를 측정한 후 RCWS 기총을 제어하여 목표물을 조준합니다.
 
 # 개발 결과 <!-- omit in toc -->
-## 하드웨어 제원
-> ### 📌 주요 성능  
+## 시스템 구성도
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1c48741d-66ac-4b3b-a759-a836bfc3bac5" align="center" width="70%">
+</p>
+
+## 하드웨어
+### 📌 RCWS 구성
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4a40e552-88eb-4717-89a2-a20e7bea05e1" align="center" width="70%">
+</p>
+
+### 초병 개인화기 구성
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1be22d84-0051-464c-932d-cc70e77d8b3d" align="center" width="70%">
+</p>
+
+### 상황실 GUI 구성
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c064913b-9f7d-4b59-8970-5d9ca678ccfc" align="center" width="70%">
+</p>
+
+## 모드
+### 수동 조작 및 Tracking 모드
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7b6b431e-4309-421b-8af6-d16728745a09" align="center" width="70%">
+</p>
+
+
+
+
+###
+
+
+> ### 📌 주요 성능
 > | 항목 | 사양 |
 > |------|------|
 > | **작동 회전 속도** | 최대 67.96˚/sec (고저/선회) |
