@@ -11,7 +11,8 @@
 </p>
 
 # 동작 영상
-[영상1](https://www.youtube.com/watch?v=AbN9831sumE) <br/>
+[![영상1](https://github.com/user-attachments/assets/1ef88511-b7af-4a30-8cf6-79c170cd1a76)](https://www.youtube.com/watch?v=AbN9831sumE)
+
 
 [영상2](https://www.youtube.com/watch?v=nqwZQhgWNPw)
 
