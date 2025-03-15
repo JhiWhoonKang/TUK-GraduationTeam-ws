@@ -11,10 +11,11 @@
 </p>
 
 # 동작 영상
-[![영상1](https://github.com/user-attachments/assets/1ef88511-b7af-4a30-8cf6-79c170cd1a76)](https://www.youtube.com/watch?v=AbN9831sumE)
+> [!NOTE]
+> 이미지 클릭 시 영상 링크로 이동됩니다
 
-
-[영상2](https://www.youtube.com/watch?v=nqwZQhgWNPw)
+[![영상1](https://github.com/user-attachments/assets/293709bd-3721-48d0-99c1-78611160e106)](https://www.youtube.com/watch?v=AbN9831sumE)
+[![영상2](https://github.com/user-attachments/assets/a785e1f2-42c0-4fbe-9b78-9c53f207e399)](https://www.youtube.com/watch?v=nqwZQhgWNPw)
 
 # 개발 목표 <!-- omit in toc -->
 ![IMPORTANT](https://img.shields.io/badge/SUMMARY-ffcc00?style=for-the-badge&logoColor=black)
@@ -22,15 +23,15 @@
 > 본 프로젝트는 원격에서 초소에 배치된 무기 시스템을 제어하기 위한 소프트웨어 및 하드웨어 개발을 목표로 합니다.
 
 ![IMPORTANT](https://img.shields.io/badge/DETAILS-00CC66?style=for-the-badge&logoColor=black)
-## 🔸 필요성
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/48018438-730f-449a-9d98-8f38eca0ba8f" align="center" width="70%">
-</p>
-
+> ## 🔸 필요성
+> <p align="center">
+>   <img src="https://github.com/user-attachments/assets/48018438-730f-449a-9d98-8f38eca0ba8f" align="center" width="70%">
+> </p>
+> 
 ## 🔸 목표 성능
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/33665e67-eeb5-4c4e-986c-90536709740f" align="center" width="70%">
-</p>
+> <p align="center">
+>   <img src="https://github.com/user-attachments/assets/33665e67-eeb5-4c4e-986c-90536709740f" align="center" width="70%">
+> </p>
 
 # 개발 기간 <!-- omit in toc -->
 > 2023.09. ~ 2024.12.
