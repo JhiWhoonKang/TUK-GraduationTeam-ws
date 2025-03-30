@@ -142,7 +142,7 @@
       <a href="https://github.com/JhiWhoonKang">
         <img src="" width="110px;" alt=""/><br />
         <sub><b>강지훈</b></sub></a><br />
-        <sub>GUI 개발, CAN 통신 </sub>
+        <sub>GUI 개발, Socket 통신, CAN 통신 </sub>
     </td>
     <td align="center">
       <a href="https://github.com/rhrudfbs">
