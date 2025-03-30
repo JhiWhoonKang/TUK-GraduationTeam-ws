@@ -50,6 +50,22 @@
 > #### 4. 자동조준
 > ToF 센서를 통해 목표 지점까지의 거리를 측정한 후 RCWS 기총을 제어하여 목표물을 조준합니다.
 
+# 🛠️ 사용 기술 및 언어
+
+## 🎨 GUI 개발
+- **언어:** ![C# Badge](https://img.shields.io/badge/-C%23-9B59B6?style=for-the-badge&logo=csharp&logoColor=white)
+  - **설명:** 윈도우 기반 사용자 인터페이스 개발에 활용됨
+
+## 🔧 MCU 프로그래밍
+- **언어:** ![C++ Badge](https://img.shields.io/badge/-C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
+  - **설명:** 각종 마이크로컨트롤러 프로그래밍에 사용됨
+
+## 📹 영상처리 및 RCWS 메인 코드
+- **언어:** ![Python Badge](https://img.shields.io/badge/-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+  - **설명:** 영상처리 및 RCWS 제어 알고리즘, 메인 코드 개발에 활용됨
+
+
+
 # 개발 결과 <!-- omit in toc -->
 ## 🔸 시스템 구성도
 <p align="center">
