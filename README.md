@@ -10,20 +10,27 @@
   <img src="https://github.com/user-attachments/assets/68bc6fe8-99f7-4a75-ad98-d8c524e3b616" align="center" width="32%">
 </p>
 
-# 동작 영상
+## 📘 전자 브로셔
+
+[![Notion 브로셔 미리보기](https://github.com/your-repo-path/assets/your-image-id)](https://harmonious-file-909.notion.site/10cee5524d65807e9e69cdc612db8180)
+
+> ↑ 클릭 시 전자 브로셔(노션) 페이지로 이동합니다.
+
+
+## 동작 영상
 > [!NOTE]
 > 이미지 클릭 시 영상 링크로 이동됩니다
 
 [![영상1](https://github.com/user-attachments/assets/293709bd-3721-48d0-99c1-78611160e106)](https://www.youtube.com/watch?v=AbN9831sumE)
 [![영상2](https://github.com/user-attachments/assets/a785e1f2-42c0-4fbe-9b78-9c53f207e399)](https://www.youtube.com/watch?v=nqwZQhgWNPw)
 
-# 개발 목표 <!-- omit in toc -->
+## 개발 목표 <!-- omit in toc -->
 ![IMPORTANT](https://img.shields.io/badge/SUMMARY-ffcc00?style=for-the-badge&logoColor=black)
 > 초소 유무인 복합 무기 조종 시스템이란 **기존 유인 초소 시스템에서 RCWS를 적용한 유무인 복합 무기 조종 시스템**을 의미합니다.
 > 본 프로젝트는 원격에서 초소에 배치된 무기 시스템을 제어하기 위한 소프트웨어 및 하드웨어 개발을 목표로 합니다.
 
 ![IMPORTANT](https://img.shields.io/badge/DETAILS-00CC66?style=for-the-badge&logoColor=black)
-> ## 🔸 필요성
+## 🔸 필요성
 > <p align="center">
 >   <img src="https://github.com/user-attachments/assets/48018438-730f-449a-9d98-8f38eca0ba8f" align="center" width="70%">
 > </p>
@@ -33,11 +40,11 @@
 >   <img src="https://github.com/user-attachments/assets/33665e67-eeb5-4c4e-986c-90536709740f" align="center" width="70%">
 > </p>
 
-# 개발 기간 <!-- omit in toc -->
+## 개발 기간 <!-- omit in toc -->
 > 2023.09. ~ 2024.12.
 
-# 개발 내용 <!-- omit in toc -->
-## 핵심 구현 기능
+## 개발 내용 <!-- omit in toc -->
+### 핵심 구현 기능
 > #### 1. 원격 제어
 > 상황실에서도 초소에 있는 RCWS를 제어할 수 있습니다.
 
@@ -50,62 +57,62 @@
 > #### 4. 자동조준
 > ToF 센서를 통해 목표 지점까지의 거리를 측정한 후 RCWS 기총을 제어하여 목표물을 조준합니다.
 
-# 🛠️ 사용 기술 및 언어
+## 🛠️ 사용 기술 및 언어
 
-## 🎨 GUI 개발
+### 🎨 GUI 개발
 - **언어:** ![C# Badge](https://img.shields.io/badge/-C%23-9B59B6?style=for-the-badge&logo=csharp&logoColor=white)
   - **설명:** 윈도우 기반 사용자 인터페이스 개발에 활용됨
 
-## 🔧 MCU 프로그래밍
+### 🔧 MCU 프로그래밍
 - **언어:** ![C++ Badge](https://img.shields.io/badge/-C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
   - **설명:** 각종 마이크로컨트롤러 프로그래밍에 사용됨
 
-## 📹 영상처리 및 RCWS 메인 코드
+### 📹 영상처리 및 RCWS 메인 코드
 - **언어:** ![Python Badge](https://img.shields.io/badge/-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
   - **설명:** 영상처리 및 RCWS 제어 알고리즘, 메인 코드 개발에 활용됨
 
 
 
-# 개발 결과 <!-- omit in toc -->
-## 🔸 시스템 구성도
+## 개발 결과 <!-- omit in toc -->
+### 🔸 시스템 구성도
 <p align="center">
   <img src="https://github.com/user-attachments/assets/1c48741d-66ac-4b3b-a759-a836bfc3bac5" align="center" width="70%">
 </p>
 
-## 🔸 하드웨어
-### 📌 RCWS 구성
+### 🔸 하드웨어
+#### 📌 RCWS 구성
 <p align="center">
   <img src="https://github.com/user-attachments/assets/4a40e552-88eb-4717-89a2-a20e7bea05e1" align="center" width="70%">
 </p>
 
-### 📌 초병 개인화기 구성
+#### 📌 초병 개인화기 구성
 <p align="center">
   <img src="https://github.com/user-attachments/assets/1be22d84-0051-464c-932d-cc70e77d8b3d" align="center" width="70%">
 </p>
 
-### 📌 상황실 GUI 구성
+#### 📌 상황실 GUI 구성
 <p align="center">
   <img src="https://github.com/user-attachments/assets/c064913b-9f7d-4b59-8970-5d9ca678ccfc" align="center" width="70%">
 </p>
 
-## 🔸 모드
-### 📌 수동 조작 및 Tracking 모드
+### 🔸 모드
+#### 📌 수동 조작 및 Tracking 모드
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7b6b431e-4309-421b-8af6-d16728745a09" align="center" width="70%">
 </p>
 
-### 📌 Auto Scan 모드
+#### 📌 Auto Scan 모드
 <p align="center">
   <img src="https://github.com/user-attachments/assets/f31b6b19-47b5-4214-bb36-a3f3b0b832f3" align="center" width="70%">
 </p>
 
-### 📌 Laser Tracking 모드
+#### 📌 Laser Tracking 모드
 <p align="center">
   <img src="https://github.com/user-attachments/assets/8cbf6755-3a44-454b-9615-677a08c018ba" align="center" width="70%">
 </p>
 
-## 🔸 Spec.
-### 📌 하드웨어 성능
+### 🔸 Spec.
+#### 📌 하드웨어 성능
 > | 항목 | 사양 |
 > |------|------|
 > | **작동 회전 속도** | 최대 67.96˚/sec (고저/선회) |
@@ -117,7 +124,7 @@
 > | **인식 가능 인원** | 최대 6명 (사람 인식) |
 > | **레이저 인식 거리** | 최대 40 m |
     
-### 📌 광학 성능  
+#### 📌 광학 성능  
 > | 배율 단계 | 카메라 배율 | 화각 (FOV) |
 > |-----------|------------|------------|
 > | **1단계** | 4.5배율 | 13.884˚ |
@@ -126,7 +133,7 @@
 > | **4단계** | 8.2배율 | 7.317˚ |
 > | **5단계** | 8.2배율 | 7.383˚ |
 
-## 🔸 수상 내역
+### 🔸 수상 내역
 > | 상훈명 | 수여기관 | 수상일자 | 수상내역 |
 > |------|------|------|------|
 > | **ICROS(제어로봇시스템학회) 학부생 논문 경진대회** | **ICROS** | **2024-07-24** | **학부생 논문상** |
