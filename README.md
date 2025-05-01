@@ -12,7 +12,7 @@
 
 ## 📘 전자 브로셔
 
-[![Notion 브로셔 미리보기](![image](https://github.com/user-attachments/assets/c01f1fda-16c8-4158-b759-3f5abc91dfdb))](https://harmonious-file-909.notion.site/10cee5524d65807e9e69cdc612db8180)
+[![Notion 브로셔 미리보기](https://github.com/user-attachments/assets/c01f1fda-16c8-4158-b759-3f5abc91dfdb)](https://harmonious-file-909.notion.site/10cee5524d65807e9e69cdc612db8180)
 
 > ↑ 클릭 시 전자 브로셔(노션) 페이지로 이동합니다.
 
