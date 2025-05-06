@@ -142,18 +142,19 @@
 > | **2024 로봇 제작 경진대회 SHARE Challenge** | **한국연구재단** | **2024-11-22** | **최우수상(한국연구재단 이사장상)** |
 > | **2024 창의적 종합설계 경진대회** | **한국공과대학장협의회** | **2024-11-22** | **수상** |
 
+
 ## 🔸 참여자
 <table>
   <tr>
     <td align="center">
       <a href="https://github.com/JhiWhoonKang">
-        <img src="" width="110px;" alt=""/><br />
+        <img src="https://github.com/user-attachments/assets/38b19280-a685-4033-a436-e1746b3f4eb5" width="110px;" alt=""/><br />
         <sub><b>강지훈</b></sub></a><br />
         <sub>GUI 개발, Socket 통신, CAN 통신 </sub>
     </td>
     <td align="center">
       <a href="https://github.com/rhrudfbs">
-        <img src="" width="110px;" alt=""/><br />
+        <img src="https://github.com/user-attachments/assets/493f0b00-7638-442a-b973-14ef0ea7e2d8" width="110px;" alt=""/><br />
         <sub><b>고경륜</b></sub></a><br />
         <sub>모터 제어, 영상처리, Main PC S/W 개발</sub>
     </td>
@@ -165,7 +166,7 @@
     </td>
     <td align="center">
       <a href="https://github.com/Jeoungji">
-        <img src="" width="110px;" alt=""/><br />
+        <img src="https://github.com/user-attachments/assets/36a22dbf-b6cd-4c96-b9ef-814722c201f0" width="110px;" alt=""/><br />
         <sub><b>정지우</b></sub></a><br />
         <sub>RCWS H/W 설계 및 제작, 광학부 S/W 개발</sub>
     </td>
